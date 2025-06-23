@@ -1,0 +1,17 @@
+<!-- <footer class="main-footer" style="display: flex; justify-content: space-between; align-items: center;">
+    <p style="font-style: italic; font-weight: bold; margin: 0;">Developed by &copy; GD4</p>
+    <div style="margin: 0;">
+        <b>Version 1.0.0</b> 
+    </div>
+</footer> -->
+
+<!-- bottom-tab-menu.component.html -->
+<nav class="bottom-tab-menu">
+    <div *ngFor="let tab of tabs" class="tab-item" 
+         [class.active]="activeTab === tab.id" 
+         [routerLink]="tab.routerLink" 
+         routerLinkActive="active">
+        <span class="material-icons">{{tab.icon}}</span>
+        <span class="tab-label">{{tab.label}}</span>
+    </div>
+</nav>

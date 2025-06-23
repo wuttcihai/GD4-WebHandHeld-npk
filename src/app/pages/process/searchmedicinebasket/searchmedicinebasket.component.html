@@ -1,0 +1,276 @@
+<div class="content-wrapper" @fadeIn>
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" *ngIf="loading">
+        <div class="spinner-circle">
+            <div class="spinner-inner"></div>
+        </div>
+    </div>
+
+    <!-- Content Header -->
+    <section class="content-header hospital-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h3 class="hospital-title">
+                        <!-- <mat-icon>person</mat-icon> -->
+                        <span style="font-family:  PKNakhonSawan, sans-serif !important;">ค้นหาตะกร้ายา</span>
+                    </h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right hospital-breadcrumb">
+                        <li style="font-family:  PKNakhonSawan, sans-serif !important;" class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+                        <li class="breadcrumb-item active">ค้นหาตะกร้ายา</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="content" @fadeInUp>
+        <div class="container-fluid">
+            <div class="search-card hospital-card">
+                <!-- <div class="search-header hospital-card-header">
+                    <div class="header-content">
+                        <h1 class="search-title hospital-card-title">
+                            <span class="title-icon"><mat-icon>search</mat-icon></span>
+                            <span class="title-text">ค้นหาตะกร้ายา</span>
+                        </h1>
+                        <p class="search-subtitle">กรอกเลขที่ใบสั่งยา หรือ VN ของผู้ป่วยเพื่อค้นหา</p>
+                    </div>
+                </div> -->
+                
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="header-content">
+                            <!-- <h1 class="search-title hospital-card-title">
+                                <span class="title-icon"><mat-icon>search</mat-icon></span>
+                                <span class="title-text">ค้นหาตะกร้ายา</span>
+                            </h1> -->
+                            <p class="search-subtitle">กรอกเลขที่ใบสั่งยา หรือ VN ของผู้ป่วยเพื่อค้นหา</p>
+                        </div>
+                        <form (submit)="onSearch()" class="search-form">
+                            <div class="input-group search-input-container">
+                                <mat-form-field appearance="outline" class="search-field hospital-filter" floatLabel="always">
+                                    <mat-label>เลขที่ใบสั่งยา / VN</mat-label>
+                                    <input matInput type="text" [(ngModel)]="searchQuery" name="searchInput" 
+                                           placeholder="เช่น 123456 หรือ VN789012" #searchInput
+                                           (keyup.enter)="onSearch()">
+                                    <button mat-icon-button matSuffix class="search-button" 
+                                            (click)="onSearch()"
+                                            [@pulse]="searchQuery ? 'active' : 'inactive'"
+                                            matTooltip="ค้นหา"
+                                            matTooltipPosition="left">
+                                        <mat-icon>search</mat-icon>
+                                    </button>
+                                </mat-form-field>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="content mt-4" *ngIf="hiddenSearch" @expandIn>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="patient-card hospital-card" [@cardAnimation]>
+                        <div class="card-header patient-header hospital-card-header">
+                            <div class="header-badge">
+                                <mat-icon class="header-icon">person</mat-icon>
+                            </div>
+                            <h3  style="font-family:  PKNakhonSawan, sans-serif !important;" class="header-title">ข้อมูลผู้ป่วย</h3>
+                        </div>
+                        <form [formGroup]="form">
+                            <div class="card-body patient-info hospital-card-body">
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-6">
+                                        <mat-form-field appearance="outline" class="info-field">
+                                            <mat-label>เลขที่ใบสั่งยา</mat-label>
+                                            <input matInput type="text" formControlName="prescriptionno" [disabled]="true">
+                                            <mat-icon matSuffix class="field-icon">receipt</mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <mat-form-field appearance="outline" class="info-field">
+                                            <mat-label>VN</mat-label>
+                                            <input matInput type="text" formControlName="vn" [disabled]="true">
+                                            <mat-icon matSuffix class="field-icon">assignment</mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <mat-form-field appearance="outline" class="info-field">
+                                            <mat-label>HN</mat-label>
+                                            <input matInput type="text" formControlName="hn" [disabled]="true">
+                                            <mat-icon matSuffix class="field-icon">badge</mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <mat-form-field appearance="outline" class="info-field">
+                                            <mat-label>อายุ</mat-label>
+                                            <input matInput type="text" formControlName="patientdob" [disabled]="true">
+                                            <mat-icon matSuffix class="field-icon">cake</mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <mat-form-field appearance="outline" class="info-field">
+                                            <mat-label>ชื่อนามสกุล</mat-label>
+                                            <input matInput type="text" formControlName="patientname" [disabled]="true">
+                                            <mat-icon matSuffix class="field-icon">person_outline</mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <mat-form-field appearance="outline" class="info-field">
+                                            <mat-label>เพศ</mat-label>
+                                            <input matInput type="text" formControlName="sex" [disabled]="true">
+                                            <mat-icon matSuffix class="field-icon">{{ form.get('sex')?.value === 'ชาย' ? 'male' : 'female' }}</mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Basket Results -->
+        <div class="container-fluid" *ngFor="let group of groupedData; let i = index" [@staggerIn]="i">
+            <div class="basket-card hospital-card">
+                <!-- Basket Header -->
+                <div class="basket-header hospital-card-header" [class.ready]="isBasketReady(group)" [class.pending]="!isBasketReady(group)">
+                    <div class="basket-title">
+                        <div class="basket-icon-container">
+                            <mat-icon class="basket-icon">shopping_basket</mat-icon>
+                        </div>
+                        <h2 style="color: white; font-size: 2rem; font-family:  PKNakhonSawan, sans-serif !important;">ตะกร้าเบอร์ {{ group.basketno }}</h2>
+                    </div>
+                    <div class="basket-status">
+                        <span class="status-badge hospital-badge" [ngClass]="{
+                            'status-ready': isBasketReady(group),
+                            'status-pending': !isBasketReady(group)
+                        }">
+                            {{ isBasketReady(group) ? 'เสร็จสิ้น' : 'รอดำเนินการ' }}
+                        </span>
+                        <span class="last-point">
+                            <mat-icon>location_on</mat-icon>
+                            {{ group.lastpoint || 'ไม่ระบุ' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Basket Table -->
+                <div class="table-container hospital-table-container" [@fadeInUp]>
+                    <table mat-table [dataSource]="group.dataSource" class="basket-table hospital-data-table">
+                        <!-- Columns -->
+                        <ng-container matColumnDef="orderitemcode" sticky>
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell">รหัสยา</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell hospital-user-id">{{ element.orderitemcode }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="orderitemname">
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell">ชื่อยา</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell">{{ element.orderitemname }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="orderqty">
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell text-center">จำนวน</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell text-center">{{ element.orderqty }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="orderunitdesc">
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell text-center">หน่วย</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell text-center">{{ element.orderunitdesc }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="shelfzone">
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell text-center">ตำแหน่ง</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell text-center">{{ element.shelfzone }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="zoneindt">
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell">เวลาเข้า</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell">
+                                <span *ngIf="element.zoneindt; else noTime" class="hospital-badge">
+                                    {{ element.zoneindt }}
+                                </span>
+                                <ng-template #noTime>-</ng-template>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="zoneoutdt">
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell">เวลาออก</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell">
+                                <span *ngIf="element.zoneoutdt; else noTime" class="hospital-badge">
+                                    {{ element.zoneoutdt}}
+                                </span>
+                                <ng-template #noTime>-</ng-template>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="zonechackdt">
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell">เวลาถึงจุดตรวจ</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell">
+                                <span *ngIf="element.zonechackdt; else noTime" class="hospital-badge">
+                                    {{ element.zonechackdt}}
+                                </span>
+                                <ng-template #noTime>-</ng-template>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="jobusername">
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell">ผู้จัด</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell">
+                                <span *ngIf="element.jobusername; else noUser" class="hospital-badge">
+                                    {{ element.jobusername }}
+                                </span>
+                                <ng-template #noUser>-</ng-template>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="status" stickyEnd>
+                            <th mat-header-cell *matHeaderCellDef class="hospital-table-header-cell">สถานะ</th>
+                            <td mat-cell *matCellDef="let element" class="hospital-table-cell">
+                                <span class="hospital-badge" [ngClass]="{
+                                    'hospital-group-badge': element.zoneindt && element.zoneoutdt,
+                                    'hospital-position-badge': !(element.zoneindt && element.zoneoutdt)
+                                }">
+                                    {{ (element.zoneindt && element.zoneoutdt) ? 'เสร็จสิ้น' : 'รอดำเนินการ' }}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="hospital-header-row"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+                            class="hospital-data-row"
+                            [@rowAnimation]="row.orderitemcode"
+                            [class.hospital-row-selected]="row.zoneindt && row.zoneoutdt"></tr>
+                    </table>
+                </div>
+
+                <!-- Basket Footer -->
+                <div class="basket-footer">
+                    <div class="footer-summary">
+                        <span class="summary-item">
+                            <mat-icon class="summary-icon">list_alt</mat-icon>
+                            ยาทั้งหมด: <strong>{{ group.dataSource.data.length }}</strong> รายการ
+                        </span>
+                        <span class="summary-item">
+                            <mat-icon class="summary-icon">check_circle</mat-icon>
+                            เสร็จสิ้น: <strong>{{ getCompletedItems(group) }}</strong> รายการ
+                        </span>
+                    </div>
+                    <!-- <button mat-raised-button class="hospital-add-button" color="primary" [disabled]="!isBasketReady(group)">
+                        <mat-icon>print</mat-icon>
+                        พิมพ์รายการ
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

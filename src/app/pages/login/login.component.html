@@ -1,0 +1,74 @@
+<body class="modern-login-page">
+    <div class="bg-bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+    <div class="spinner-overlay" *ngIf="loading">
+        <div class="spinner-circle">
+            <div class="spinner-inner"></div>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-container">
+                <img src="./Document/dist/img/logo6.png" alt="Hospital Logo" class="logo-img" />
+                <div class="logo-pulse"></div>
+            </div>
+            <div class="card-header">
+                <h1 class="title-text">
+                    <span>H</span><span>A</span><span>N</span><span>D</span><span>H</span><span>E</span><span>L</span><span>D</span>
+                    <!-- <span>M</span><span>A</span><span>N</span><span>A</span><span>G</span><span>E</span><span>M</span><span>E</span><span>N</span><span>T</span> -->
+                </h1>
+            </div>
+
+            <p class="hospital-name title-text">
+                <span>โ</span><span>ร</span><span>ง</span><span>พ</span><span>ย</span><span>า</span><span>บ</span><span>า</span><span>ล</span>
+                <span>น</span><span>ค</span><span>ร</span><span>พิ</span><span>ง</span><span>ค์</span>
+                <!-- <span>โรงพยาบาลนครพิงค์</span> -->
+            </p>
+
+            <form (ngSubmit)="onLogin()" class="login-form">
+                <div class="form-group floating-input">
+                    <input [(ngModel)]="username" name="username" type="text" id="username" required />
+                    <label for="username">Username</label>
+                    <!-- <div class="underline"></div> -->
+                </div>
+
+                <div class="form-group floating-input">
+                    <input [(ngModel)]="password" name="password" [type]="hide() ? 'password' : 'text'" id="password" required />
+                    <label for="password">Password</label>
+                    <div class="underline"></div>
+                    <button type="button" class="toggle-password" (click)="clickEvent($event)" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
+                        <i class="eye-icon" [class.hidden]="!hide()"></i>
+                    </button>
+                </div>
+                <div class="form-group floating-input device-select-wrapper">
+                    <select [(ngModel)]="selectedDevice" name="device" id="device" required class="device-select">
+                      <option value="" disabled selected hidden></option>
+                      <option *ngFor="let device of devices" [value]="device.value">{{ device.viewValue }}</option>
+                    </select>
+                    <label for="device" class="device-label">Ward</label>
+                    <div class="device-underline"></div>
+                    <div class="device-arrow">
+                      <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)">
+                        <path d="M7 10l5 5 5-5z"/>
+                      </svg>
+                    </div>
+                  </div>
+                <button type="submit" class="submit-btn">
+                    <span>Sign In</span>
+                    <div class="ripple"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+</body>

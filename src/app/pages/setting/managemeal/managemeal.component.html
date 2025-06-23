@@ -1,0 +1,333 @@
+<div class="content-wrapper hospital-theme">
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" *ngIf="loading">
+        <div class="spinner-circle">
+            <div class="spinner-inner"></div>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <!-- <section class="hospital-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="hospital-title">Meal Time Management</h1>
+                </div>
+                <div class="col-md-6">
+                    <ol class="breadcrumb hospital-breadcrumb float-md-right">
+                        <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+                        <li class="breadcrumb-item active">Meal Management</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <div class="container-fluid">
+        <div class="row mb-2 ">
+            <div class="col-sm-6  mt-2">
+                <h3 class="hospital-title">
+                    <!-- <mat-icon>person</mat-icon> -->
+                    <span>Meal Time Management</span>
+                </h3>
+            </div>
+            <div class="col-sm-6  mt-2">
+                <ol class="breadcrumb float-sm-right hospital-breadcrumb">
+                    <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+                    <li class="breadcrumb-item active">Meal Time Management</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid" [class.single-view]="selectedRow">
+        <!-- Left Card (Meal Types) -->
+        <div class="row">
+            <div class="col-lg-12" [class.col-12]="!selectedRow" [class.d-none]="selectedRow">
+                <div class="hospital-card">
+                    <div class="hospital-card-body">
+                        <div class="hospital-table-header">
+
+                            <button class="hospital-add-button" (click)="newMstime()" mat-raised-button>
+                                <mat-icon>add</mat-icon> Add New Meal
+                            </button>
+                            <mat-form-field appearance="outline" style="width: 300px !important;">
+                                <mat-label>Filter</mat-label>
+                                <input matInput (keyup)="applyFilter($event)" placeholder="เช่น: SE" #input>
+                                <mat-icon matSuffix>search</mat-icon>
+                                <!-- <button (click)="getDevice()"></button> -->
+                            </mat-form-field>
+                        </div>
+
+                        <div class="hospital-table-container">
+                            <table mat-table [dataSource]="dataSourceMeal" matSort class="hospital-data-table"
+                                aria-label="Meal types table">
+                                <!-- Timecode Column -->
+                                <ng-container matColumnDef="timecode" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <mat-icon>code</mat-icon>
+                                            <span>Code</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell hospital-user-id">
+                                        {{ row.timecode }}
+                                    </td>
+                                </ng-container>
+
+                                <!-- English Name Column -->
+                                <ng-container matColumnDef="timeEN" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <mat-icon>translate</mat-icon>
+                                            <span>English</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <div class="hospital-username">
+                                            <mat-icon class="hospital-user-icon">restaurant</mat-icon>
+                                            <span class="hospital-fullname">{{ row.timeEN }}</span>
+                                        </div>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Thai Name Column -->
+                                <ng-container matColumnDef="timeTH" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <mat-icon>translate</mat-icon>
+                                            <span>Thai</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <div class="hospital-username">
+                                            <mat-icon class="hospital-user-icon">restaurant</mat-icon>
+                                            <span class="hospital-fullname">{{ row.timeTH }}</span>
+                                        </div>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Count Column -->
+                                <ng-container matColumnDef="timecount" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <mat-icon>repeat</mat-icon>
+                                            <span>Count/Day</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="">{{ row.timecount }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="timetype" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>timetype</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="">{{ getCheckTimeType(row.timetype)}}</span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Action Buttons -->
+                                <ng-container matColumnDef="actions" stickyEnd>
+                                    <th mat-header-cell *matHeaderCellDef
+                                        class="hospital-table-header-cell hospital-actions-header">
+                                        <!-- <mat-icon>edit</mat-icon> -->
+                                    </th>
+                                    <td mat-cell *matCellDef="let row"
+                                        class="hospital-table-cell hospital-actions-cell">
+                                        <div class="hospital-toggle-container">
+                                            <button mat-raised-button
+                                                class="hospital-action-button hospital-auth-button"
+                                                (click)="deleteMstime(row)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span class="hospital-button-text">Delete</span>
+                                            </button>
+                                            <button mat-raised-button
+                                                class="hospital-action-button hospital-edit-button"
+                                                (click)="editMstime(row)">
+                                                <mat-icon>edit</mat-icon>
+                                                <span class="hospital-button-text">Edit</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Header and Row Definitions -->
+                                <tr mat-header-row *matHeaderRowDef="displayedColumnsMeal" class="hospital-header-row">
+                                </tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumnsMeal;" 
+                                (click)="onRowClicked(row, $event)"
+                                [class.hospital-row-selected]="selectedRow === row"
+                                class="hospital-data-row">
+                            </tr>
+
+                                <!-- No Data Row -->
+                                <tr class="hospital-no-data-row" *matNoDataRow>
+                                    <td class="hospital-no-data-cell" colspan="5">
+                                        <div class="hospital-no-data-content">
+                                            <mat-icon class="hospital-no-data-icon">search_off</mat-icon>
+                                            <p>No meal types found matching "{{input.value}}"</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons
+                            class="hospital-paginator"></mat-paginator>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Card (Meal Details) -->
+            <div class="col-lg-12" [class.col-12]="selectedRow" [class.d-none]="!selectedRow">
+                <div class="hospital-card">
+                    <div class="hospital-card-body">
+                        <div class="hospital-table-header">
+                            <!-- Modify your back button in the template -->
+                            <button mat-button color="primary" (click)="backToMealTypes()" class="back-button">
+                                <mat-icon>arrow_back</mat-icon> Back to Meal Types
+                            </button>
+                            <button mat-raised-button class="hospital-add-button" (click)="addNewRow2()"
+                                *ngIf="selectedRow">
+                                <mat-icon>add</mat-icon> Add Time Detail
+                            </button>
+                        </div>
+
+                        <div *ngIf="selectedRow" class="selected-meal-info">
+                            <h3>{{selectedRow.timeEN}} ({{selectedRow.timeTH}})</h3>
+                            <p>Code: {{selectedRow.timecode}} | Daily Count: {{selectedRow.timecount}}</p>
+                        </div>
+
+                        <div class="hospital-table-container">
+                            <table mat-table [dataSource]="dataSourceTimedetail" matSort class="hospital-data-table"
+                                aria-label="Meal time details table">
+                                <!-- Time Detail Code Column -->
+                                <ng-container matColumnDef="timedetailcode" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <mat-icon>schedule</mat-icon>
+                                            <span>Time</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        {{ row.timedetailcode }}
+                                    </td>
+                                </ng-container>
+
+                                <!-- English Description Column -->
+                                <ng-container matColumnDef="timedetailEN" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <mat-icon>translate</mat-icon>
+                                            <span>English</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        {{ row.timedetailEN }}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Thai Description Column -->
+                                <ng-container matColumnDef="timedetailTH" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <mat-icon>translate</mat-icon>
+                                            <span>Thai</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        {{ row.timedetailTH }}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Time Dose Column -->
+                                <ng-container matColumnDef="timedose" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <mat-icon>medical_services</mat-icon>
+                                            <span>Dose Time</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-badge hospital-position-badge">{{ row.timedose }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="dayofweek" sticky>
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>dayofweek</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="">{{getCheckDayOfWeek(row.dayofweek) }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Action Buttons -->
+                                <ng-container matColumnDef="actions" stickyEnd>
+                                    <th mat-header-cell *matHeaderCellDef
+                                        class="hospital-table-header-cell hospital-actions-header">
+                                        <!-- <mat-icon>edit</mat-icon> -->
+                                    </th>
+                                    <td mat-cell *matCellDef="let row"
+                                        class="hospital-table-cell hospital-actions-cell">
+                                        <div class="hospital-toggle-container">
+                                            <button mat-raised-button
+                                                class="hospital-action-button hospital-auth-button"
+                                                (click)="deleteMstimedetail(row)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span class="hospital-button-text">Delete</span>
+                                            </button>
+                                            <button mat-raised-button
+                                                class="hospital-action-button hospital-edit-button"
+                                                (click)="editMstimedetail(row)">
+                                                <mat-icon>edit</mat-icon>
+                                                <span class="hospital-button-text">Edit</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </ng-container>
+                                <!-- Header and Row Definitions -->
+                                <tr mat-header-row *matHeaderRowDef="displayedColumnsTimedetail"
+                                    class="hospital-header-row"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumnsTimedetail;"
+                                    class="hospital-data-row" [@rowAnimation]="'in'"></tr>
+
+                                <!-- No Data Row -->
+                                <tr class="hospital-no-data-row" *matNoDataRow>
+                                    <td class="hospital-no-data-cell" colspan="5">
+                                        <div class="hospital-no-data-content">
+                                            <mat-icon class="hospital-no-data-icon">hourglass_empty</mat-icon>
+                                            <p *ngIf="!selectedRow">Please select a meal type to view time details</p>
+                                            <p *ngIf="selectedRow">No time details found for {{selectedRow.timeEN}}</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons
+                            class="hospital-paginator"></mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,202 @@
+<div class="content-wrapper pt-3 mb-5" style="  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+  <div class="scanner-container" [class.scanned]="hasScanned">
+    <div class="scanner-header" [@fadeI] *ngIf="!hasScanned">
+      <h2>Medication Dispensing</h2>
+      <div class="scan-input-container">
+        <i class="fas fa-barcode scan-icon"></i>
+        <input type="text" class="scan-input" placeholder="แสกนผู้ป่วย" [(ngModel)]="currentBarcode"
+          (keyup.enter)="onScanAN(currentBarcode)">
+      </div>
+    </div>
+
+    <div class="scanner-header" [@fadeIn] *ngIf="hasScanned">
+      <h2>Medication Dispensing</h2>
+      <div class="scan-input-container">
+        <i class="fas fa-barcode scan-icon"></i>
+        <input type="text" class="scan-input" placeholder="แสกนซองยาเพื่อยืนยัน" [(ngModel)]="currentBarcodeDrug"
+          (focus)="onFocus()" #medicationInput2 inputmode="search" (keyup.enter)="onScanDrung2(currentBarcodeDrug)">
+      </div>
+    </div>
+    <!-- app.component.html -->
+    <div class="app-container2" [@fadeIn] *ngIf="!hasScanned">
+      <h3 style="text-align: center;">จำนวนทั้งหมด: {{resDataPatientadmit3.length}} คน</h3>
+      <div class="status-bar"></div>
+      <div class="patient-card" [@slideInDown] *ngFor="let patientname of resDataPatientadmit3; let i = index"
+        (click)="onClickPatient(patientname.an)">
+        <div class="patient-avatar" [@pulse]>
+          <img [src]="patient.photoUrl || 'assets/default-avatar.png'" alt="Patient photo">
+        </div>
+
+        <div class="patient-info">
+          <h2 class="patient-name">{{ patientname.patientname }}</h2>
+          <div class="patient-meta">
+            <span class="badge">HN: {{ patientname.hn }}</span>
+            <span class="badge">AN: {{ patientname.an }}</span>
+            <span class="badge highlight">Bed: {{ patientname.bedcode
+              }}</span>
+          </div>
+        </div>
+        <!-- 
+        <div class="patient-status" [ngClass]="{'critical': patient.status === 'critical'}">
+          <i class="fas fa-heartbeat"></i>
+        </div> -->
+      </div>
+    </div>
+
+
+    <div class="app-container2" [@fadeIn] *ngIf="hasScanned">
+      <div class="status-bar"></div>
+
+      <div class="patient-card" [@slideInDown]>
+        <div class="patient-avatar" [@pulse]>
+          <img [src]="patient.photoUrl || 'assets/default-avatar.png'" alt="Patient photo">
+        </div>
+
+        <div class="patient-info">
+          <h2 class="patient-name">{{ resDatapostPrescription[0].patientname }}</h2>
+          <div class="patient-meta">
+            <span class="badge">HN: {{ resDatapostPrescription[0].hn }}</span>
+            <span class="badge">AN: {{ resDatapostPrescription[0].an }}</span>
+            <span class="badge highlight">Bed: {{ resDatapostPrescription[0].bedcode
+              }}</span>
+          </div>
+        </div>
+        <!-- 
+        <div class="patient-status" [ngClass]="{'critical': patient.status === 'critical'}">
+          <i class="fas fa-heartbeat"></i>
+        </div> -->
+      </div>
+      <!-- <div class="hospital-no-data-row" *ngIf="!hiddenSearch">
+        <div class="hospital-no-data-cell">
+          <div class="hospital-no-data-content">
+            <mat-icon class="hospital-no-data-icon">search_off</mat-icon>
+            <p class="p-no-data">ไม่มียาที่ต้องบริหาร</p>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="medication-container">
+        <h3 style="text-align: center;" class="section-title" [@fadeInLeft]>Drug Information
+          ({{resDatapostPrescription.length}})</h3>
+        <div class="time-range-display">
+          {{textstartTime}} - {{textendTime}}
+        </div>
+
+
+
+        <div class="medication-list">
+          <div class="medication-item" *ngFor="let med of resDatapostPrescription; let i = index"
+            [style.background-color]="med.dispensedatetime ? '#34ff061f' : ''" [@staggerAnimation]="i">
+            <div class="medication-icon">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s"
+                class="elevation-2" alt="Medication Icon" />
+            </div>
+
+            <div class="medication-details">
+              <h4>{{ med.orderitemname }}</h4>
+              <div class="medication-meta">
+                <span><i class="far fa-calendar-alt"></i> {{ med.takedate.substring(0,10) }}/{{ med.frequencytime }}
+                </span>
+                <span><i class="fas fa-pills"></i> {{ med.dosage }}</span>
+              </div>
+              <div class="medication-instruction">
+                <i class="fas fa-info-circle"></i> {{ med.timedesc }} {{ med.freetext2 }} {{ med.freetext3 }} {{
+                med.barcodevizen }}
+              </div>
+
+              <div class="legend-container" style="display: flex; justify-content: flex-start; " [@fadeIn]>
+                <!-- <div class="legen"> -->
+                <div class="legend-item" *ngIf="med.highalert == '1'">
+                  <span class="legend-icon overdue-icon"></span>
+                  <span class="legend-text">HAD</span>
+                </div>
+
+                <div class="legend-item" *ngIf="isTimeOver(med.frequencytime)">
+                  <span class="legend-icon nexttime-icon"></span>
+                  <span class="legend-text">เกินเวลา</span>
+                </div>
+
+                <!-- <div class="legend-item">
+                  <span class="legend-icon pending-icon"></span>
+                  <span class="legend-text"></span>
+                </div> -->
+                <!-- </div> -->
+              </div>
+            </div>
+
+            <div class="medication-action" (click)="confirmDose(med)" *ngIf="med.dispensedatetime">
+              <div class="checkmark" [@bounceIn]="med.confirmed">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- Add this above the existing floating action button -->
+      <div class="floating-action confirm-btn" [@bounceInUp] (click)="confirmAllMedications()">
+        <i class="fas fa-check-circle"></i>
+      </div>
+
+      <div class="floating-action" [@bounceInUp] (click)="showMedicationHistory()">
+        <i class="fas fa-history"></i>
+      </div>
+
+      <div style="display: flex; justify-content: flex-start; ">
+        <div class="legend-container" [@fadeIn]>
+          <!-- <div class="legen"> -->
+          <div class="legend-item">
+            <span class="legend-icon overdue-icon"></span>
+            <span class="legend-text">HAD</span>
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-icon nexttime-icon"></span>
+            <span class="legend-text">เกินเวลา</span>
+          </div>
+
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="scan-feedback" *ngIf="showScanFeedback" [@fadeInOut]>
+    <i class="fas fa-check-circle"></i>
+    <span>{{ medications_.length > 0 ? 'Medication added' : 'Medication already exists' }}</span>
+  </div>
+</div>

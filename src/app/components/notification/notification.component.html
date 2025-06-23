@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<mat-divider></mat-divider>
+
+<div mat-dialog-content>
+    <h5 mat-dialog-title>{{ data.message }}</h5>
+</div>
+<mat-divider></mat-divider>
+
+<div mat-dialog-actions>
+    <button (click)="notificationOK()" style="background-color: var(--789DBC-color); color: white;" mat-raised-button color="primary">OK</button>
+    <button (click)="notificationNO()" style="background-color: rgb(254, 175, 175); color: white;" mat-raised-button color="warn">NO</button>
+</div>

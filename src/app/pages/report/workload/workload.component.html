@@ -1,0 +1,266 @@
+<div class="content-wrapper hospital-theme" @fadeIn>
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay hospital-spinner-overlay" *ngIf="loading" @fadeInOut>
+        <div class="hospital-spinner-circle">
+            <div class="hospital-spinner-inner"></div>
+        </div>
+        <p class="hospital-loading-text">กำลังโหลดข้อมูล...</p>
+    </div>
+
+    <!-- Content Header -->
+
+    <section class="content-header hospital-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h3 class="hospital-title">
+                        <!-- <mat-icon>person</mat-icon> -->
+                        <span style="font-family:  PKNakhonSawan, sans-serif !important;">รายงานภาระงาน</span>
+                    </h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right hospital-breadcrumb">
+                        <li style="font-family:  PKNakhonSawan, sans-serif !important;" class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+                        <li class="breadcrumb-item active">รายงานภาระงาน</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="content mt-3" @fadeInUp>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card hospital-card search-card">
+                        <form>
+                            <div class="card-body hospital-card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3 col-sm-12">
+                                        <mat-form-field appearance="outline" class="hospital-filter w-100">
+                                            <mat-label>วันที่</mat-label>
+                                            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
+                                                <input matStartDate placeholder="วัน/เดือน/ปี" formControlName="start">
+                                                <input matEndDate placeholder="วัน/เดือน/ปี" formControlName="end">
+                                            </mat-date-range-input>
+                                            <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+                                            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-5 col-sm-12">
+                                        <mat-radio-group aria-label="Select an option" formControlName="selectedOption" class="hospital-radio-group">
+                                            <mat-radio-button value="1" class="hospital-radio-button">ในเวลาราชการ</mat-radio-button>
+                                            <mat-radio-button value="2" class="hospital-radio-button">นอกเวลาราชการ</mat-radio-button>
+                                            <mat-radio-button value="3" class="hospital-radio-button">รวม</mat-radio-button>
+                                        </mat-radio-group>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12 d-flex justify-content-end">
+                                        <button mat-raised-button color="primary" class="hospital-add-button search-button" (click)="onSearch()">
+                                            <mat-icon>search</mat-icon> ค้นหา
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Table Section -->
+    <section class="content" *ngIf="hiddenSearch" @expandIn>
+        <div class="container-fluid">
+            <div class="card hospital-card data-card mat-elevation-z8">
+                <div class="card-header hospital-card-header">
+                    <h5 class="card-title hospital-card-title">
+                        <!-- <mat-icon>table_chart</mat-icon> -->
+                        ตารางแสดงข้อมูล
+                    </h5>
+                    <div class="card-actions  right-align">
+                        <button mat-icon-button [matMenuTriggerFor]="exportMenu" matTooltip="ตัวเลือก" class="hospital-action-button">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #exportMenu="matMenu" class="hospital-menu">
+                            <button mat-menu-item (click)="onExportToExcel()" class="hospital-menu-item">
+                                <mat-icon>assignment</mat-icon> Export to Excel
+                            </button>
+                            <button mat-menu-item (click)="printDataSource()" class="hospital-menu-item">
+                                <mat-icon>print</mat-icon> Print Report
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+                <div class="card-body hospital-card-body">
+                    <div class="table-controls" style="display: flex; justify-content: flex-end;">
+                        <mat-form-field appearance="outline" class="hospital-filter filter-field">
+                            <mat-label>ค้นหา</mat-label>
+                            <input matInput (keyup)="applyFilter($event)" placeholder="กรอกคำค้นหา..." #input>
+                            <mat-icon matSuffix>search</mat-icon>
+                        </mat-form-field>
+                    </div>
+                    
+                    <div class="hospital-table-container">
+                        <table mat-table [dataSource]="dataSource" matSort class="hospital-data-table">
+                            <!-- Columns -->
+                            <ng-container matColumnDef="jobid" sticky>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="hospital-table-header-cell">รหัสเจ้าหน้าที่</th>
+                                <td mat-cell *matCellDef="let row" class="hospital-table-cell hospital-user-id">{{ row.jobid }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="jobname" sticky>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="hospital-table-header-cell">ชื่อ</th>
+                                <td mat-cell *matCellDef="let row" class="hospital-table-cell">{{ row.jobname }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="prescription_count">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="hospital-table-header-cell">จำนวนใบสั่งยา</th>
+                                <td mat-cell *matCellDef="let row" class="hospital-table-cell">{{ row.prescription_count }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="item_count">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="hospital-table-header-cell">จำนวนรายการยา</th>
+                                <td mat-cell *matCellDef="let row" class="hospital-table-cell">{{ row.item_count }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="category_desc">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header class="hospital-table-header-cell">เจ้าหน้าที่</th>
+                                <td mat-cell *matCellDef="let row" class="hospital-table-cell">{{ row.category_desc }}</td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="hospital-header-row"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+                                class="hospital-data-row"
+                                [@rowAnimation]="row.jobid"></tr>
+
+                            <tr class="hospital-no-data-row" *matNoDataRow>
+                                <td colspan="4" class="hospital-no-data-cell">
+                                    <div class="hospital-no-data-content">
+                                        <mat-icon class="hospital-no-data-icon">search_off</mat-icon>
+                                        <p>ไม่พบข้อมูลที่ตรงกับ "{{input.value}}"</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons class="hospital-paginator"></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chart Sections -->
+    <section class="content" *ngIf="hiddenChartDataS" @staggerIn>
+        <div class="container-fluid">
+            <div class="card hospital-card chart-card mat-elevation-z8">
+                <div class="card-header hospital-card-header">
+                    <h5 class="card-title hospital-card-title">
+                        <mat-icon>bar_chart</mat-icon>
+                        ภาระงานเจ้าหน้าที่จัดยา
+                    </h5>
+                    <div class="card-actions right-align">
+                        <button mat-icon-button [matMenuTriggerFor]="chartMenu" matTooltip="ตัวเลือก" class="hospital-action-button">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #chartMenu="matMenu" class="hospital-menu">
+                            <button mat-menu-item (click)="printChart()" class="hospital-menu-item">
+                                <mat-icon>print</mat-icon> Print
+                            </button>
+                            <button mat-menu-item (click)="downloadChart()" class="hospital-menu-item">
+                                <mat-icon>download</mat-icon> Download
+                            </button>
+                            <button mat-menu-item (click)="toggleFullscreen()" class="hospital-menu-item">
+                                <mat-icon>fullscreen</mat-icon> Fullscreen
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+                <div class="card-body hospital-card-body">
+                    <div class="hospital-chart-container" [class.fullscreen]="styleFull" #chartContainer>
+                        <ngx-charts-bar-vertical-2d [results]="chartDataS" [scheme]="'cool'" [gradient]="false"
+                            [xAxis]="true" [yAxis]="true" [legend]="true" [showDataLabel]="true">
+                        </ngx-charts-bar-vertical-2d>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="content" *ngIf="hiddenChartDataP" @staggerIn>
+        <div class="container-fluid">
+            <div class="card hospital-card chart-card mat-elevation-z8">
+                <div class="card-header hospital-card-header">
+                    <h5 class="card-title hospital-card-title">
+                        <mat-icon>bar_chart</mat-icon>
+                        ภาระงานเจ้าหน้าที่จัดยา
+                    </h5>
+                    <div class="card-actions right-align">
+                        <button mat-icon-button [matMenuTriggerFor]="chartMenu" matTooltip="ตัวเลือก" class="hospital-action-button">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #chartMenu="matMenu" class="hospital-menu">
+                            <button mat-menu-item (click)="printChart()" class="hospital-menu-item">
+                                <mat-icon>print</mat-icon> Print
+                            </button>
+                            <button mat-menu-item (click)="downloadChart()" class="hospital-menu-item">
+                                <mat-icon>download</mat-icon> Download
+                            </button>
+                            <button mat-menu-item (click)="toggleFullscreen()" class="hospital-menu-item">
+                                <mat-icon>fullscreen</mat-icon> Fullscreen
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+                <div class="card-body hospital-card-body">
+                    <div class="hospital-chart-container" [class.fullscreen]="styleFull" #chartContainer>
+                        <ngx-charts-bar-vertical-2d [results]="chartDataP" [scheme]="'cool'" [gradient]="false"
+                            [xAxis]="true" [yAxis]="true" [legend]="true" [showDataLabel]="true">
+                        </ngx-charts-bar-vertical-2d>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="content" *ngIf="hiddenChartDataD" @staggerIn>
+        <div class="container-fluid">
+            <div class="card hospital-card chart-card mat-elevation-z8">
+                <div class="card-header hospital-card-header">
+                    <h5 class="card-title hospital-card-title">
+                        <mat-icon>bar_chart</mat-icon>
+                        ภาระงานเจ้าหน้าที่จัดยา
+                    </h5>
+                    <div class="card-actions right-align">
+                        <button mat-icon-button [matMenuTriggerFor]="chartMenu" matTooltip="ตัวเลือก" class="hospital-action-button">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #chartMenu="matMenu" class="hospital-menu">
+                            <button mat-menu-item (click)="printChart()" class="hospital-menu-item">
+                                <mat-icon>print</mat-icon> Print
+                            </button>
+                            <button mat-menu-item (click)="downloadChart()" class="hospital-menu-item">
+                                <mat-icon>download</mat-icon> Download
+                            </button>
+                            <button mat-menu-item (click)="toggleFullscreen()" class="hospital-menu-item">
+                                <mat-icon>fullscreen</mat-icon> Fullscreen
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
+                <div class="card-body hospital-card-body">
+                    <div class="hospital-chart-container" [class.fullscreen]="styleFull" #chartContainer>
+                        <ngx-charts-bar-vertical-2d [results]="chartDataD" [scheme]="'cool'" [gradient]="false"
+                            [xAxis]="true" [yAxis]="true" [legend]="true" [showDataLabel]="true">
+                        </ngx-charts-bar-vertical-2d>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Repeat similar sections for hiddenChartDataP and hiddenChartDataD -->
+</div>

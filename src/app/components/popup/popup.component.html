@@ -1,0 +1,120 @@
+<!-- <h1 mat-dialog-title>{{ data.title }}</h1>
+<mat-divider></mat-divider>
+<div mat-dialog-content>
+  <ng-container *ngFor="let field of data.fields">
+    <mat-form-field appearance="fill" *ngIf="field.hidden !== false">
+      <mat-label>{{ field.label }}</mat-label>
+  
+  
+      <ng-container *ngIf="field.type === 'autocomplete'">
+        <input type="text" matInput placeholder="{{ field.placeholder }}" [formControl]="field.formControl"
+               [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let option of filteredOptions[field.key] | async" [value]="option">
+            {{ option.label }}
+          </mat-option>
+        </mat-autocomplete>
+      </ng-container>
+
+      
+  
+      <ng-container *ngIf="field.key === 'isEnabled' || field.type == 'isEnabled'">
+        <section class="example-section">
+          <mat-slide-toggle [(ngModel)]="field.value">
+            {{ field.value ? 'Enabled' : 'Disabled' }}
+          </mat-slide-toggle>
+        </section>
+      </ng-container>
+  
+
+      <ng-container *ngIf="field.type !== 'autocomplete' && field.key !== 'isEnabled' && field.type !== 'isEnabled'">
+        <input matInput [(ngModel)]="field.value" [placeholder]="field.placeholder" [disabled]="field.disabled">
+      </ng-container>
+    </mat-form-field>
+  </ng-container> 
+  
+</div>
+<mat-divider></mat-divider>
+<div mat-dialog-actions>
+  <button style="background-color: var(--789DBC-color); color: white;" mat-raised-button color="primary"
+    (click)="saveData()">Save</button>
+  <button style="background-color: rgb(254, 175, 175); color: white;" mat-raised-button color="warn"
+    (click)="closepopup()">Close</button>
+</div> -->
+
+
+<h1 mat-dialog-title class="dialog-title" style="background: var(--bg-gradient);color:white;">{{ data.title }}</h1>
+<mat-divider class="divider-animate"></mat-divider>
+<div mat-dialog-content class="dialog-content">
+  <ng-container *ngFor="let field of data.fields; let i = index">
+    <mat-form-field appearance="fill" *ngIf="field.hidden !== false" class="form-field-animate" [@fieldAnimation]="i">
+      <mat-label class="form-label">{{ field.label }}</mat-label>
+
+
+      <ng-container *ngIf="field.type === 'autocomplete'">
+        <input type="text" matInput placeholder="{{ field.placeholder }}" [formControl]="field.formControl"
+          [matAutocomplete]="auto" class="input-field">
+        <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" class="autocomplete-panel">
+          <mat-option *ngFor="let option of filteredOptions[field.key] | async" [value]="option"
+            class="autocomplete-option">
+            {{ option.label }}
+          </mat-option>
+        </mat-autocomplete> -->
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let option of filteredOptions[field.key] | async" [value]="option">
+            {{ option.label }}
+          </mat-option>
+        </mat-autocomplete>
+        <!-- <mat-icon matSuffix class="search-icon">search</mat-icon> -->
+      </ng-container>
+
+
+      <ng-container *ngIf="field.key === 'isEnabled' || field.type == 'isEnabled'">
+        <section class="toggle-section">
+          <mat-slide-toggle [(ngModel)]="field.value" color="primary" class="toggle-switch">
+            <span class="toggle-label">{{ field.value ? 'Enabled' : 'Disabled' }}</span>
+          </mat-slide-toggle>
+        </section>
+      </ng-container>
+
+
+      <ng-container *ngIf="field.type !== 'autocomplete' && field.key !== 'isEnabled' && field.type !== 'isEnabled'">
+        <input matInput [(ngModel)]="field.value" [placeholder]="field.placeholder" [disabled]="field.disabled"
+          class="input-field">
+        <mat-icon matSuffix *ngIf="field.icon" class="field-icon">{{field.icon}}</mat-icon>
+      </ng-container>
+    </mat-form-field>
+  </ng-container>
+
+  <!-- <ng-container *ngFor="let field of data.elements.datadrug; let i = index"> -->
+    <!-- <div mat-dialog-actions class="dialog-actions" *ngIf="data.elements.datadrug" >
+      <button mat-raised-button class="save-button" *ngFor="let field of data.elements.datadrug; let i = index">
+        <span class="button-content">
+          {{field.packageratio}}
+        </span>
+      </button>
+      <button mat-raised-button class="save-button" (click)="onSelect('clear')">
+        <span class="button-content">
+          ล้างข้อมูล
+        </span>
+      </button>
+    </div> -->
+  <!-- </ng-container> -->
+
+
+</div>
+<mat-divider class="divider-animate"></mat-divider>
+<div mat-dialog-actions class="dialog-actions" style="background: var(--bg-gradient);color:white;">
+  <button mat-raised-button class="save-button" (click)="saveData()">
+    <span class="button-content">
+      <mat-icon class="button-icon">save</mat-icon>
+      Save
+    </span>
+  </button>
+  <button mat-raised-button class="close-button" (click)="closepopup()">
+    <span class="button-content">
+      <mat-icon class="button-icon">close</mat-icon>
+      Close
+    </span>
+  </button>
+</div>

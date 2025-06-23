@@ -1,0 +1,88 @@
+<div class="">
+    <div class="spinner-overlay" *ngIf="loading">
+        <div class="spinner-circle">
+            <div class="spinner-inner"></div>
+        </div>
+    </div>
+
+    
+    <h1 mat-dialog-title class="dialog-title">{{ data.title }}</h1>
+    <mat-divider class="divider"></mat-divider>
+    
+    <div mat-dialog-content class="dialog-content">
+        <mat-stepper orientation="vertical" class="modern-stepper">
+            <ng-container *ngFor="let group of groupedSidebarData | keyvalue">
+                <mat-step class="modern-step" >
+                    <ng-template matStepLabel>
+                        <span class="step-label">{{ group.key }}</span>
+                    </ng-template>
+                    <ng-template matStepContent>
+                        <div class="step-content" @fadeIn>
+                            <div *ngFor="let item of group.value" class="permission-item">
+                                <mat-slide-toggle
+                                    [id]="'switch-' + item.sidebar_id"
+                                    [checked]="isChecked(item.sidebar_id)"
+                                    (change)="toggleCheck(item.sidebar_id, $event)"
+                                    color="primary"
+                                    class="modern-toggle">
+                                    {{ item.sidebar_name }}
+                                </mat-slide-toggle>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-step>
+            </ng-container>
+        </mat-stepper>
+    </div>
+    
+    <mat-divider class="divider"></mat-divider>
+    
+    <div mat-dialog-actions class="dialog-actions">
+        <button mat-raised-button 
+                (click)="saveAuthorized()" 
+                class="save-button"
+                [@buttonHover]>
+            <mat-icon>save</mat-icon> บันทึก
+        </button>
+        <button mat-raised-button 
+                (click)="closepopup()" 
+                class="close-button"
+                [@buttonHover]>
+            <mat-icon>close</mat-icon> ปิด
+        </button>
+    </div>
+</div>
+
+
+
+<!-- <h1 mat-dialog-title>{{ data.title }}</h1>
+<mat-divider></mat-divider>
+<div mat-dialog-content>
+    <mat-stepper orientation="vertical">
+        <ng-container *ngFor="let group of groupedSidebarData | keyvalue">
+            <mat-step>
+              <ng-template matStepLabel>{{ group.key }}</ng-template>
+              <ng-template matStepContent>
+                <div *ngFor="let item of group.value">
+                  <div class="form-group">
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input" 
+                             [id]="'switch-' + item.sidebar_id"
+                             [checked]="isChecked(item.sidebar_id)"
+                             (change)="toggleCheck(item.sidebar_id, $event)">
+                      <label class="custom-control-label" [for]="'switch-' + item.sidebar_id">
+                        {{ item.sidebar_name }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </mat-step>
+          </ng-container>
+    </mat-stepper>
+</div>
+<mat-divider></mat-divider>
+<div mat-dialog-actions>
+    <button (click)="saveAuthorized()" style="background-color: var(--789DBC-color); color: white;" mat-raised-button color="primary">Save</button>
+    <button (click)="closepopup()"  style="background-color: rgb(254, 175, 175); color: white;" mat-raised-button color="warn">Close</button>
+</div> -->

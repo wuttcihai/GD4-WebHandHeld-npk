@@ -1,0 +1,65 @@
+<h1 mat-dialog-title class="dialog-title" style="background: var(--bg-gradient);color:white; text-align: center;">{{
+    data.title }}</h1>
+<!-- <mat-divider class="divider-animate"></mat-divider> -->
+<div mat-dialog-content class="dialog-content">
+
+    <div class="time-range-container">
+        <div class="time-picker-card">
+            <div class="time-picker-header">
+                <h3>Select Time Range</h3>
+                <div class="time-range-display">
+                    {{timeForm.value.startTime}} - {{timeForm.value.endTime}}
+                </div>
+            </div>
+
+            <div class="time-picker-body">
+                <div class="time-selector">
+                    <label>Start Time</label>
+                    <!-- <select class="time-select" formControlName="startTime">
+                        <option *ngFor="let time of timeOptions" [value]="time">{{time}}</option>
+                    </select> -->
+                    <select [(ngModel)]="selectedValuestart" class="time-select">
+                        <option *ngFor="let option of options" [value]="option.value">
+                            {{ option.label }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="time-separator">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+                    </svg>
+                </div>
+
+                <div class="time-selector">
+                    <label>End Time</label>
+                    <!-- <select class="time-select" formControlName="endTime">
+                        <option *ngFor="let time of timeOptions" [value]="time">{{time}}</option>
+                    </select> -->
+
+                    <select [(ngModel)]="selectedValueend" class="time-select">
+                        <option *ngFor="let option of options" [value]="option.value">
+                            {{ option.label }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<mat-divider class="divider-animate"></mat-divider>
+<div mat-dialog-actions class="dialog-actions" style="background: var(--bg-gradient);color:white;">
+    <button mat-raised-button class="save-button mr-2" (click)="onOkay()">
+        <span class="button-content">
+            <!-- <mat-icon class="button-icon">save</mat-icon> -->
+            ตกลง
+        </span>
+    </button>
+    <button mat-raised-button class="close-button" (click)="closepopup()">
+        <span class="button-content">
+            <!-- <mat-icon class="button-icon">close</mat-icon> -->
+            Close
+        </span>
+    </button>
+</div>

@@ -1,0 +1,26 @@
+<!-- <div class="content-wrapper">
+  <mat-tab-group class="mat-tab-group" (selectedTabChange)="onTabChange($event)">
+    <mat-tab label="Device Manage">
+      <app-devicemanage *ngIf="selectedTab === 0"></app-devicemanage>
+    </mat-tab>
+    <mat-tab label="Drugs bound to Device">
+      <app-drugsboundtodevice *ngIf="selectedTab === 1"></app-drugsboundtodevice>
+    </mat-tab>
+    <mat-tab label="Drug Dictionary">
+      <app-drugdictionary *ngIf="selectedTab === 2"></app-drugdictionary>
+    </mat-tab>
+  </mat-tab-group>
+</div> -->
+<div class="content-wrapper">
+  <mat-tab-group class="mat-tab-group">
+    <mat-tab label="Device Manage">
+      <app-devicemanage></app-devicemanage>
+    </mat-tab>
+    <mat-tab label="Drugs bound to Device">
+      <app-drugsboundtodevice></app-drugsboundtodevice>
+    </mat-tab>
+    <mat-tab label="Drug Dictionary">
+      <app-drugdictionary></app-drugdictionary>
+    </mat-tab>
+  </mat-tab-group>
+</div>

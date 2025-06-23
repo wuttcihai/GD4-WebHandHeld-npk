@@ -1,0 +1,152 @@
+import { Component, Inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
+import { FormControl } from '@angular/forms';
+import { Observable, startWith, map } from 'rxjs';
+interface Field {
+  key: string;
+  label: string;
+  placeholder: string;
+  value?: any;
+  type: string;
+  options?: Observable<{ label: string, value: number }[]>;
+  formControl?: FormControl;
+}
+@Component({
+  selector: 'app-popup',
+  standalone: false,
+
+  templateUrl: './popup.component.html',
+  styleUrl: './popup.component.scss'
+
+})
+export class PopupComponent implements OnInit {
+  inputdata: any;
+  closemessage = 'closed';
+  checked = false;
+  disabled = false;
+  filteredOptions: { [key: string]: Observable<any[]> } = {};
+  // constructor(@Inject(MAT_DIALOG_DATA) public data: any, private ref: MatDialogRef<PopupComponent>, private builder: FormBuilder) { }
+  constructor
+    (@Inject(MAT_DIALOG_DATA)
+    public data: any,
+      private ref: MatDialogRef<PopupComponent>,
+      private http: HttpClient,
+      private toastr: ToastrService,
+      private cdr: ChangeDetectorRef
+    ) { }
+
+
+    ngOnInit(): void {
+      this.inputdata = this.data;
+  
+      // console.log(this.inputdata);
+      // กำหนดค่าให้ autocomplete field
+      this.data.fields.forEach((field: { type: string; formControl: FormControl<any>; key: string; }) => {
+        if (field.type === 'autocomplete') {
+          field.formControl = new FormControl();
+          this.filteredOptions[field.key] = field.formControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value, field.key))
+          );
+        }
+      });
+  
+      this.cdr.detectChanges();
+    }
+
+
+    private _filter(value: string, key: string): any[] {
+      const filterValue = value?.toLowerCase() || '';
+      return this.data.options[key].filter((option: { label: string; }) =>
+        option.label.toLowerCase().includes(filterValue)
+      );
+    }
+  
+    displayFn(option: any): string {
+      return option ? option.label : '';
+    }
+
+
+  saveData() {
+    const resultData = this.data.fields.reduce((acc: any, field: Field) => {
+      let value;
+      if (field.type === 'autocomplete') {
+        const useLabel = this.data.useLabel[field.key] ?? true;
+        value = field.formControl?.value
+          ? useLabel 
+            ? field.formControl.value.label
+            : field.formControl.value.value
+          : null;
+      } else {
+        value = field.value;
+      }
+
+      if (field.type === 'number') {
+        value = Number(value);
+        if (isNaN(value)) {
+          alert(`Invalid value for ${field.label}. Expected a number.`);
+          return null;
+        }
+      } else if (field.type === 'boolean') {
+        value = value === true || value === 'true';
+      }
+
+      acc[field.key] = value;
+      acc[field.key] = field.key === 'isEnabled' ? (value ? 'Y' : 'N') : value;
+      return acc;
+    }, {});
+
+    if (!resultData) {
+      return;
+    }
+    console.log('Sending Data:', resultData);
+    this.http.post(this.data.apiUrl, resultData).subscribe({
+      next: response => {
+        this.toastr.success('Successful!', 'แจ้งเตือน');
+        this.ref.close(resultData);
+      },
+      error: error => {
+        this.toastr.warning(error, 'แจ้งเตือน', {
+          toastClass: 'custom-toast-warning',
+        });
+      }
+    });
+  }
+
+  // ฟังก์ชันตรวจสอบประเภทข้อมูล
+  getExpectedType(type: string): string {
+    switch (type) {
+      case 'string':
+        return 'string';
+      case 'boolean':
+        return 'boolean';
+      case 'number':
+        return 'number';
+      default:
+        return 'string'; // default type คือ string
+    }
+  }
+
+
+  isFormValid(formData: { [key: string]: any }): boolean {
+    for (const key in formData) {
+      if (!formData[key]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  closepopup() {
+    // console.log('Close')
+    this.ref.close('Close');
+  }
+
+  // myform = this.builder.group({
+  //   name: this.builder.control('')
+  // });
+
+
+}

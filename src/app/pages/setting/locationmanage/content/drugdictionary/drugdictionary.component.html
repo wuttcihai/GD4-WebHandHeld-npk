@@ -1,0 +1,639 @@
+<section class="content-header hospital-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h3 class="hospital-title">
+                    <!-- <mat-icon>person</mat-icon> -->
+                    <span>Device Manage</span>
+                </h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right hospital-breadcrumb">
+                    <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+                    <li class="breadcrumb-item active">Device Manage</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="spinner-overlay" *ngIf="loading">
+    <div class="spinner-circle">
+        <div class="spinner-inner"></div>
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card hospital-card">
+
+                    <div class="card-body hospital-card-body">
+
+                        <div class="hospital-table-header">
+                            <div>
+                                <button class="hospital-add-button mr-3" mat-raised-button
+                                    color="primary"><mat-icon>send</mat-icon> Send DIH ALL
+                                </button>
+                            </div>
+                            <!-- <button class="hospital-add-button" (click)="openPopup()" mat-raised-button>
+                                <mat-icon>add</mat-icon> And Device
+                            </button> -->
+                            <div style="display: flex; justify-content: flex-end; ">
+                                <mat-form-field class="mr-3">
+                                    <mat-label>Select Pack</mat-label>
+                                    <mat-select [formControl]="foodControl"
+                                        (selectionChange)="applyFilter2($event.value)">
+                                        <mat-option value="">None</mat-option>
+                                        @for (food of devices; track food) {
+                                        <mat-option [value]="food.viewValue">{{ food.viewValue }}</mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" style="width: 300px !important;">
+                                    <mat-label>Filter</mat-label>
+                                    <input matInput (keyup)="applyFilter($event)" placeholder="เช่น: SE" #input>
+                                    <mat-icon matSuffix>search</mat-icon>
+                                    <!-- <button (click)="getDevice()"></button> -->
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+                        <!-- เปลี่ยนส่วนของตารางเป็นแบบนี้ -->
+                        <section class="hospital-table-container mat-elevation-z8" tabindex="0">
+                            <table mat-table [dataSource]="dataSource" matSort class="demo-table hospital-data-table">
+                                <!-- Columns -->
+                                <ng-container matColumnDef="orderitemcode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>orderitemcode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.orderitemcode }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="orderitemTHname">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>orderitemTHname</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.orderitemTHname }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="orderitemENname">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>orderitemENname</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.orderitemENname }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="genericname">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>genericname</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.genericname }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="packageratio">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>packageratio</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.packageratio }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="packunit">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>packunit</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.packunit }}</span>
+                                    </td>
+                                </ng-container>
+                                <!-- 
+                                <ng-container matColumnDef="unused">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>unused</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.unused }}</span>
+                                    </td>
+                                </ng-container> -->
+
+                                <ng-container matColumnDef="barcode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>barcode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.barcode }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Strength">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>Strength</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.Strength }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="dosageunitcode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>dosageunitcode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.dosageunitcode }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- <ng-container matColumnDef="capacity">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>capacity</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.capacity }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="capacity_unit">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>capacity_unit</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.capacity_unit }}</span>
+                                    </td>
+                                </ng-container> -->
+
+
+                                <ng-container matColumnDef="orderunitcode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>orderunitcode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.orderunitcode }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="description">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>description</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.description }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="pregnancy">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>pregnancy</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.pregnancy }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="edned">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>edned</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.edned }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- <ng-container matColumnDef="drugaccountcode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>drugaccountcode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.drugaccountcode }}</span>
+                                    </td>
+                                </ng-container> -->
+
+                                <ng-container matColumnDef="poison">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>poison</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.poison }}</span>
+                                    </td>
+                                </ng-container>
+
+
+
+                                <!-- <ng-container matColumnDef="stdcode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>stdcode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.stdcode }}</span>
+                                    </td>
+                                </ng-container> -->
+
+                                <ng-container matColumnDef="dosegeform">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>dosegeform</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.dosegeform }}</span>
+                                    </td>
+                                </ng-container>
+
+
+
+                                <!-- <ng-container matColumnDef="displaycolour">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>displaycolour</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.displaycolour }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="tabcolor">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>tabcolor</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.tabcolor }}</span>
+                                    </td>
+                                </ng-container> -->
+
+                                <ng-container matColumnDef="TMTcode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>TMTcode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.TMTcode }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <!-- <ng-container matColumnDef="GFMIScode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>GFMIScode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.GFMIScode }}</span>
+                                    </td>
+                                </ng-container> -->
+
+
+                                <!-- <ng-container matColumnDef="GPOcode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>GPOcode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.GPOcode }}</span>
+                                    </td>
+                                </ng-container> -->
+
+
+                                <ng-container matColumnDef="cost">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>cost</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.cost }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="IPDprice">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>IPDprice</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.IPDprice }}</span>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="OPDprice">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>OPDprice</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.OPDprice }}</span>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="firmname">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>firmname</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.firmname }}</span>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="height">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>height</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.height }}</span>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="length">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>length</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.length }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="width">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>width</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.width }}</span>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="weight">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>weight</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.weight }}</span>
+                                    </td>
+                                </ng-container>
+
+
+
+
+                                <!-- <ng-container matColumnDef="rdu">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>rdu</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.rdu }}</span>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="pharmaco">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>pharmaco</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.pharmaco }}</span>
+                                    </td>
+                                </ng-container>
+
+
+                                <ng-container matColumnDef="subpharmaco">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                                            <span>subpharmaco</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">{{ row.subpharmaco }}</span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="Inventorycode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                        class="hospital-table-header-cell">
+                                        <div class="hospital-column-header">
+                        
+                                            <span>Inventorycode</span>
+                                        </div>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                        <span class="hospital-user-id">
+                                            <ng-container *ngIf="row.Inventorycode?.length; else noData">
+                                                <ul>
+                                                    <li *ngFor="let item of row.Inventorycode">
+                                                        {{ item.Code }} - {{ item.Name }}
+                                                    </li>
+                                                </ul>
+                                            </ng-container>
+                                            <ng-template #noData>-</ng-template>
+
+                                        </span>
+                                    </td>
+                                </ng-container>  -->
+
+                                <ng-container matColumnDef="copy" stickyEnd>
+                                    <th mat-header-cell *matHeaderCellDef
+                                        class="hospital-table-header-cell hospital-actions-header">
+                                        <!-- <mat-icon>edit</mat-icon> -->
+                                    </th>
+                                    <td mat-cell *matCellDef="let row"
+                                        class="hospital-table-cell hospital-actions-cell">
+                                        <div *ngIf="!row.orderitemcode?.includes('^'); else noCopyButton">
+                                            <button mat-raised-button
+                                                class="hospital-action-button hospital-copy-button"
+                                                (click)="perpackMS_Drugs(row)">
+                                                <mat-icon>add_box</mat-icon>
+                                                <span class="hospital-button-text">Add PrePack</span>
+                                            </button>
+                                        </div>
+                                        <ng-template #noCopyButton>
+                                            <button mat-raised-button disabled
+                                                class="hospital-action-button hospital-copy-button"
+                                                (click)="perpackMS_Drugs(row)">
+                                                <!-- <mat-icon>box</mat-icon> -->
+                                                <span class="hospital-button-text">PrePack {{row.packageratio}}</span>
+                                            </button>
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="edit" stickyEnd>
+                                    <th mat-header-cell *matHeaderCellDef
+                                        class="hospital-table-header-cell hospital-actions-header">
+                                        <!-- <mat-icon>edit</mat-icon> -->
+                                    </th>
+                                    <td mat-cell *matCellDef="let row"
+                                        class="hospital-table-cell hospital-actions-cell">
+                                        <div class="hospital-toggle-container">
+                                            <button mat-raised-button
+                                                class="hospital-action-button hospital-edit-button"
+                                                (click)="editMS_Drugs(row)">
+                                                <mat-icon>edit</mat-icon>
+                                                <span class="hospital-button-text">แก้ไข</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="sendDIH" stickyEnd>
+                                    <th mat-header-cell *matHeaderCellDef
+                                        class="hospital-table-header-cell hospital-actions-header">
+                                        <!-- <mat-icon>edit</mat-icon> -->
+                                    </th>
+                                    <td mat-cell *matCellDef="let row"
+                                        class="hospital-table-cell hospital-actions-cell">
+                                        <div class="hospital-toggle-container">
+                                            <button mat-raised-button
+                                                class="hospital-action-button hospital-edit-button"
+                                                (click)="sendDIH(row)">
+                                                <mat-icon>send</mat-icon>
+                                                <span class="hospital-button-text">sendDIH</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="hospital-header-row"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hospital-data-row">
+                                </tr>
+
+                                <tr class="mat-row" *matNoDataRow class="hospital-data-row-no">
+                                    <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                                </tr>
+
+                                <tr class="hospital-no-data-row" *matNoDataRow>
+                                    <td class="hospital-no-data-cell" colspan="8">
+                                        <div class="hospital-no-data-content">
+                                            <mat-icon class="hospital-no-data-icon">search_off</mat-icon>
+                                            <p>ไม่พบข้อมูลที่ตรงกับ "{{input.value}}"</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- เพิ่มข้อความโหลดข้อมูล -->
+                            <!-- <div class="hospital-loading-overlay" *ngIf="loading">
+                                <mat-spinner diameter="40"></mat-spinner>
+                                <p>กำลังโหลดข้อมูล...</p>
+                            </div> -->
+                        </section>
+
+
+                        <mat-paginator [pageSizeOptions]="[10, 50, 100]" class="hospital-paginator"
+                            aria-label="Select page of users"></mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="content">
+    <div class="container-fluid">
+    </div>
+</section>

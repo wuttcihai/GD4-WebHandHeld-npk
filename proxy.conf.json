@@ -1,0 +1,16 @@
+{
+    "/apiopd": {
+      "target": "http://127.0.0.1:6427",
+      "secure": false,
+      "logLevel": "debug",
+      "changeOrigin": true,
+      "pathRewrite": { "^/apiopd": "" }
+    },
+    "/apiipd": {
+      "target": "http://localhost:6427",
+      "secure": false,
+      "logLevel": "debug",
+      "changeOrigin": true,
+      "pathRewrite": { "^/apiipd": "" }
+    }
+  }

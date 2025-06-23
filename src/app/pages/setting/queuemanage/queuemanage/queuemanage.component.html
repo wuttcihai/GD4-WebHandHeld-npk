@@ -1,0 +1,191 @@
+<div class="content-wrapper">
+    <section class="content-header hospital-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h3 class="hospital-title">
+                        <!-- <mat-icon>person</mat-icon> -->
+                        <span>ตั้งค่า Dashboard Queue</span>
+                    </h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right hospital-breadcrumb">
+                        <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+                        <li class="breadcrumb-item active">ตั้งค่า Dashboard Queue</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="spinner-overlay" *ngIf="loading">
+        <div class="spinner-circle">
+            <div class="spinner-inner"></div>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card hospital-card">
+
+                        <div class="card-body hospital-card-body">
+                            <div class="hospital-table-header">
+
+                                <button class="hospital-add-button" (click)="newQueueSetting()" mat-raised-button>
+                                    <mat-icon>add</mat-icon> And Channel Queue
+                                </button>
+                                <mat-form-field appearance="outline" style="width: 300px !important;">
+                                    <mat-label>Filter</mat-label>
+                                    <input matInput (keyup)="applyFilter($event)" placeholder="เช่น: SE" #input>
+                                    <mat-icon matSuffix>search</mat-icon>
+                                    <!-- <button (click)="getDevice()"></button> -->
+                                </mat-form-field>
+                            </div>
+                            <!-- เปลี่ยนส่วนของตารางเป็นแบบนี้ -->
+                            <section class="hospital-table-container mat-elevation-z8" tabindex="0">
+                                <table mat-table [dataSource]="dataSource" matSort
+                                    class="demo-table hospital-data-table">
+                                    <!-- Columns -->
+                                    <ng-container matColumnDef="queuechannel">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                            class="hospital-table-header-cell">
+                                            <div class="hospital-column-header">
+                                                <!-- <mat-icon>code</mat-icon> -->
+                                                <span>ช่อง</span>
+                                            </div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                            <span class="hospital-user-id">{{ row.queuechannel }}</span>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="queueip">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                            class="hospital-table-header-cell">
+                                            <div class="hospital-column-header">
+                                                <!-- <mat-icon>groups</mat-icon> -->
+                                                <span>IP</span>
+                                            </div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                            <span class="hospital-user-id">{{ row.queueip }}</span>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="queuedesc">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                            class="hospital-table-header-cell">
+                                            <div class="hospital-column-header">
+                                                <!-- <mat-icon>groups</mat-icon> -->
+                                                <span>คำอธิบาย</span>
+                                            </div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                            <span class="hospital-user-id">{{ row.queuedesc }}</span>
+                                        </td>
+                                    </ng-container>
+
+                           
+
+
+                                    <ng-container matColumnDef="isEnabled" stickyEnd>
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header
+                                            class="hospital-table-header-cell">
+                                            <div class="hospital-column-header">
+                                                <mat-icon>lock</mat-icon>
+                                                <span>สถานะ</span>
+                                            </div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let row" class="hospital-table-cell">
+                                            <div class="hospital-toggle-container">
+                                                <mat-slide-toggle class="hospital-status-toggle"
+                                                    [color]="row.isEnabled === 'Y' ? 'warn' : 'primary'"
+                                                    [checked]="row.isEnabled === 'Y'"
+                                                    (change)="onToggleChange($event, row)">
+                                                    {{ row.isEnabled === 'Y' ? '' : '' }}
+                                                </mat-slide-toggle>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+
+                                    <!-- <ng-container matColumnDef="edit" stickyEnd>
+                                        <th mat-header-cell *matHeaderCellDef
+                                            class="hospital-table-header-cell hospital-actions-header">
+                                        </th>
+                                        <td mat-cell *matCellDef="let row"
+                                            class="hospital-table-cell hospital-actions-cell">
+                                            <div class="hospital-toggle-container">
+                                                <button mat-raised-button
+                                                    class="hospital-action-button hospital-edit-button"
+                                                    (click)="editDevice(row)">
+                                                    <mat-icon>edit</mat-icon>
+                                                    <span class="hospital-button-text">แก้ไข</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </ng-container> -->
+
+                                    <ng-container matColumnDef="Actions" stickyEnd>
+                                        <th mat-header-cell *matHeaderCellDef
+                                            class="hospital-table-header-cell hospital-actions-header">
+                                            <!-- <mat-icon>edit</mat-icon> -->
+                                        </th>
+                                        <td mat-cell *matCellDef="let row"
+                                            class="hospital-table-cell hospital-actions-cell">
+                                            <div class="hospital-toggle-container">
+                                                <button mat-raised-button
+                                                    class="hospital-action-button hospital-auth-button"
+                                                    (click)="deleteQueueSetting(row)">
+                                                    <mat-icon>delete</mat-icon>
+                                                    <span class="hospital-button-text">Delete</span>
+                                                </button>
+                                                <button mat-raised-button
+                                                    class="hospital-action-button hospital-edit-button"
+                                                    (click)="editQueueSetting(row)">
+                                                    <mat-icon>edit</mat-icon>
+                                                    <span class="hospital-button-text">Edit</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+
+                            
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="hospital-header-row">
+                                    </tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                                        class="hospital-data-row">
+                                    </tr>
+
+                                    <tr class="mat-row" *matNoDataRow class="hospital-data-row-no">
+                                        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"
+                                        </td>
+                                    </tr>
+
+                                    <tr class="hospital-no-data-row" *matNoDataRow>
+                                        <td class="hospital-no-data-cell" colspan="8">
+                                            <div class="hospital-no-data-content">
+                                                <mat-icon class="hospital-no-data-icon">search_off</mat-icon>
+                                                <p>ไม่พบข้อมูลที่ตรงกับ "{{input.value}}"</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- เพิ่มข้อความโหลดข้อมูล -->
+                                <!-- <div class="hospital-loading-overlay" *ngIf="loading">
+                                    <mat-spinner diameter="40"></mat-spinner>
+                                    <p>กำลังโหลดข้อมูล...</p>
+                                </div> -->
+                            </section>
+
+
+                            <mat-paginator [pageSizeOptions]="[10, 50, 100]" class="hospital-paginator"
+                                aria-label="Select page of users"></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

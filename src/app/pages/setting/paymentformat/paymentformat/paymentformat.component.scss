@@ -1,0 +1,408 @@
+/* ==============================================
+   Modern Hospital Table Styles with Animations
+   ============================================== */
+
+/* Header Styles */
+
+
+.hospital-header {
+    background-color: #f8f9fa;
+    padding: 15px 0;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .hospital-title {
+    color: var(--title-color);
+    font-weight: 600;
+    font-size: 1.8rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  .hospital-breadcrumb {
+    background-color: rgba(255,255,255,0.8);
+    padding: 8px 15px;
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .hospital-breadcrumb .breadcrumb-item a {
+    color: var(--bgtb-gradient);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .hospital-breadcrumb .breadcrumb-item a:hover {
+    color: #0f4fbe;
+    text-decoration: underline;
+  }
+  
+  /* Spinner Styles */
+  .hospital-spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(3px);
+  }
+  
+  .hospital-spinner-circle {
+    width: 60px;
+    height: 60px;
+    position: relative;
+  }
+  
+  .hospital-spinner-inner {
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-top-color: var(--bgtb-gradient);
+    border-radius: 50%;
+    animation: hospitalSpin 1s linear infinite;
+  }
+  
+  @keyframes hospitalSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Card Styles */
+  .hospital-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hospital-card:hover {
+    // transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    background: var(--bgtb-gradient);;
+  }
+  
+  .hospital-card-body {       
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 12px;
+  }
+  
+  /* Table Header Styles */
+  .hospital-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .hospital-filter {
+    flex-grow: 1;
+    min-width: 250px;
+    // width: 100px !important;
+  }
+  
+  .hospital-filter .mat-form-field-outline {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    // width: 50% !important;
+  }
+  
+  
+  .hospital-add-button {
+    background: var(--bgtb-gradient) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 8px 20px !important;
+    height: auto !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1) !important;
+  }
+  
+  .hospital-add-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+    // background: var(--bgtb-gradient);
+  }
+  
+  /* Table Container */
+  .hospital-table-container {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+  }
+  
+  /* Table Styles */
+  .hospital-data-table {
+    width: 100%;
+  }
+  
+  .hospital-table-header-cell {
+    background: var(--bgtb-gradient) !important;
+    color: white !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    padding: 15px !important;
+    border-right: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  
+  .hospital-column-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    // position: sticky !important;
+    // top: 0 !important;
+  }
+  
+  .hospital-header-row {
+    height: 60px !important;
+    // position: sticky !important;
+    // top: 0 !important;  
+  }
+  
+  .hospital-table-cell {
+    padding: 12px 15px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .hospital-data-row {
+    transition: all 0.3s ease;
+  }
+  
+  .hospital-data-row:hover {
+    background-color: #b0c4e1 !important;
+    // transform: scale(1.005);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  
+  .hospital-row-selected {
+    background-color: #e6f0ff !important;
+    border-left: 4px solid var(--bgtb-gradient);
+  }
+  
+  /* Cell Content Styles */
+  .hospital-user-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .pharmacyCode {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .hospital-username {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .hospital-user-icon {
+    color: var(--bgtb-gradient);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .hospital-fullname {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .hospital-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .hospital-group-badge {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .hospital-position-badge {
+    background-color: #e8f5e9;
+    color: #388e3c;
+  }
+  
+  /* Toggle Styles */
+  .hospital-toggle-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .hospital-status-toggle {
+    transform: scale(0.9);
+    // color: #0f4fbe !important;
+  }
+  
+  /* Action Buttons */
+  .hospital-actions-cell {
+    white-space: nowrap;
+    align-items: center;
+  }
+  
+  .hospital-action-button {
+    min-width: auto !important;
+    padding: 6px 12px !important;
+    margin: 0 4px !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+    font-size: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  
+  // .hospital-auth-button {
+  //   background-color: #5c6bc0 !important;
+  //   color: white !important;
+  // }
+  .hospital-auth-button {
+    background-color: #f44336 !important;
+    color: white !important;
+  }
+  
+  .hospital-edit-button {
+    background-color: #26a69a !important;
+    color: white !important;
+  }
+  
+  .hospital-action-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15) !important;
+  }
+  
+  .hospital-button-text {
+    display: inline-block;
+  }
+  
+  /* No Data Row */
+  .hospital-no-data-row {
+    height: 200px !important;
+  }
+  
+  .hospital-no-data-cell {
+    text-align: center !important;
+    padding: 40px !important;
+  }
+  
+  .hospital-no-data-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+  }
+  
+  .hospital-no-data-icon {
+    font-size: 50px !important;
+    width: 50px !important;
+    height: 50px !important;
+    margin-bottom: 15px;
+    color: #bdbdbd;
+  }
+  
+  /* Paginator Styles */
+  .hospital-paginator {
+    border-radius: 0 0 10px 10px !important;
+    background-color: #f8f9fa !important;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 992px) {
+    .hospital-table-header-cell, 
+    .hospital-table-cell {
+        padding: 10px !important;
+        font-size: 14px !important;
+    }
+    
+    .hospital-button-text {
+        display: none;
+    }
+    
+    .hospital-action-button {
+        min-width: 40px !important;
+        width: 40px !important;
+        height: 40px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    
+    .hospital-action-button mat-icon {
+        margin-right: 0 !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .hospital-table-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .hospital-add-button {
+        width: 100%;
+    }
+    
+    .hospital-column-header span {
+        display: none;
+    }
+    
+    .hospital-header-row {
+        height: 50px !important;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .hospital-card-body {
+        padding: 15px;
+    }
+    
+    .hospital-table-header-cell, 
+    .hospital-table-cell {
+        padding: 8px !important;
+        font-size: 13px !important;
+    }
+    
+    .hospital-user-icon {
+        display: none;
+    }
+    
+    .hospital-badge {
+        font-size: 11px;
+        padding: 2px 6px;
+    }
+  }
+  
+  .hospital-data-row:nth-child(odd) {
+    background-color: #f2f2f2;
+  }
+  .hospital-data-row:nth-child(even) {
+    background-color: #ffffff;
+  }
+  
+  .hospital-data-row-no{
+    background-color: #f2f2f2 !important;
+    color: #b0b0b0 !important;
+    font-weight: 500 !important;
+    font-size: 20px;
+    padding: 20px !important;
+    margin: 20px !important;
+    // text-align: center !important;
+  }

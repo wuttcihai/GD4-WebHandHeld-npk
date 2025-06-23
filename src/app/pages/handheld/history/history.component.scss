@@ -1,0 +1,13 @@
+/* Add to your global styles */
+body {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Alternative approach */
+.content-wrapper {
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}

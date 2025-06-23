@@ -1,0 +1,392 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the theme object.
+$e-mar-theme: mat.define-theme((color: (theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      density: (scale: 0,
+      )));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+:root {
+  @include mat.all-component-themes($e-mar-theme);
+}
+
+// Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($e-mar-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($e-mar-theme);
+/* You can add global styles to this file, and also import other style files */
+@import '@fortawesome/fontawesome-free/css/all.css';
+// @import 'mdb-angular-ui-kit/assets/scss/mdb.scss';
+@import 'material-design-icons/iconfont/material-icons.css';
+// @import "~material-design-icons/iconfont/material-icons.css";
+
+
+:root {
+  --789DBC-color: #789DBC;
+  --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  // --bg-gradient: linear-gradient(135deg, #7193b0 0%, #789DBC 100%);
+  --bgtb-gradient: linear-gradient(135deg, #425d8e 50%, #2a5298 100%);
+  //  --bgtb-gradient: linear-gradient(135deg, #7193b0 0%, #789DBC 100%);
+  --title-color:#789DBC;
+}
+@font-face {
+  font-family: PKNakhonSawan;
+  src: url(../public/Document/fonts/PK\ Nakhon\ Sawan\ Demo.ttf);
+}
+// * {
+//   font-family: PKNakhonSawan, sans-serif;
+// }
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.test {
+  color: #ec0c0c;
+  font-size: 500px;
+}
+
+.custom-toast-warning {
+  background-color: #FFB562 !important;
+  color: white !important;
+}
+
+body.keyboard-open {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+
+html,
+body {
+  height: 100%;
+  font-family:PKNakhonSawan !important;
+}
+
+body {
+  margin: 0;
+  font-family:PKNakhonSawan !important;
+}
+
+
+
+
+// spinner
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 1050;
+}
+
+.link-icon {
+  mix-blend-mode: darken;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
+}
+
+.spinner-circle {
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+
+.spinner-inner {
+  width: 100%;
+  height: 100%;
+  border: 4px solid transparent;
+  border-top-color: #4a90e2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  position: relative;
+}
+
+.spinner-inner:before,
+.spinner-inner:after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 4px solid transparent;
+}
+
+.spinner-inner:before {
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  border-top-color: #50e3c2;
+  animation: spin 2s linear infinite;
+}
+
+.spinner-inner:after {
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  border-top-color: #e3507a;
+  animation: spin 3s linear infinite;
+}
+
+// .content-wrapper  {
+//   position: sticky;
+//   top: 0;
+//   background: white;
+//   z-index: 1000;
+//   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+//   border-bottom: 1px solid #ddd;
+// }
+
+
+
+
+
+
+/* Preloader Styles */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-gradient);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+/* Logo Container */
+.index-logo-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.index-logo-img {
+  width: 60px;
+  height: 60px;
+  z-index: 2;
+  object-fit: contain;
+}
+
+/* Pulse Animation */
+.pulse-animation {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Logo Glow Effect */
+.index-logo-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: glow-pulse 2s infinite ease-in-out;
+  z-index: 1;
+}
+
+@keyframes glow-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+}
+
+/* Loading Text Animation */
+.loading-text {
+  display: flex;
+  gap: 3px;
+  font-size: 18px;
+  color: white;
+  font-weight: 500;
+}
+
+.loading-text span {
+  display: inline-block;
+  animation: wave 1.5s infinite ease-in-out;
+  animation-delay: calc(var(--char-index) * 0.1s);
+}
+
+@keyframes wave {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Progress Bar */
+.progress-bar {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: white;
+  border-radius: 2px;
+  animation: progress-loading 2s infinite ease-in-out;
+}
+
+@keyframes progress-loading {
+  0% {
+    width: 0%;
+    margin-left: 0;
+  }
+
+  50% {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  100% {
+    width: 0%;
+    margin-left: 100%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .index-logo-container {
+    width: 80px;
+    height: 80px;
+  }
+
+  .index-logo-img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .loading-text {
+    font-size: 16px;
+  }
+
+  .progress-bar {
+    width: 150px;
+  }
+}
+
+/* ทำให้พื้นหลังเบลอ */
+.custom-blur-backdrop {
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+}
+
+/* สำหรับ Firefox หรือเบราว์เซอร์ที่ไม่รองรับ */
+@supports not (backdrop-filter: blur(5px)) {
+  .custom-blur-backdrop {
+    background: rgba(0, 0, 0, 0.6) !important;
+  }
+}
