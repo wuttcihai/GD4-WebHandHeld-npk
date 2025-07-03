@@ -12,6 +12,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 // import { environment } from '../../../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { PopupuserotherComponent } from '../../../components/popup/popupuserother/popupuserother.component';
 export interface SelectPopup {
   label: string;
   value: string;
@@ -112,7 +113,13 @@ export class DispenseComponent implements AfterViewInit {
     bed: 'B-02',
     status: 'stable'
   };
-
+  lenSticker: any;
+  scanFocus: boolean = true;
+  lenPack: any;
+  statusColor: string = '#4CAF50'; // Default status color (green)
+  statusMessage: string = 'Ready to scan'; // Default status message
+  scanSuccess: boolean = false; // Tracks scan success state
+  scanMessage: string = ''; // Feedback message for scans
   medications_ = [
     {
       name: 'Amoxicillin 500mg',
@@ -153,6 +160,8 @@ export class DispenseComponent implements AfterViewInit {
   resDataPatientadmit2: any;
   resDataPatientadmit3: any;
   resDatapostPrescription: any;
+  timeFilter: string = 'all';
+  filteredMedications: any[] = [];
   // loading: boolean;
   dataSource: any;
   SelDisp: boolean = false;
@@ -362,79 +371,7 @@ export class DispenseComponent implements AfterViewInit {
     this.clearAll();
   }
 
-  confirmDispenseError() {
-    this.dialog.closeAll();
-    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
-    const dialogRef = this.dialog.open(PopupComponent, {
-      maxWidth: 'none',
-      maxHeight: 'none',
-      width: isMobile ? '95%' : '40%',
-      height: isMobile ? '50%' : 'auto',
-      hasBackdrop: true,
-      backdropClass: 'custom-blur-backdrop',
-      panelClass: 'custom-dialog-container',
-      enterAnimationDuration: '300ms',
-      exitAnimationDuration: '500ms',
-      data: {
-        title: 'เหตุผลการให้ยาเกินเวลา',
-        apiUrl: ``,
-        fields: [
-          { key: 'deviceCode', label: 'เลือกเหตุผล', placeholder: 'Enter device code', type: 'autocomplete' },
-          { key: 'deviceName', label: 'เหตุผลการให้ยา', placeholder: 'Enter device name', type: 'string' },
-          // { key: 'deviceDesc', label: 'Device Desc', placeholder: 'Enter device desc', type: 'string' },
-          // { key: 'deviceIP', label: 'Device IP', placeholder: 'Enter device ip', type: 'string' },
-          // { key: 'computerName', label: 'Computer Name', placeholder: 'Enter computer name', type: 'string' },
-          // { key: 'pharmacyCode', label: 'Pharmacy Code', placeholder: 'Enter pharmacy code', type: 'string' },
-          // { key: 'sortOrder', label: 'sortOrder', placeholder: 'Enter sortOrder', type: 'number' },
-          // { key: 'orderzone', label: 'orderzone', placeholder: 'Enter orderzone', value:0, type: 'number' },
-          // { key: 'isEnabled', label: 'isEnabled', placeholder: 'Enter isEnabled', value: false, type: 'boolean' },
-        ],
-        options: {
-          deviceCode: [
-            {
-              label: 'TEST 1',
-              value: 'TEST 1'
-            },
-            {
-              label: 'TEST 2',
-              value: 'TEST 2'
-            },
-            {
-              label: 'TEST 3',
-              value: 'TEST 3'
-            },
-          ],
-        },
-        useLabel: {
-          deviceCode: true,
-        },
-      }
-    });
-
-
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result !== 'Close' && result !== undefined) {
-        this.toastr.success('Successful!', 'แจ้งเตือน');
-        this.resDataPatientadmit = [];
-        this.resDatapostPrescription = [];
-        this.hasScanned = false;
-        this.focusInput();
-        this.currentBarcode = '';
-      } else {
-        // this.toastr.success('Successful!', 'แจ้งเตือน');
-        // this.resDataPatientadmit = [];
-        // this.resDatapostPrescription = [];
-        // this.hasScanned = false;
-        // this.focusInput();
-        // this.currentBarcode = '';
-      }
-    });
-
-
-  }
-
-  confirmDispenseHAD() {
+  confirmDispenseError(currentBarcodeDrug: any = '') {
     this.dialog.closeAll();
     const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
     const dialogRef = this.dialog.open(PopupComponent, {
@@ -451,8 +388,8 @@ export class DispenseComponent implements AfterViewInit {
         title: 'เหตุผลการให้ยาเกินเวลา',
         apiUrl: ``,
         fields: [
-          { key: 'username', label: 'Username', placeholder: 'Username', type: 'string' },
-          { key: 'password', label: 'Password', placeholder: 'Password', type: 'string' },
+          { key: 'mederror_desc', label: 'เลือกเหตุผล', placeholder: 'เลือกเหตุผล', type: 'autocomplete' },
+          { key: 'mederror_freetext', label: 'เหตุผลเพิ่มเติ่ม', placeholder: 'เหตุผลเพิ่มเติ่ม', type: 'string' },
           // { key: 'deviceDesc', label: 'Device Desc', placeholder: 'Enter device desc', type: 'string' },
           // { key: 'deviceIP', label: 'Device IP', placeholder: 'Enter device ip', type: 'string' },
           // { key: 'computerName', label: 'Computer Name', placeholder: 'Enter computer name', type: 'string' },
@@ -461,6 +398,25 @@ export class DispenseComponent implements AfterViewInit {
           // { key: 'orderzone', label: 'orderzone', placeholder: 'Enter orderzone', value:0, type: 'number' },
           // { key: 'isEnabled', label: 'isEnabled', placeholder: 'Enter isEnabled', value: false, type: 'boolean' },
         ],
+        options: {
+          mederror_desc: [
+            {
+              label: 'TEST 1',
+              value: 'TEST 1'
+            },
+            {
+              label: 'TEST 2',
+              value: 'TEST 2'
+            },
+            {
+              label: 'TEST 3',
+              value: 'TEST 3'
+            },
+          ],
+        },
+        useLabel: {
+          mederror_desc: true,
+        },
       }
     });
 
@@ -468,6 +424,185 @@ export class DispenseComponent implements AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== 'Close' && result !== undefined) {
+        const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
+        this.resDatapostPrescription.filter((item: { orderitembarcode: string; }) => item.orderitembarcode === currentBarcodeDrug).forEach((items: {
+          dispenseuserid: string;
+          dispenseusername: string; dispensedatetime: string; dispenseuseridother: string; dispenseusernameother: string; dispensedatetimeother: string;
+          mederror_desc: string; mederror_freetext: string; mederror_type: string;
+        }) => {
+          items.dispensedatetime = String(utcDate.toISOString())
+          items.dispenseuserid = '1'
+          items.dispenseusername = 'Robot1',
+            items.mederror_desc = result.mederror_desc,
+            items.mederror_freetext = result.mederror_freetext,
+            items.mederror_type = 'APPDPS'
+        });
+        // console.log(result)
+        // this.toastr.success('Successful!', 'แจ้งเตือน');
+        // this.resDataPatientadmit = [];
+        // this.resDatapostPrescription = [];
+        // this.hasScanned = false;
+        // this.focusInput();
+        // this.currentBarcode = '';
+      } else {
+        // this.toastr.success('Successful!', 'แจ้งเตือน');
+        // this.resDataPatientadmit = [];
+        // this.resDatapostPrescription = [];
+        // this.hasScanned = false;
+        // this.focusInput();
+        // this.currentBarcode = '';
+      }
+    });
+
+
+  }
+
+  confirmDispenseHAD(currentBarcodeDrug: any = '') {
+    this.dialog.closeAll();
+    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
+    const dialogRef = this.dialog.open(PopupuserotherComponent, {
+      maxWidth: 'none',
+      maxHeight: 'none',
+      width: isMobile ? '95%' : '40%',
+      height: isMobile ? '60%' : 'auto',
+      hasBackdrop: true,
+      backdropClass: 'custom-blur-backdrop',
+      panelClass: 'custom-dialog-container',
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '500ms',
+      data: {
+        title: 'เหตุผลการให้ยาเกินเวลา',
+        apiUrl: ``,
+        fields: [
+        ],
+      }
+    });
+
+
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== 'Close' && result !== undefined) {
+        // let resDataz = {}
+        this.handheldService.loginEmar(result).subscribe({
+          next: (response) => {
+            // console.log(response);
+
+            if (response.status === 200 && response.data.length > 0) {
+
+              const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
+              this.resDatapostPrescription.filter((item: { orderitembarcode: string; }) => item.orderitembarcode === currentBarcodeDrug).forEach((items: {
+                dispenseuserid: string;
+                dispenseusername: string; dispensedatetime: string; dispenseuseridother: string; dispenseusernameother: string; dispensedatetimeother: string;
+              }) => {
+                items.dispensedatetime = String(utcDate.toISOString())
+                items.dispenseuserid = '1'
+                items.dispenseusername = 'Robot1'
+                items.dispenseuseridother = response.data[0].userID
+                items.dispenseusernameother = response.data[0].fullname
+                items.dispensedatetimeother = String(utcDate.toISOString())
+              });
+              //  console.log(   this.resDatapostPrescription)
+              // this.toastr.success('Successful!', 'แจ้งเตือน');
+              // this.showMedicationHistory()
+              // this.toastr.success('Successful!', 'แจ้งเตือน');
+              // this.resDataPatientadmit2 = response.data
+              // this.hasScanned = false;
+
+              // console.log(response.data);
+              // this.onpostprescription(an)
+              // this.getDevice()
+            } else {
+              // this.loading = false;
+              this.toastr.warning('ไม่พบผู้ใช้งาน', 'แจ้งเตือน', {
+                toastClass: 'custom-toast-warning',
+              });
+            }
+          },
+          error: (err) => {
+            // console.error('Update Failed:', err);
+            this.toastr.warning(err, 'แจ้งเตือน', {
+              toastClass: 'custom-toast-warning',
+            });
+          },
+        });
+        // console.log('Received Data:', result);
+        // this.getDevice()
+      } else {
+        // console.log('Dialog closed without data');
+      }
+    });
+
+
+  }
+
+
+  confirmDispenseHADOverTime(currentBarcodeDrug: any = '') {
+    this.dialog.closeAll();
+    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
+    const dialogRef = this.dialog.open(PopupuserotherComponent, {
+      maxWidth: 'none',
+      maxHeight: 'none',
+      width: isMobile ? '95%' : '40%',
+      height: isMobile ? '60%' : 'auto',
+      hasBackdrop: true,
+      backdropClass: 'custom-blur-backdrop',
+      panelClass: 'custom-dialog-container',
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '500ms',
+      data: {
+        title: 'เหตุผลการให้ยาเกินเวลา',
+        apiUrl: ``,
+        fields: [
+        ],
+      }
+    });
+
+
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== 'Close' && result !== undefined) {
+        // let resDataz = {}
+        this.handheldService.loginEmar(result).subscribe({
+          next: (response) => {
+            // console.log(response);
+
+            if (response.status === 200 && response.data.length > 0) {
+              // console.log(response)
+              const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
+              this.resDatapostPrescription.filter((item: { orderitembarcode: string; }) => item.orderitembarcode === currentBarcodeDrug).forEach((items: {
+                dispenseuserid: string;
+                dispenseusername: string; dispensedatetime: string; dispenseuseridother: string; dispenseusernameother: string; dispensedatetimeother: string;
+              }) => {
+                items.dispensedatetime = String(utcDate.toISOString())
+                items.dispenseuserid = '1'
+                items.dispenseusername = 'Robot1'
+                items.dispenseuseridother = response.data.userID
+                items.dispenseusernameother = response.data.fullname
+                items.dispensedatetimeother = response.data.fullname
+              });
+              // this.toastr.success('Successful!', 'แจ้งเตือน');
+              // this.showMedicationHistory()
+              // this.toastr.success('Successful!', 'แจ้งเตือน');
+              // this.resDataPatientadmit2 = response.data
+              // this.hasScanned = false;
+
+              // console.log(response.data);
+              // this.onpostprescription(an)
+              // this.getDevice()
+            } else {
+              // this.loading = false;
+              this.toastr.warning('ไม่พบผู้ใช้งาน', 'แจ้งเตือน', {
+                toastClass: 'custom-toast-warning',
+              });
+            }
+          },
+          error: (err) => {
+            // console.error('Update Failed:', err);
+            this.toastr.warning(err, 'แจ้งเตือน', {
+              toastClass: 'custom-toast-warning',
+            });
+          },
+        });
         // console.log('Received Data:', result);
         // this.getDevice()
       } else {
@@ -609,14 +744,104 @@ export class DispenseComponent implements AfterViewInit {
     //   this.currentBarcode = '';
     // }
 
-    let resDataz = this.resDatapostPrescription.map((item: { preparemedicine_id: any; dispensedatetime: any; dispenseuserid: any; dispenseusername: any; }) => ({
+    // console.log(this.resDatapostPrescription)
+
+    let resDataz = this.resDatapostPrescription.map((item: {
+      preparemedicine_id: any; dispensedatetime: any; dispenseuserid: any; dispenseusername: any;
+      dispenseuseridother: string; dispenseusernameother: string; dispensedatetimeother: string;
+
+
+    }) => ({
       _id: item.preparemedicine_id,
       dispensedatetime: item.dispensedatetime,
       dispenseuserid: item.dispenseuserid,
       dispenseusername: item.dispenseusername,
+      dispenseuseridother: item.dispenseuseridother,
+      dispenseusernameother: item.dispenseusernameother,
+      dispensedatetimeother: item.dispensedatetimeother,
     }));
 
-    // console.log(resDataz)
+    let resDatazMederror = this.resDatapostPrescription
+      .filter((item: {
+        mederror_desc: string | null | undefined;
+        mederror_freetext: string | null | undefined;
+      }) => {
+        const desc = item.mederror_desc || '';
+        const freeText = item.mederror_freetext || '';
+        return desc.length > 0 || freeText.length > 0;
+      })
+      .map((item: {
+        ordercreatedate: any;
+        prescriptionno: any;
+        hn: any;
+        an: any;
+        orderitemcode: any;
+        orderitemname: any;
+        orderunitdesc: any;
+        orderqty: any;
+        shelfzone: any;
+        shelfname: any;
+        mederror_desc: any;
+        mederror_freetext: any;
+        mederror_type: any;
+        preparemedicine_id: any;
+        dispensedatetime: any;
+        dispenseuserid: any;
+        dispenseusername: any;
+        dispenseuseridother: string;
+        dispenseusernameother: string;
+        dispensedatetimeother: string;
+      }) => ({
+        _id_prescription: item.preparemedicine_id,
+        ordercreatedate: item.ordercreatedate,
+        prescriptionno: item.prescriptionno,
+        hn: item.hn,
+        an: item.an,
+        orderitemcode: item.orderitemcode,
+        orderitemname: item.orderitemname,
+        orderunitdesc: item.orderunitdesc,
+        orderqty: item.orderqty,
+        shelfzone: item.shelfzone,
+        shelfname: item.shelfname,
+        jobuserid: item.dispenseuserid,
+        jobusername: item.dispenseusername,
+        mederror_desc: item.mederror_desc || '',
+        mederror_freetext: item.mederror_freetext || '',
+        mederror_robot: '',
+        mederror_userid: '',
+        mederror_username: '',
+        mederror_type: item.mederror_type,
+      }));
+    // console.log(this.resDatapostPrescription)
+    if (resDatazMederror.length > 0) {
+      this.handheldService.postMedError(resDatazMederror).subscribe({
+        next: (response) => {
+          // console.log(response);
+
+          if (response.status === 200) {
+            // this.toastr.success('Successful!', 'แจ้งเตือน');
+            // this.showMedicationHistory()
+            // this.toastr.success('Successful!', 'แจ้งเตือน');
+            // this.resDataPatientadmit2 = response.data
+            // this.hasScanned = false;
+
+            // console.log(response.data);
+            // this.onpostprescription(an)
+            // this.getDevice()
+          } else {
+            // this.loading = false;
+          }
+        },
+        error: (err) => {
+          // console.error('Update Failed:', err);
+          // this.toastr.warning(err, 'แจ้งเตือน', {
+          //   toastClass: 'custom-toast-warning',
+          // });
+        },
+      });
+    }
+
+
     this.handheldService.updatprepare(resDataz).subscribe({
       next: (response) => {
         // console.log(response);
@@ -655,6 +880,7 @@ export class DispenseComponent implements AfterViewInit {
           this.resDataPatientadmit3 = this.getUniqueByAn(this.resDataPatientadmit2);
           this.hasScanned = false;
           this.formatfrequencytime();
+
           // console.log(this.resDataPatientadmit3)
 
           // console.log(response.data);
@@ -695,9 +921,15 @@ export class DispenseComponent implements AfterViewInit {
 
   onClickPatient(an: string) {
     this.resDatapostPrescription = this.resDataPatientadmit2.filter((item: { an: string; }) => item.an === an);
+    this.fetchMedicationData = this.resDatapostPrescription.sort((a: { orderitembarcode: string; }, b: { orderitembarcode: any; }) => {
+      return a.orderitembarcode.localeCompare(b.orderitembarcode);
+    });;
+    this.lenPack = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "Y")
+    this.lenSticker = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "N")
+    this.updateFilteredMedications();
     this.SelDisp = true;
     this.hasScanned = true;
-    //  console.log(an);
+    //  console.log(    this.resDatapostPrescription );
     // this.resDataPatientadmitSel = this.resDataPatientadmit2.find((item: { an: string; }) => item.an === an);
     // this.handheldService.postpatientadmitpackage({ "an": an, "recivedatetime": { "$ne": null } }
     // ).subscribe({
@@ -792,45 +1024,45 @@ export class DispenseComponent implements AfterViewInit {
     });
   }
 
-  getNextDoses(): any[] {
-    this.formatfrequencytime()
-    const currentMinutes = this.currentTime.getHours() * 60 + this.currentTime.getMinutes();
+  // getNextDoses(): any[] {
+  //   this.formatfrequencytime()
+  //   const currentMinutes = this.currentTime.getHours() * 60 + this.currentTime.getMinutes();
 
-    const futureDoses = this.resDatapostPrescription.filter((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-      if (!med.frequencytime) return false;
+  //   const futureDoses = this.resDatapostPrescription.filter((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+  //     if (!med.frequencytime) return false;
 
-      const [hours, minutes] = med.frequencytime.split(':').map(Number);
-      const medMinutes = hours * 60 + minutes;
+  //     const [hours, minutes] = med.frequencytime.split(':').map(Number);
+  //     const medMinutes = hours * 60 + minutes;
 
-      return medMinutes >= currentMinutes;
-    });
+  //     return medMinutes >= currentMinutes;
+  //   });
 
-    if (futureDoses.length === 0) return [];
+  //   if (futureDoses.length === 0) return [];
 
-    const earliestTime = Math.min(...futureDoses.map((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-      const [h, m] = med.frequencytime.split(':').map(Number);
-      return h * 60 + m;
-    }));
+  //   const earliestTime = Math.min(...futureDoses.map((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+  //     const [h, m] = med.frequencytime.split(':').map(Number);
+  //     return h * 60 + m;
+  //   }));
 
-    return futureDoses.filter((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-      const [h, m] = med.frequencytime.split(':').map(Number);
-      return (h * 60 + m) === earliestTime;
-    });
-  }
+  //   return futureDoses.filter((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+  //     const [h, m] = med.frequencytime.split(':').map(Number);
+  //     return (h * 60 + m) === earliestTime;
+  //   });
+  // }
 
 
-  getCurrentHourDoses(): any[] {
-    const currentHour = this.currentTime.getHours();
+  // getCurrentHourDoses(): any[] {
+  //   const currentHour = this.currentTime.getHours();
 
-    const currentHourDoses = this.resDatapostPrescription.filter((med: any) => {
-      if (!med.frequencytime) return false;
+  //   const currentHourDoses = this.resDatapostPrescription.filter((med: any) => {
+  //     if (!med.frequencytime) return false;
 
-      const [hours] = med.frequencytime.split(':').map(Number);
-      return hours === currentHour;
-    });
+  //     const [hours] = med.frequencytime.split(':').map(Number);
+  //     return hours === currentHour;
+  //   });
 
-    return currentHourDoses;
-  }
+  //   return currentHourDoses;
+  // }
 
 
   isTimeOver(timeString: string): boolean {
@@ -899,6 +1131,7 @@ export class DispenseComponent implements AfterViewInit {
   }
 
   onFocus() {
+    this.currentBarcode = '';
     this.currentBarcodeDrug = '';
     // this.focusInput2();
     // this.currentBarcodeDrug = '';
@@ -936,10 +1169,40 @@ export class DispenseComponent implements AfterViewInit {
 
     //   // console.log(this.resDatapostPrescription);
     // } else {
-    const HAD = this.resDatapostPrescription.filter((item: { highalert: string; }) => item.highalert == '1').length;
+    const timeOver = this.resDatapostPrescription.filter((item: { frequencytime: string; orderitembarcode: string; }) => this.isTimeOver(item.frequencytime) == true && item.orderitembarcode == currentBarcodeDrug).length;
+    const HAD = this.resDatapostPrescription.filter((item: { highalert: string; orderitembarcode: string; }) => item.highalert == '1' && item.orderitembarcode == currentBarcodeDrug).length;
 
-    if (HAD) {
-      this.confirmDispenseHAD();
+    // console.log(timeOver, HAD);
+    // if (HAD > 0 && timeOver > 0) {
+    //   console.log(1)
+    //    this.confirmDispenseHAD(currentBarcodeDrug);
+    //   //  this.confirmDispenseError();
+    // }
+    // else if (HAD > 0 && timeOver < 1) {
+    //   console.log(2)
+    //   this.confirmDispenseHAD(currentBarcodeDrug);
+    // } else if (timeOver > 0 && HAD < 1) {
+    //   console.log(3)
+    //   this.confirmDispenseHAD(currentBarcodeDrug);
+    // } else {
+    //   this.resDatapostPrescription.filter((item: { orderitembarcode: string; }) => item.orderitembarcode === currentBarcodeDrug).forEach((items: {
+    //     dispenseuserid: string;
+    //     dispenseusername: string; dispensedatetime: string;
+    //   }) => {
+    //     items.dispensedatetime = String(utcDate.toISOString())
+    //     items.dispenseuserid = '1'
+    //     items.dispenseusername = "Robot"
+    //   });
+    // }
+
+    // console.log(timeOver, HAD);
+    if (HAD > 0) {
+      console.log(1)
+      this.confirmDispenseHAD(currentBarcodeDrug);
+      //  this.confirmDispenseError();
+    }
+    else if (timeOver > 0) {
+      this.confirmDispenseError(currentBarcodeDrug);
     } else {
       this.resDatapostPrescription.filter((item: { orderitembarcode: string; }) => item.orderitembarcode === currentBarcodeDrug).forEach((items: {
         dispenseuserid: string;
@@ -965,6 +1228,134 @@ export class DispenseComponent implements AfterViewInit {
     // }
 
 
+  }
+
+
+  onScanFocus() {
+    this.scanFocus = true;
+  }
+
+  onScanBlur() {
+    this.scanFocus = false;
+  }
+
+
+  // Method to update status
+  updateStatus(message: string, isSuccess: boolean) {
+    this.statusMessage = message;
+    this.statusColor = isSuccess ? '#4CAF50' : '#F44336';
+    this.scanSuccess = isSuccess;
+    this.scanMessage = message;
+
+    // Optionally reset status after delay
+    setTimeout(() => {
+      this.statusMessage = 'Ready to scan';
+      this.statusColor = '#4CAF50';
+    }, 3000);
+  }
+
+  filterByType(type: string): void {
+    if (!this.resDatapostPrescription) return;
+
+    switch (type) {
+      case 'package':
+        this.filteredMedications = this.resDatapostPrescription.filter((item: { sendmachine: string; }) =>
+          item.sendmachine === "Y");
+        break;
+      case 'sticker':
+        this.filteredMedications = this.resDatapostPrescription.filter((item: { sendmachine: string; }) =>
+          item.sendmachine === "N");
+        break;
+      case 'overdue':
+        this.filteredMedications = this.resDatapostPrescription.filter((item: { frequencytime: string; }) =>
+          this.isTimeOver(item.frequencytime));
+        break;
+      default:
+        this.filteredMedications = [...this.resDatapostPrescription];
+    }
+  }
+
+  filterByTime(filter: string): void {
+    this.timeFilter = filter;
+    this.updateFilteredMedications();
+  }
+
+  updateFilteredMedications(): void {
+    if (!this.resDatapostPrescription) return;
+
+    // First filter by time
+    let filtered = [...this.resDatapostPrescription];
+
+    if (this.timeFilter === 'current') {
+      filtered = this.getCurrentHourDoses();
+    } else if (this.timeFilter === 'next') {
+      filtered = this.getNextDoses();
+    }
+
+    // Then apply any type filters if needed
+    this.filteredMedications = filtered;
+  }
+
+  getOverdueCount(): number {
+    if (!this.resDatapostPrescription) return 0;
+    return this.resDatapostPrescription.filter((item: { frequencytime: string; }) =>
+      this.isTimeOver(item.frequencytime)).length;
+  }
+
+  canConfirm(): boolean {
+    if (!this.resDatapostPrescription) return false;
+
+    // Check if all medications have been scanned
+    const allScanned = this.resDatapostPrescription.every((item: { recivedatetime: string; }) =>
+      item.recivedatetime);
+
+    // Check if there are any medications to confirm
+    const hasMedications = this.resDatapostPrescription.length > 0;
+
+    return allScanned && hasMedications;
+  }
+
+  // Update your existing getNextDoses() method to return filtered array
+  getNextDoses(): any[] {
+    if (!this.resDatapostPrescription) return [];
+
+    this.formatfrequencytime();
+    const currentMinutes = this.currentTime.getHours() * 60 + this.currentTime.getMinutes();
+
+    const futureDoses = this.resDatapostPrescription.filter((med: { frequencytime: string; }) => {
+      if (!med.frequencytime) return false;
+
+      const [hours, minutes] = med.frequencytime.split(':').map(Number);
+      const medMinutes = hours * 60 + minutes;
+
+      return medMinutes >= currentMinutes;
+    });
+
+    if (futureDoses.length === 0) return [];
+
+    const earliestTime = Math.min(...futureDoses.map((med: { frequencytime: string; }) => {
+      const [h, m] = med.frequencytime.split(':').map(Number);
+      return h * 60 + m;
+    }));
+
+    return futureDoses.filter((med: { frequencytime: string; }) => {
+      const [h, m] = med.frequencytime.split(':').map(Number);
+      return (h * 60 + m) === earliestTime;
+    });
+  }
+
+  // Update your existing getCurrentHourDoses() method to return filtered array
+  getCurrentHourDoses(): any[] {
+    if (!this.resDatapostPrescription) return [];
+
+    const currentHour = this.currentTime.getHours();
+
+    return this.resDatapostPrescription.filter((med: any) => {
+      if (!med.frequencytime) return false;
+
+      const [hours] = med.frequencytime.split(':').map(Number);
+      return hours === currentHour;
+    });
   }
 
 }

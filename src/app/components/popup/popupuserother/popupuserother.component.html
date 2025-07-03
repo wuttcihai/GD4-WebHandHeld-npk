@@ -1,1 +1,37 @@
-<p>popupuserother works!</p>
+<h1 mat-dialog-title class="dialog-title" style="background: var(--bg-gradient);color:white;">ระบุรหัสบุคคลที่2</h1>
+<mat-divider class="divider-animate"></mat-divider>
+<div mat-dialog-content class="dialog-content">
+<input matInput placeholder="Username" class="input-field" color="primary" [(ngModel)]="Username">
+<input matInput placeholder="Password" class="input-field" type="password" color="accent" [(ngModel)]="Password">
+    <!-- <ng-container *ngFor="let field of data.elements.datadrug; let i = index"> -->
+    <!-- <div mat-dialog-actions class="dialog-actions" *ngIf="data.elements.datadrug" >
+      <button mat-raised-button class="save-button" *ngFor="let field of data.elements.datadrug; let i = index">
+        <span class="button-content">
+          {{field.packageratio}}
+        </span>
+      </button>
+      <button mat-raised-button class="save-button" (click)="onSelect('clear')">
+        <span class="button-content">
+          ล้างข้อมูล
+        </span>
+      </button>
+    </div> -->
+    <!-- </ng-container> -->
+
+
+</div>
+<mat-divider class="divider-animate"></mat-divider>
+<div mat-dialog-actions class="dialog-actions" style="background: var(--bg-gradient);color:white;">
+    <button mat-raised-button class="save-button" (click)="okClick()">
+        <span class="button-content">
+            <mat-icon class="button-icon">save</mat-icon>
+            Save
+        </span>
+    </button>
+    <button mat-raised-button class="close-button" (click)="closepopup()">
+        <span class="button-content">
+            <mat-icon class="button-icon">close</mat-icon>
+            Close
+        </span>
+    </button>
+</div>

@@ -1,13 +1,273 @@
-/* Add to your global styles */
-body {
-  position: fixed;
-  width: 100%;
-  overflow: hidden;
+.scanner-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 15px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f6fa;
+  min-height: 100vh;
 }
 
-/* Alternative approach */
-.content-wrapper {
-  height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header h2 {
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+  font-size: 24px;
+}
+
+.device-info {
+  color: #e74c3c;
+  font-weight: bold;
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.instruction {
+  color: #7f8c8d;
+  font-size: 13px;
+  margin: 10px 0 0 0;
+}
+
+.hidden-input {
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  z-index: -1000 !important;
+  border: none !important;
+  background: transparent !important;
+  pointer-events: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.scan-area {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.scan-trigger {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.scan-result {
+  margin-bottom: 20px;
+}
+
+.scan-result label {
+  display: block;
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.scanned-value {
+  background: #ecf0f1;
+  border: 2px dashed #bdc3c7;
+  border-radius: 8px;
+  padding: 15px;
+  font-size: 16px;
+  font-family: 'Courier New', monospace;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  color: #7f8c8d;
+  word-break: break-all;
+  transition: all 0.3s ease;
+}
+
+.scan-result.has-value .scanned-value {
+  background: #d5f4e6;
+  border-color: #27ae60;
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.scan-info {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.scan-info p {
+  margin: 8px 0;
+  color: #6c757d;
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-scan {
+  background: #3498db;
+  color: white;
+}
+
+.btn-scan:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+.btn-focus {
+  background: #f39c12;
+  color: white;
+}
+
+.btn-focus:hover {
+  background: #e67e22;
+}
+
+.btn-copy {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-copy:hover {
+  background: #229954;
+}
+
+.btn-clear {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-clear:hover {
+  background: #c0392b;
+}
+
+.test-area {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.test-area h4 {
+  margin: 0 0 15px 0;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.test-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-test {
+  background: #9b59b6;
+  color: white;
+  font-size: 12px;
+  padding: 8px 15px;
+}
+
+.btn-test:hover {
+  background: #8e44ad;
+}
+
+.status {
+  text-align: center;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #27ae60;
+  font-size: 14px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.status-indicator.scanning {
+  color: #3498db;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #27ae60;
+  transition: all 0.3s ease;
+}
+
+.status-indicator.scanning .indicator {
+  background: #3498db;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .scanner-container {
+    padding: 10px;
+  }
+  
+  .scan-trigger {
+    flex-direction: column;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .test-buttons {
+    flex-direction: column;
+  }
 }

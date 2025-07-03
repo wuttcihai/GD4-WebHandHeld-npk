@@ -278,7 +278,7 @@ export class PopupComponent implements OnInit {
     if (!resultData) {
       return;
     }
-    console.log('Sending Data:', resultData);
+    // console.log('Sending Data:', resultData);
     if (this.data.apiUrl.length > 0) {
       this.http.post(this.data.apiUrl, resultData).subscribe({
         next: response => {
@@ -292,7 +292,12 @@ export class PopupComponent implements OnInit {
         }
       });
     } else {
+      // if(resultData.mederror_desc.length > 0 || resultData.mederror_freetext.length > 0 ) {
       this.ref.close(resultData);
+      // } else {
+      //    alert(`ระบุเหตผล`);
+      // }
+
     }
 
   }

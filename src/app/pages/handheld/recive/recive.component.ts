@@ -100,7 +100,13 @@ export class ReciveComponent implements AfterViewInit {
   patientadmits: any;
   hiddenSearch: boolean = false;
   currentTime = new Date();
-
+  scanFocus: boolean = true;
+  statusColor: string = '#4CAF50'; // Default status color (green)
+  statusMessage: string = 'Ready to scan'; // Default status message
+  scanSuccess: boolean = false; // Tracks scan success state
+  scanMessage: string = ''; // Feedback message for scans
+  // currentTime: Date = new Date(); // Current time for display
+  groupedData: { [key: string]: any[] } = {};
   medications: any[] = [];
   patient = {
     photoUrl: './Document/dist/img/avatar5.png',
@@ -152,7 +158,8 @@ export class ReciveComponent implements AfterViewInit {
   resDataPatientadmit2: any;
   resDataPatientadmitSel: any;
   resDatapostPrescription: any;
-
+  timeFilter: string = 'all';
+  filteredMedications: any[] = [];
   lenSticker: any;
 
   lenPack: any;
@@ -526,8 +533,8 @@ export class ReciveComponent implements AfterViewInit {
 
   showConfirmationToast() {
 
-    const timeOver = this.resDatapostPrescription.filter((item: { frequencytime: string; }) => this.isTimeOver(item.frequencytime) == true).length;
-    const HAD = this.resDatapostPrescription.filter((item: { highalert: string; }) => item.highalert == '1').length;
+    // const timeOver = this.resDatapostPrescription.filter((item: { frequencytime: string; }) => this.isTimeOver(item.frequencytime) == true).length;
+    // const HAD = this.resDatapostPrescription.filter((item: { highalert: string; }) => item.highalert == '1').length;
     const userCheck = this.resDatapostPrescription.filter((item: { recivedatetime: string; }) => !item.recivedatetime).length;
 
     // console.log(this.resDatapostPrescription);
@@ -535,12 +542,7 @@ export class ReciveComponent implements AfterViewInit {
       this.toastr.warning('กรุณาแสกนซองยาให้ครบ', 'แจ้งเตือน', {
         toastClass: 'custom-toast-warning',
       });
-
-    } else if (HAD > 0) {
-      this.confirmDispenseHAD();
-
-    } else if (timeOver > 0) {
-      this.confirmDispenseError();
+      // this.confirmDispenseError();
     } else {
       let resDataz = this.resDatapostPrescription.map((item: { _id: any; reciveuserid: any; reciveusername: any; recivedatetime: any; }) => ({
         _id: item._id,
@@ -563,7 +565,7 @@ export class ReciveComponent implements AfterViewInit {
             this.hasScanned = false;
             this.focusInput();
             this.currentBarcode = '';
-              this.onScanAN2();
+            this.onScanAN2();
             // this.toastr.success('Successful!', 'แจ้งเตือน');
             // this.resDataPatientadmit2 = response.data
             // this.hasScanned = false;
@@ -599,7 +601,7 @@ export class ReciveComponent implements AfterViewInit {
           this.resDataPatientadmit2 = response.data
           this.hasScanned = false;
 
-          console.log(response.data);
+          // console.log(response.data);
           // this.onpostprescription(an)
           // this.getDevice()
         } else {
@@ -653,17 +655,49 @@ export class ReciveComponent implements AfterViewInit {
 
         if (response.status === 200) {
           // console.log(response);
-          this.resDatapostPrescription = response.data
+          this.resDatapostPrescription = response.data.sort((a: { orderitembarcode: string; }, b: { orderitembarcode: any; }) => {
+            return a.orderitembarcode.localeCompare(b.orderitembarcode);
+          });
 
           // this.lenPack == response.data.filter((item: { sendmachine: string; }) => item.sendmachine == "Y").length;
 
           // console.log(this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "Y").length)
-          this.lenPack = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "Y")
-          this.lenSticker = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "N")
+          // this.lenPack = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "Y")
+          // this.lenSticker = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "N")
+          const uniquePackBarcodes = new Set<string>();
+          const uniqueStickerBarcodes = new Set<string>();
+
+          this.resDatapostPrescription.forEach((item: { sendmachine: string; orderitembarcode: string; }) => {
+            if (item.sendmachine == 'Y') {
+              uniquePackBarcodes.add(item.orderitembarcode);
+            } else if (item.sendmachine == 'N') {
+              uniqueStickerBarcodes.add(item.orderitembarcode);
+            }
+          });
+
+          this.lenPack = uniquePackBarcodes.size;
+          this.lenSticker = uniqueStickerBarcodes.size;
+
+// console.log(this.lenPack)
+
+          this.groupedData = {}
+          // groupData():a {/
+          this.resDatapostPrescription.forEach((item: { orderitembarcode: any; }) => {
+            const barcode = item.orderitembarcode;
+            if (!this.groupedData[barcode]) {
+              this.groupedData[barcode] = [];
+            }
+            this.groupedData[barcode].push(item);
+          });
+
+          // console.log(this.groupedData)
+          // }
           // console.log(this.lenPack);
           // this.lenSticker == response.data.filter((item: { sendmachine: string; }) => item.sendmachine == "N").length;
           // this.toastr.success('Successful!', 'แจ้งเตือน');
           // this.resDataPatientadmit = response.data.find((item: { an: string; }) => item.an === an);
+          this.timeFilter = 'all';
+          this.updateFilteredMedications();
           this.hasScanned = true;
           // this.onpostprescription(an)
           // this.getDevice()
@@ -716,45 +750,45 @@ export class ReciveComponent implements AfterViewInit {
     });
   }
 
-  getNextDoses(): any[] {
-    this.formatfrequencytime()
-    const currentMinutes = this.currentTime.getHours() * 60 + this.currentTime.getMinutes();
+  // getNextDoses(): any[] {
+  //   this.formatfrequencytime()
+  //   const currentMinutes = this.currentTime.getHours() * 60 + this.currentTime.getMinutes();
 
-    const futureDoses = this.resDatapostPrescription.filter((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-      if (!med.frequencytime) return false;
+  //   const futureDoses = this.resDatapostPrescription.filter((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+  //     if (!med.frequencytime) return false;
 
-      const [hours, minutes] = med.frequencytime.split(':').map(Number);
-      const medMinutes = hours * 60 + minutes;
+  //     const [hours, minutes] = med.frequencytime.split(':').map(Number);
+  //     const medMinutes = hours * 60 + minutes;
 
-      return medMinutes >= currentMinutes;
-    });
+  //     return medMinutes >= currentMinutes;
+  //   });
 
-    if (futureDoses.length === 0) return [];
+  //   if (futureDoses.length === 0) return [];
 
-    const earliestTime = Math.min(...futureDoses.map((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-      const [h, m] = med.frequencytime.split(':').map(Number);
-      return h * 60 + m;
-    }));
+  //   const earliestTime = Math.min(...futureDoses.map((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+  //     const [h, m] = med.frequencytime.split(':').map(Number);
+  //     return h * 60 + m;
+  //   }));
 
-    return futureDoses.filter((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
-      const [h, m] = med.frequencytime.split(':').map(Number);
-      return (h * 60 + m) === earliestTime;
-    });
-  }
+  //   return futureDoses.filter((med: { frequencytime: { split: (arg0: string) => { (): any; new(): any; map: { (arg0: NumberConstructor): [any, any]; new(): any; }; }; }; }) => {
+  //     const [h, m] = med.frequencytime.split(':').map(Number);
+  //     return (h * 60 + m) === earliestTime;
+  //   });
+  // }
 
 
-  getCurrentHourDoses(): any[] {
-    const currentHour = this.currentTime.getHours();
+  // getCurrentHourDoses(): any[] {
+  //   const currentHour = this.currentTime.getHours();
 
-    const currentHourDoses = this.resDatapostPrescription.filter((med: any) => {
-      if (!med.frequencytime) return false;
+  //   const currentHourDoses = this.resDatapostPrescription.filter((med: any) => {
+  //     if (!med.frequencytime) return false;
 
-      const [hours] = med.frequencytime.split(':').map(Number);
-      return hours === currentHour;
-    });
+  //     const [hours] = med.frequencytime.split(':').map(Number);
+  //     return hours === currentHour;
+  //   });
 
-    return currentHourDoses;
-  }
+  //   return currentHourDoses;
+  // }
 
 
   isTimeOver(timeString: string): boolean {
@@ -779,7 +813,7 @@ export class ReciveComponent implements AfterViewInit {
 
 
   onScanDrung(currentBarcodeDrug: string) {
-    // console.log(currentBarcodeDrug)
+    console.log(this.groupedData)
     const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
     this.resDatapostPrescription.filter((item: { orderitembarcode: string; }) => item.orderitembarcode === currentBarcodeDrug).forEach((items: {
       reciveuserid: string;
@@ -830,6 +864,7 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   onFocus() {
+    this.currentBarcode = '';
     this.currentBarcodeDrug = '';
     // this.focusInput2();
     // this.currentBarcodeDrug = '';
@@ -844,4 +879,154 @@ export class ReciveComponent implements AfterViewInit {
       }
     });
   }
+
+  onScanFocus() {
+    this.scanFocus = true;
+  }
+
+  onScanBlur() {
+    this.scanFocus = false;
+  }
+
+  // Method to update status
+  updateStatus(message: string, isSuccess: boolean) {
+    this.statusMessage = message;
+    this.statusColor = isSuccess ? '#4CAF50' : '#F44336';
+    this.scanSuccess = isSuccess;
+    this.scanMessage = message;
+
+    // Optionally reset status after delay
+    setTimeout(() => {
+      this.statusMessage = 'Ready to scan';
+      this.statusColor = '#4CAF50';
+    }, 3000);
+  }
+
+  filterByType(type: string): void {
+    if (!this.resDatapostPrescription) return;
+
+    switch (type) {
+      case 'package':
+        this.filteredMedications = this.resDatapostPrescription.filter((item: { sendmachine: string; }) =>
+          item.sendmachine === "Y");
+        break;
+      case 'sticker':
+        this.filteredMedications = this.resDatapostPrescription.filter((item: { sendmachine: string; }) =>
+          item.sendmachine === "N");
+        break;
+      case 'overdue':
+        this.filteredMedications = this.resDatapostPrescription.filter((item: { frequencytime: string; }) =>
+          this.isTimeOver(item.frequencytime));
+        break;
+      default:
+        this.filteredMedications = [...this.resDatapostPrescription];
+    }
+  }
+
+  filterByTime(filter: string): void {
+    this.timeFilter = filter;
+    this.updateFilteredMedications();
+  }
+
+  updateFilteredMedications(): void {
+    if (!this.resDatapostPrescription) return;
+
+    // First filter by time
+    let filtered = [...this.resDatapostPrescription];
+
+    if (this.timeFilter === 'current') {
+      filtered = this.getCurrentHourDoses();
+    } else if (this.timeFilter === 'next') {
+      filtered = this.getNextDoses();
+    }
+
+    // Then apply any type filters if needed
+    this.filteredMedications = filtered;
+  }
+
+  getOverdueCount(): number {
+    if (!this.resDatapostPrescription) return 0;
+    return this.resDatapostPrescription.filter((item: { frequencytime: string; }) =>
+      this.isTimeOver(item.frequencytime)).length;
+  }
+
+  canConfirm(): boolean {
+    if (!this.resDatapostPrescription) return false;
+
+    // Check if all medications have been scanned
+    const allScanned = this.resDatapostPrescription.every((item: { recivedatetime: string; }) =>
+      item.recivedatetime);
+
+    // Check if there are any medications to confirm
+    const hasMedications = this.resDatapostPrescription.length > 0;
+
+    return allScanned && hasMedications;
+  }
+
+  // Update your existing getNextDoses() method to return filtered array
+  getNextDoses(): any[] {
+    if (!this.resDatapostPrescription) return [];
+
+    this.formatfrequencytime();
+    const currentMinutes = this.currentTime.getHours() * 60 + this.currentTime.getMinutes();
+
+    const futureDoses = this.resDatapostPrescription.filter((med: { frequencytime: string; }) => {
+      if (!med.frequencytime) return false;
+
+      const [hours, minutes] = med.frequencytime.split(':').map(Number);
+      const medMinutes = hours * 60 + minutes;
+
+      return medMinutes >= currentMinutes;
+    });
+
+    if (futureDoses.length === 0) return [];
+
+    const earliestTime = Math.min(...futureDoses.map((med: { frequencytime: string; }) => {
+      const [h, m] = med.frequencytime.split(':').map(Number);
+      return h * 60 + m;
+    }));
+
+    return futureDoses.filter((med: { frequencytime: string; }) => {
+      const [h, m] = med.frequencytime.split(':').map(Number);
+      return (h * 60 + m) === earliestTime;
+    });
+  }
+
+  // Update your existing getCurrentHourDoses() method to return filtered array
+  getCurrentHourDoses(): any[] {
+    if (!this.resDatapostPrescription) return [];
+
+    const currentHour = this.currentTime.getHours();
+
+    return this.resDatapostPrescription.filter((med: any) => {
+      if (!med.frequencytime) return false;
+
+      const [hours] = med.frequencytime.split(':').map(Number);
+      return hours === currentHour;
+    });
+  }
+
+  // groupData():a {
+  //   this.originalData.forEach(item => {
+  //     const barcode = item.orderitembarcode;
+  //     if (!this.groupedData[barcode]) {
+  //       this.groupedData[barcode] = [];
+  //     }
+  //     this.groupedData[barcode].push(item);
+  //   });
+  // }
+
+  // getBarcodes(): string[] {
+  //   return Object.keys(this.groupedData);
+  // }
+
+  getBarcodes(): string[] {
+    return Object.keys(this.groupedData);
+  }
+
+  isGroupReceived(barcode: string): boolean {
+  if (!this.groupedData || !this.groupedData[barcode]) return false;
+  return this.groupedData[barcode].every((med: any) => !!med.recivedatetime);
+}
+
 }

@@ -1,11 +1,22 @@
 import {
-  SharedResizeObserver
-} from "./chunk-HAEAIFQQ.js";
-import {
   CdkPortal,
   CdkPortalOutlet,
   TemplatePortal
 } from "./chunk-AWQ4ECAQ.js";
+import {
+  SharedResizeObserver
+} from "./chunk-HAEAIFQQ.js";
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger
+} from "./chunk-4C72D2SV.js";
+import {
+  CdkScrollable,
+  ViewportRuler
+} from "./chunk-JXYY5DIS.js";
 import {
   MAT_RIPPLE_GLOBAL_OPTIONS,
   MatCommonModule,
@@ -24,22 +35,11 @@ import {
   SPACE,
   hasModifierKey
 } from "./chunk-3YLFXDIK.js";
-import "./chunk-YPWWSUN4.js";
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger
-} from "./chunk-4C72D2SV.js";
-import {
-  CdkScrollable,
-  ViewportRuler
-} from "./chunk-JXYY5DIS.js";
 import "./chunk-KDENNSUX.js";
 import {
   Directionality
 } from "./chunk-BDD7CDBT.js";
+import "./chunk-YPWWSUN4.js";
 import {
   Platform,
   normalizePassiveListenerOptions

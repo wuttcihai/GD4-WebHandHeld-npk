@@ -4,6 +4,7 @@ import { catchError, Observable, shareReplay, tap, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
 
+
 interface DeviceResponse {
   status: number;
   data?: any;
@@ -13,7 +14,8 @@ interface DeviceResponse {
 })
 export class HandheldService {
   // private apiUrl = 'http://127.0.0.1:6427/setting/devicedrugmanage/device/all';
-  apiUrl = 'http://192.168.30.18:6425';
+  // apiUrl = 'http://127.0.0.1:6425';
+    apiUrl = environment.apiURLipd;
   // private apiUrluserpatient = '/emarapi/admit/patient';
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
@@ -127,8 +129,44 @@ export class HandheldService {
     );
   }
 
-    getDispense(resultData: any): Observable<DeviceResponse> {
+  getDispense(resultData: any): Observable<DeviceResponse> {
     return this.http.post<DeviceResponse>(`${this.apiUrl}/emar/ipd_admit/dispense`, resultData).pipe(
+      shareReplay(1),
+      tap((response: { status: number; }) => {
+        if (response.status === 200) {
+          // console.log('Success:', response);
+          // this.toastr.success('Successful!', 'แจ้งเตือน');
+        }
+      }),
+      catchError(error => {
+        // this.toastr.warning(error, 'แจ้งเตือน', {
+        //   toastClass: 'custom-toast-warning',
+        // });
+        return throwError(error);
+      })
+    );
+  }
+
+  loginEmar(resultData: any): Observable<DeviceResponse> {
+    return this.http.post<DeviceResponse>(`${this.apiUrl}/emar/login`, resultData).pipe(
+      shareReplay(1),
+      tap((response: { status: number; }) => {
+        if (response.status === 200) {
+          // console.log('Success:', response);
+          // this.toastr.success('Successful!', 'แจ้งเตือน');
+        }
+      }),
+      catchError(error => {
+        // this.toastr.warning(error, 'แจ้งเตือน', {
+        //   toastClass: 'custom-toast-warning',
+        // });
+        return throwError(error);
+      })
+    );
+  }
+
+    postMedError(resultData: any): Observable<DeviceResponse> {
+    return this.http.post<DeviceResponse>(`${this.apiUrl}/general//mederror/update`, resultData).pipe(
       shareReplay(1),
       tap((response: { status: number; }) => {
         if (response.status === 200) {
