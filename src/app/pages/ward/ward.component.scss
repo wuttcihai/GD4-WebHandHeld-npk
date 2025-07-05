@@ -38,12 +38,10 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .scanner-header {
   background: $primary-gradient;
   color: $light-text;
-  padding: 0 10px 10px 10px;
+  padding: 15px;
   position: relative;
   z-index: 10;
   box-shadow: $shadow;
-  position: sticky;
-  top: 0;
 
   .header-gradient {
     @include flex-center;

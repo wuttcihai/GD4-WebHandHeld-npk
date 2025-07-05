@@ -40,8 +40,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'ward', component: WardComponent },
 
-  { path: '**', redirectTo: 'home' },
-  // { path: '', redirectTo: '/home', pathMatch: 'full' },
+  // { path: '**', redirectTo: 'home' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   // { path: '', redirectTo: '/locationmanage', pathMatch: 'full' },
   // { path: '', redirectTo: '/usermanage', pathMatch: 'full' },
   // { path: '', redirectTo: '/searchmedicinebasket', pathMatch: 'full' },

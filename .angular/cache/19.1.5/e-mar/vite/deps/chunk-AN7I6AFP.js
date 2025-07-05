@@ -2,18 +2,18 @@ import {
   SharedResizeObserver
 } from "./chunk-HAEAIFQQ.js";
 import {
-  MatCommonModule
-} from "./chunk-UAJP7FY2.js";
-import {
-  ObserversModule
-} from "./chunk-3PTJVQHL.js";
-import {
   animate,
   state,
   style,
   transition,
   trigger
 } from "./chunk-4C72D2SV.js";
+import {
+  MatCommonModule
+} from "./chunk-UAJP7FY2.js";
+import {
+  ObserversModule
+} from "./chunk-3PTJVQHL.js";
 import {
   Directionality
 } from "./chunk-BDD7CDBT.js";
@@ -1531,4 +1531,4 @@ export {
   MatFormField,
   MatFormFieldModule
 };
-//# sourceMappingURL=chunk-Q4KI2QOV.js.map
+//# sourceMappingURL=chunk-AN7I6AFP.js.map

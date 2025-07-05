@@ -1,5 +1,21 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, Renderer2 } from '@angular/core';
-import { trigger, state, style, transition, animate, query, stagger, keyframes } from '@angular/animations';
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  HostListener,
+  Renderer2,
+} from '@angular/core';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+  query,
+  stagger,
+  keyframes,
+} from '@angular/animations';
 
 // import { AfterViewInit, Component, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -26,70 +42,94 @@ export interface SelectPopup {
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate('0.5s ease-in', style({ opacity: 1 }))
-      ])
+        animate('0.5s ease-in', style({ opacity: 1 })),
+      ]),
     ]),
     trigger('slideInDown', [
       transition(':enter', [
         style({ transform: 'translateY(-20px)', opacity: 0 }),
-        animate('0.4s ease-out',
-          style({ transform: 'translateY(0)', opacity: 1 }))
-      ])
+        animate(
+          '0.4s ease-out',
+          style({ transform: 'translateY(0)', opacity: 1 })
+        ),
+      ]),
     ]),
     trigger('pulse', [
       transition(':enter', [
-        animate('1.5s ease-in-out',
+        animate(
+          '1.5s ease-in-out',
           keyframes([
             style({ transform: 'scale(1)', offset: 0 }),
             style({ transform: 'scale(1.05)', offset: 0.3 }),
             style({ transform: 'scale(0.95)', offset: 0.6 }),
-            style({ transform: 'scale(1)', offset: 1 })
-          ]))
-      ])
+            style({ transform: 'scale(1)', offset: 1 }),
+          ])
+        ),
+      ]),
     ]),
     trigger('fadeInLeft', [
       transition(':enter', [
         style({ transform: 'translateX(-20px)', opacity: 0 }),
-        animate('0.4s 0.2s ease-out',
-          style({ transform: 'translateX(0)', opacity: 1 }))
-      ])
+        animate(
+          '0.4s 0.2s ease-out',
+          style({ transform: 'translateX(0)', opacity: 1 })
+        ),
+      ]),
     ]),
     trigger('staggerAnimation', [
       transition('* => *', [
         query(':enter', style({ opacity: 0 }), { optional: true }),
-        query(':enter', stagger('100ms', [
-          animate('0.3s ease-in',
-            keyframes([
-              style({ opacity: 0, transform: 'translateY(10px)', offset: 0 }),
-              style({ opacity: 0.5, transform: 'translateY(5px)', offset: 0.3 }),
-              style({ opacity: 1, transform: 'translateY(0)', offset: 1 })
-            ]))
-        ]), { optional: true })
-      ])
+        query(
+          ':enter',
+          stagger('100ms', [
+            animate(
+              '0.3s ease-in',
+              keyframes([
+                style({ opacity: 0, transform: 'translateY(10px)', offset: 0 }),
+                style({
+                  opacity: 0.5,
+                  transform: 'translateY(5px)',
+                  offset: 0.3,
+                }),
+                style({ opacity: 1, transform: 'translateY(0)', offset: 1 }),
+              ])
+            ),
+          ]),
+          { optional: true }
+        ),
+      ]),
     ]),
     trigger('bounceIn', [
       transition(':enter', [
-        animate('0.5s ease-in',
+        animate(
+          '0.5s ease-in',
           keyframes([
             style({ transform: 'scale(0.3)', opacity: 0, offset: 0 }),
             style({ transform: 'scale(1.1)', opacity: 1, offset: 0.5 }),
             style({ transform: 'scale(0.9)', offset: 0.7 }),
-            style({ transform: 'scale(1)', offset: 1 })
-          ]))
-      ])
+            style({ transform: 'scale(1)', offset: 1 }),
+          ])
+        ),
+      ]),
     ]),
     trigger('bounceInUp', [
       transition(':enter', [
         style({ transform: 'translateY(40px)', opacity: 0 }),
-        animate('0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          style({ transform: 'translateY(0)', opacity: 1 }))
-      ])
-    ])
-  ]
+        animate(
+          '0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          style({ transform: 'translateY(0)', opacity: 1 })
+        ),
+      ]),
+    ]),
+  ],
 })
 export class ReciveComponent implements AfterViewInit {
   @ViewChild('medicationInput') medicationInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('medicationInput2') medicationInput2!: ElementRef<HTMLInputElement>;
+  @ViewChild('medicationInput2')
+  medicationInput2!: ElementRef<HTMLInputElement>;
+
+  WARD: any = JSON.parse(localStorage.getItem('WARD') || '{}');
+
   devicesPopup: SelectPopup[] = [];
   hasScanned = false;
   scanTime = new Date();
@@ -115,7 +155,7 @@ export class ReciveComponent implements AfterViewInit {
     an: 'AN-789012',
     room: 'ICU-3',
     bed: 'B-02',
-    status: 'stable'
+    status: 'stable',
   };
 
   medications_ = [
@@ -125,7 +165,7 @@ export class ReciveComponent implements AfterViewInit {
       dosage: '1 tablet',
       instruction: 'After breakfast',
       confirmed: false,
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s"
+      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s',
     },
     {
       name: 'Lisinopril 10mg',
@@ -133,8 +173,7 @@ export class ReciveComponent implements AfterViewInit {
       dosage: '1 tablet',
       instruction: 'With a glass of water',
       confirmed: false,
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s"
-
+      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s',
     },
     {
       name: 'Atorvastatin 20mg',
@@ -142,7 +181,7 @@ export class ReciveComponent implements AfterViewInit {
       dosage: '1 tablet',
       instruction: 'After dinner',
       confirmed: false,
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s"
+      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s',
     },
     {
       name: 'Metformin 850mg',
@@ -150,8 +189,8 @@ export class ReciveComponent implements AfterViewInit {
       dosage: '1 tablet each',
       instruction: 'With meals',
       confirmed: false,
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s"
-    }
+      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s',
+    },
   ];
   // handheldService: any;
   resDataPatientadmit: any;
@@ -173,8 +212,8 @@ export class ReciveComponent implements AfterViewInit {
     }, 1500);
   }
 
-
-  constructor(private renderer: Renderer2,
+  constructor(
+    private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
     private dialog: MatDialog,
     private handheldService: HandheldService,
@@ -188,12 +227,18 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   checkIfMobile() {
-    this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    this.isMobile =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
   }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === '/' && event.target !== this.medicationInput.nativeElement) {
+    if (
+      event.key === '/' &&
+      event.target !== this.medicationInput.nativeElement
+    ) {
       event.preventDefault();
       this.focusInput();
     }
@@ -247,7 +292,7 @@ export class ReciveComponent implements AfterViewInit {
 
     const newMed = this.fetchMedicationData(barcode);
     // console.log(this.medications)
-    if (!this.medications.some(m => m.barcode === barcode)) {
+    if (!this.medications.some((m) => m.barcode === barcode)) {
       this.medications.unshift(newMed);
       this.hasScanned = true;
       this.scanTime = new Date();
@@ -277,8 +322,8 @@ export class ReciveComponent implements AfterViewInit {
         instructions: 'หลังอาหารเย็น',
         type: 'HAD',
         time: '2025-04-24 22:00',
-        barcode: "1234",
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s"
+        barcode: '1234',
+        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s',
       },
       {
         name: 'Amoxicillin 250mg',
@@ -288,8 +333,8 @@ export class ReciveComponent implements AfterViewInit {
         instructions: 'หลังอาหารเย็น',
         time: '2025-04-24 22:00',
         type: 'normal',
-        barcode: "1234",
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s"
+        barcode: '1234',
+        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s',
       },
       {
         name: 'Atorvastatin 20mg',
@@ -299,14 +344,14 @@ export class ReciveComponent implements AfterViewInit {
         instructions: 'หลังอาหารเย็น',
         time: '2025-04-24 22:00',
         type: 'overtime',
-        barcode: "1234",
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s"
-      }
+        barcode: '1234',
+        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYl8ZXcRRnj5k9DU3dnjnRWqYA4yvpL0qhgA&s',
+      },
     ];
 
     // const index = Math.abs(this.hashCode(barcode)) % medTypes.length;
     // return medTypes[index];
-    return medTypes.filter(item => String(item.barcode) === String(barcode))
+    return medTypes.filter((item) => String(item.barcode) === String(barcode));
   }
 
   hashCode(str: string): number {
@@ -331,18 +376,17 @@ export class ReciveComponent implements AfterViewInit {
     this.focusInput();
   }
 
-
   onConfirm(Option: string) {
     // type = 'normal','overtime' ,'HAD'
     switch (Option) {
-      case "overtime":
+      case 'overtime':
         this.confirmDispenseError();
         break;
-      case "normal":
+      case 'normal':
         this.confirmDispense();
         break;
 
-      case "HAD":
+      case 'HAD':
         this.confirmDispenseHAD();
         break;
         // case 3:
@@ -353,12 +397,11 @@ export class ReciveComponent implements AfterViewInit {
       default:
       // console.log(`Sorry, we are out of `, conveyor_ip);
     }
-
   }
   confirmDispense() {
     if (this.medications.length === 0) return;
 
-    const medNames = this.medications.map(m => m.name).join(', ');
+    const medNames = this.medications.map((m) => m.name).join(', ');
     alert(`Dispensed ${this.medications.length} medications: ${medNames}`);
     this.clearAll();
   }
@@ -380,8 +423,18 @@ export class ReciveComponent implements AfterViewInit {
         title: 'เหตุผลการให้ยาเกินเวลา',
         apiUrl: ``,
         fields: [
-          { key: 'deviceCode', label: 'เลือกเหตุผล', placeholder: 'Enter device code', type: 'autocomplete' },
-          { key: 'deviceName', label: 'เหตุผลการให้ยา', placeholder: 'Enter device name', type: 'string' },
+          {
+            key: 'deviceCode',
+            label: 'เลือกเหตุผล',
+            placeholder: 'Enter device code',
+            type: 'autocomplete',
+          },
+          {
+            key: 'deviceName',
+            label: 'เหตุผลการให้ยา',
+            placeholder: 'Enter device name',
+            type: 'string',
+          },
           // { key: 'deviceDesc', label: 'Device Desc', placeholder: 'Enter device desc', type: 'string' },
           // { key: 'deviceIP', label: 'Device IP', placeholder: 'Enter device ip', type: 'string' },
           // { key: 'computerName', label: 'Computer Name', placeholder: 'Enter computer name', type: 'string' },
@@ -394,27 +447,25 @@ export class ReciveComponent implements AfterViewInit {
           deviceCode: [
             {
               label: 'TEST 1',
-              value: 'TEST 1'
+              value: 'TEST 1',
             },
             {
               label: 'TEST 2',
-              value: 'TEST 2'
+              value: 'TEST 2',
             },
             {
               label: 'TEST 3',
-              value: 'TEST 3'
+              value: 'TEST 3',
             },
           ],
         },
         useLabel: {
           deviceCode: true,
         },
-      }
+      },
     });
 
-
-
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result !== 'Close' && result !== undefined) {
         this.toastr.success('Successful!', 'แจ้งเตือน');
         this.resDataPatientadmit = [];
@@ -431,8 +482,6 @@ export class ReciveComponent implements AfterViewInit {
         // this.currentBarcode = '';
       }
     });
-
-
   }
 
   confirmDispenseHAD() {
@@ -452,8 +501,18 @@ export class ReciveComponent implements AfterViewInit {
         title: 'เหตุผลการให้ยาเกินเวลา',
         apiUrl: ``,
         fields: [
-          { key: 'username', label: 'Username', placeholder: 'Username', type: 'string' },
-          { key: 'password', label: 'Password', placeholder: 'Password', type: 'string' },
+          {
+            key: 'username',
+            label: 'Username',
+            placeholder: 'Username',
+            type: 'string',
+          },
+          {
+            key: 'password',
+            label: 'Password',
+            placeholder: 'Password',
+            type: 'string',
+          },
           // { key: 'deviceDesc', label: 'Device Desc', placeholder: 'Enter device desc', type: 'string' },
           // { key: 'deviceIP', label: 'Device IP', placeholder: 'Enter device ip', type: 'string' },
           // { key: 'computerName', label: 'Computer Name', placeholder: 'Enter computer name', type: 'string' },
@@ -462,12 +521,10 @@ export class ReciveComponent implements AfterViewInit {
           // { key: 'orderzone', label: 'orderzone', placeholder: 'Enter orderzone', value:0, type: 'number' },
           // { key: 'isEnabled', label: 'isEnabled', placeholder: 'Enter isEnabled', value: false, type: 'boolean' },
         ],
-      }
+      },
     });
 
-
-
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result !== 'Close' && result !== undefined) {
         // console.log('Received Data:', result);
         // this.getDevice()
@@ -475,21 +532,18 @@ export class ReciveComponent implements AfterViewInit {
         // console.log('Dialog closed without data');
       }
     });
-
-
   }
-
 
   styleType(medType: string) {
     const styles: any = {};
 
-    if (medType === "overtime") {
+    if (medType === 'overtime') {
       styles.color = 'red';
       styles.paddingTop = '1rem';
       styles.marginBottom = '-1.3rem';
     }
 
-    if (medType === "HAD") {
+    if (medType === 'HAD') {
       styles.color = 'red';
       styles.paddingTop = '1rem';
       styles.marginBottom = '-1.3rem';
@@ -520,7 +574,7 @@ export class ReciveComponent implements AfterViewInit {
 
   confirmAllMedications() {
     // Confirm all unconfirmed medications
-    this.medications.forEach(med => {
+    this.medications.forEach((med) => {
       if (!med.confirmed) {
         med.confirmed = true;
         // Add any additional confirmation logic here
@@ -532,10 +586,11 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   showConfirmationToast() {
-
     // const timeOver = this.resDatapostPrescription.filter((item: { frequencytime: string; }) => this.isTimeOver(item.frequencytime) == true).length;
     // const HAD = this.resDatapostPrescription.filter((item: { highalert: string; }) => item.highalert == '1').length;
-    const userCheck = this.resDatapostPrescription.filter((item: { recivedatetime: string; }) => !item.recivedatetime).length;
+    const userCheck = this.resDatapostPrescription.filter(
+      (item: { recivedatetime: string }) => !item.recivedatetime
+    ).length;
 
     // console.log(this.resDatapostPrescription);
     if (userCheck > 0) {
@@ -544,14 +599,21 @@ export class ReciveComponent implements AfterViewInit {
       });
       // this.confirmDispenseError();
     } else {
-      let resDataz = this.resDatapostPrescription.map((item: { _id: any; reciveuserid: any; reciveusername: any; recivedatetime: any; }) => ({
-        _id: item._id,
-        updatestatus: {
-          reciveuserid: item.reciveuserid,
-          reciveusername: item.reciveusername,
-          recivedatetime: item.recivedatetime
-        }
-      }));
+      let resDataz = this.resDatapostPrescription.map(
+        (item: {
+          _id: any;
+          reciveuserid: any;
+          reciveusername: any;
+          recivedatetime: any;
+        }) => ({
+          _id: item._id,
+          updatestatus: {
+            reciveuserid: item.reciveuserid,
+            reciveusername: item.reciveusername,
+            recivedatetime: item.recivedatetime,
+          },
+        })
+      );
 
       // console.log(resDataz)
       this.handheldService.updatepackage(resDataz).subscribe({
@@ -585,20 +647,20 @@ export class ReciveComponent implements AfterViewInit {
         },
       });
       // console.log(this.resDatapostPrescription)
-
     }
 
     // You might use a library like ngx-toastr or create a custom toast component
   }
 
   onScanAN2() {
-    this.handheldService.postpatientadmit({ "wardcode": "1641", "recivedatetime": null }).subscribe({
+    const q = { wardcode: this.WARD.wardcode, recivedatetime: null };
+    this.handheldService.postpatientadmit(q).subscribe({
       next: (response) => {
         // console.log(response);
 
         if (response.status === 200) {
           // this.toastr.success('Successful!', 'แจ้งเตือน');
-          this.resDataPatientadmit2 = response.data
+          this.resDataPatientadmit2 = response.data;
           this.hasScanned = false;
 
           // console.log(response.data);
@@ -615,126 +677,145 @@ export class ReciveComponent implements AfterViewInit {
         // });
       },
     });
-    this.currentBarcode = "";
+    this.currentBarcode = '';
   }
 
+  // onScanAN(an: string) {
+  //   this.handheldService.postpatientadmit({ wardcode: '1641' }).subscribe({
+  //     next: (response) => {
+  //       // console.log(response);
 
-  onScanAN(an: string) {
-    this.handheldService.postpatientadmit({ "wardcode": "1641" }).subscribe({
-      next: (response) => {
-        // console.log(response);
-
-        if (response.status === 200) {
-          // this.toastr.success('Successful!', 'แจ้งเตือน');
-          this.resDataPatientadmit = response.data.find((item: { an: string; }) => item.an === an);
-          this.hasScanned = true;
-          this.onpostprescription(an)
-          // this.getDevice()
-        } else {
-          // this.loading = false;
-        }
-      },
-      error: (err) => {
-        // console.error('Update Failed:', err);
-        // this.toastr.warning(err, 'แจ้งเตือน', {
-        //   toastClass: 'custom-toast-warning',
-        // });
-      },
-    });
-    this.currentBarcode = "";
-  }
+  //       if (response.status === 200) {
+  //         // this.toastr.success('Successful!', 'แจ้งเตือน');
+  //         this.resDataPatientadmit = response.data.find(
+  //           (item: { an: string }) => item.an === an
+  //         );
+  //         this.hasScanned = true;
+  //         this.onpostprescription(an);
+  //         // this.getDevice()
+  //       } else {
+  //         // this.loading = false;
+  //       }
+  //     },
+  //     error: (err) => {
+  //       // console.error('Update Failed:', err);
+  //       // this.toastr.warning(err, 'แจ้งเตือน', {
+  //       //   toastClass: 'custom-toast-warning',
+  //       // });
+  //     },
+  //   });
+  //   this.currentBarcode = '';
+  // }
 
   onClickPatient(an: string) {
-    //  console.log(an);
+    console.log(an);
     this.currentBarcodeDrug = '';
-    this.resDataPatientadmitSel = this.resDataPatientadmit2.find((item: { an: string; }) => item.an === an);
-    this.handheldService.postpatientadmitpackage({ "an": an, "recivedatetime": null }
-    ).subscribe({
-      next: (response) => {
-        // console.log(response);
-
-        if (response.status === 200) {
+    this.resDataPatientadmitSel = this.resDataPatientadmit2.find(
+      (item: { an: string }) => item.an === an
+    );
+    this.handheldService
+      .postpatientadmitpackage({ an: an, recivedatetime: null })
+      .subscribe({
+        next: (response) => {
           // console.log(response);
-          this.resDatapostPrescription = response.data.sort((a: { orderitembarcode: string; }, b: { orderitembarcode: any; }) => {
-            return a.orderitembarcode.localeCompare(b.orderitembarcode);
-          });
 
-          // this.lenPack == response.data.filter((item: { sendmachine: string; }) => item.sendmachine == "Y").length;
+          if (response.status === 200) {
+            // console.log(response);
+            this.resDatapostPrescription = response.data.sort(
+              (
+                a: { orderitembarcode: string },
+                b: { orderitembarcode: any }
+              ) => {
+                return a.orderitembarcode.localeCompare(b.orderitembarcode);
+              }
+            );
 
-          // console.log(this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "Y").length)
-          // this.lenPack = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "Y")
-          // this.lenSticker = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "N")
-          const uniquePackBarcodes = new Set<string>();
-          const uniqueStickerBarcodes = new Set<string>();
+            // this.lenPack == response.data.filter((item: { sendmachine: string; }) => item.sendmachine == "Y").length;
 
-          this.resDatapostPrescription.forEach((item: { sendmachine: string; orderitembarcode: string; }) => {
-            if (item.sendmachine == 'Y') {
-              uniquePackBarcodes.add(item.orderitembarcode);
-            } else if (item.sendmachine == 'N') {
-              uniqueStickerBarcodes.add(item.orderitembarcode);
-            }
-          });
+            // console.log(this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "Y").length)
+            // this.lenPack = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "Y")
+            // this.lenSticker = this.resDatapostPrescription.filter((item: { sendmachine: string; }) => item.sendmachine == "N")
+            const uniquePackBarcodes = new Set<string>();
+            const uniqueStickerBarcodes = new Set<string>();
 
-          this.lenPack = uniquePackBarcodes.size;
-          this.lenSticker = uniqueStickerBarcodes.size;
+            this.resDatapostPrescription.forEach(
+              (item: { sendmachine: string; orderitembarcode: string }) => {
+                if (item.sendmachine == 'Y') {
+                  uniquePackBarcodes.add(item.orderitembarcode);
+                } else if (item.sendmachine == 'N') {
+                  uniqueStickerBarcodes.add(item.orderitembarcode);
+                }
+              }
+            );
 
-// console.log(this.lenPack)
+            this.lenPack = uniquePackBarcodes.size;
+            this.lenSticker = uniqueStickerBarcodes.size;
 
-          this.groupedData = {}
-          // groupData():a {/
-          this.resDatapostPrescription.forEach((item: { orderitembarcode: any; }) => {
-            const barcode = item.orderitembarcode;
-            if (!this.groupedData[barcode]) {
-              this.groupedData[barcode] = [];
-            }
-            this.groupedData[barcode].push(item);
-          });
+            // console.log(this.lenPack)
 
-          // console.log(this.groupedData)
-          // }
-          // console.log(this.lenPack);
-          // this.lenSticker == response.data.filter((item: { sendmachine: string; }) => item.sendmachine == "N").length;
-          // this.toastr.success('Successful!', 'แจ้งเตือน');
-          // this.resDataPatientadmit = response.data.find((item: { an: string; }) => item.an === an);
-          this.timeFilter = 'all';
-          this.updateFilteredMedications();
-          this.hasScanned = true;
-          // this.onpostprescription(an)
-          // this.getDevice()
-        } else {
-          // this.loading = false;
-        }
-      },
-      error: (err) => {
-        // console.error('Update Failed:', err);
-        // this.toastr.warning(err, 'แจ้งเตือน', {
-        //   toastClass: 'custom-toast-warning',
-        // });
-      },
-    });
-    this.currentBarcode = "";
+            this.groupedData = {};
+            // groupData():a {/
+            this.resDatapostPrescription.forEach(
+              (item: { orderitembarcode: any }) => {
+                const barcode = item.orderitembarcode;
+                if (!this.groupedData[barcode]) {
+                  this.groupedData[barcode] = [];
+                }
+                this.groupedData[barcode].push(item);
+              }
+            );
+
+            console.log(this.groupedData);
+            // }
+            // console.log(this.lenPack);
+            // this.lenSticker == response.data.filter((item: { sendmachine: string; }) => item.sendmachine == "N").length;
+            // this.toastr.success('Successful!', 'แจ้งเตือน');
+            // this.resDataPatientadmit = response.data.find((item: { an: string; }) => item.an === an);
+            this.timeFilter = 'all';
+            this.updateFilteredMedications();
+            this.hasScanned = true;
+            // this.onpostprescription(an)
+            // this.getDevice()
+          } else {
+            // this.loading = false;
+          }
+        },
+        error: (err) => {
+          // console.error('Update Failed:', err);
+          // this.toastr.warning(err, 'แจ้งเตือน', {
+          //   toastClass: 'custom-toast-warning',
+          // });
+        },
+      });
+    this.currentBarcode = '';
   }
 
   onpostprescription(an: string) {
-    this.handheldService.postprescription({ "wardcode": "1641" }).subscribe({
+    this.handheldService.postprescription({ wardcode: '1641' }).subscribe({
       next: (response) => {
         // console.log(response);
 
         if (response.status === 200) {
           // this.toastr.success('Successful!', 'แจ้งเตือน');
-          this.resDatapostPrescription = response.data.filter((item: { an: string; }) => item.an === an);
-          this.formatfrequencytime()
+          this.resDatapostPrescription = response.data.filter(
+            (item: { an: string }) => item.an === an
+          );
+          this.formatfrequencytime();
           this.resDatapostPrescription = this.getNextDoses();
           // console.log(this.resDatapostPrescription);
           // this.resDatapostPrescription
           const options2 = ['N', 'L', 'R', 'W'];
-          const randomString = options2[Math.floor(Math.random() * options2.length)];
+          const randomString =
+            options2[Math.floor(Math.random() * options2.length)];
 
-          this.resDatapostPrescription.forEach((items: { barcodevizen: string; usercheckDatetime: boolean }) => {
-            const randomString = options2[Math.floor(Math.random() * options2.length)];
-            items.barcodevizen = `${randomString}1234`,
-              items.usercheckDatetime = false
-          });
+          this.resDatapostPrescription.forEach(
+            (items: { barcodevizen: string; usercheckDatetime: boolean }) => {
+              const randomString =
+                options2[Math.floor(Math.random() * options2.length)];
+              (items.barcodevizen = `${randomString}1234`),
+                (items.usercheckDatetime = false);
+            }
+          );
           this.hasScanned = true;
           // this.getDevice()
         } else {
@@ -776,7 +857,6 @@ export class ReciveComponent implements AfterViewInit {
   //   });
   // }
 
-
   // getCurrentHourDoses(): any[] {
   //   const currentHour = this.currentTime.getHours();
 
@@ -789,7 +869,6 @@ export class ReciveComponent implements AfterViewInit {
 
   //   return currentHourDoses;
   // }
-
 
   isTimeOver(timeString: string): boolean {
     const now = new Date();
@@ -811,20 +890,26 @@ export class ReciveComponent implements AfterViewInit {
     return inputTime < thresholdTime;
   }
 
-
   onScanDrung(currentBarcodeDrug: string) {
-    console.log(this.groupedData)
+    console.log(this.groupedData);
     const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
-    this.resDatapostPrescription.filter((item: { orderitembarcode: string; }) => item.orderitembarcode === currentBarcodeDrug).forEach((items: {
-      reciveuserid: string;
-      reciveusername: string; recivedatetime: string;
-    }) => {
-      // const randomString = options2[Math.floor(Math.random() * options2.length)];
-      items.recivedatetime = String(utcDate.toISOString())
-      items.reciveuserid = '1'
-      items.reciveusername = "Robot"
-    });
-
+    this.resDatapostPrescription
+      .filter(
+        (item: { orderitembarcode: string }) =>
+          item.orderitembarcode === currentBarcodeDrug
+      )
+      .forEach(
+        (items: {
+          reciveuserid: string;
+          reciveusername: string;
+          recivedatetime: string;
+        }) => {
+          // const randomString = options2[Math.floor(Math.random() * options2.length)];
+          items.recivedatetime = String(utcDate.toISOString());
+          items.reciveuserid = '1';
+          items.reciveusername = 'Robot';
+        }
+      );
 
     // const timeOver = this.resDatapostPrescription.filter((item: { frequencytime: string; }) => this.isTimeOver(item.frequencytime) == true).length;
     // const HAD = this.resDatapostPrescription.filter((item: { highalert: string; }) => item.highalert == '1').length;
@@ -844,7 +929,6 @@ export class ReciveComponent implements AfterViewInit {
 
     //   } else
 
-
     //     if (timeOver > 0) {
     //       this.confirmDispenseError();
     //     } else {
@@ -856,11 +940,9 @@ export class ReciveComponent implements AfterViewInit {
     //       this.currentBarcode = '';
     //     }
 
-
     // this.currentBarcodeDrug = '';
     //   this.onFocus();
     //  console.log( this.resDatapostPrescription);
-
   }
 
   onFocus() {
@@ -872,10 +954,15 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   formatfrequencytime() {
-    this.resDatapostPrescription.forEach((item: { frequencytime: string; }) => {
+    this.resDatapostPrescription.forEach((item: { frequencytime: string }) => {
       if (item.frequencytime && item.frequencytime.length === 4) {
         // แทรก ":" ระหว่างชั่วโมงและนาที
-        item.frequencytime = item.frequencytime.substring(0, 2) + ':' + item.frequencytime.substring(2) + ':' + '00';
+        item.frequencytime =
+          item.frequencytime.substring(0, 2) +
+          ':' +
+          item.frequencytime.substring(2) +
+          ':' +
+          '00';
       }
     });
   }
@@ -907,16 +994,20 @@ export class ReciveComponent implements AfterViewInit {
 
     switch (type) {
       case 'package':
-        this.filteredMedications = this.resDatapostPrescription.filter((item: { sendmachine: string; }) =>
-          item.sendmachine === "Y");
+        this.filteredMedications = this.resDatapostPrescription.filter(
+          (item: { sendmachine: string }) => item.sendmachine === 'Y'
+        );
         break;
       case 'sticker':
-        this.filteredMedications = this.resDatapostPrescription.filter((item: { sendmachine: string; }) =>
-          item.sendmachine === "N");
+        this.filteredMedications = this.resDatapostPrescription.filter(
+          (item: { sendmachine: string }) => item.sendmachine === 'N'
+        );
         break;
       case 'overdue':
-        this.filteredMedications = this.resDatapostPrescription.filter((item: { frequencytime: string; }) =>
-          this.isTimeOver(item.frequencytime));
+        this.filteredMedications = this.resDatapostPrescription.filter(
+          (item: { frequencytime: string }) =>
+            this.isTimeOver(item.frequencytime)
+        );
         break;
       default:
         this.filteredMedications = [...this.resDatapostPrescription];
@@ -946,16 +1037,18 @@ export class ReciveComponent implements AfterViewInit {
 
   getOverdueCount(): number {
     if (!this.resDatapostPrescription) return 0;
-    return this.resDatapostPrescription.filter((item: { frequencytime: string; }) =>
-      this.isTimeOver(item.frequencytime)).length;
+    return this.resDatapostPrescription.filter(
+      (item: { frequencytime: string }) => this.isTimeOver(item.frequencytime)
+    ).length;
   }
 
   canConfirm(): boolean {
     if (!this.resDatapostPrescription) return false;
 
     // Check if all medications have been scanned
-    const allScanned = this.resDatapostPrescription.every((item: { recivedatetime: string; }) =>
-      item.recivedatetime);
+    const allScanned = this.resDatapostPrescription.every(
+      (item: { recivedatetime: string }) => item.recivedatetime
+    );
 
     // Check if there are any medications to confirm
     const hasMedications = this.resDatapostPrescription.length > 0;
@@ -968,27 +1061,32 @@ export class ReciveComponent implements AfterViewInit {
     if (!this.resDatapostPrescription) return [];
 
     this.formatfrequencytime();
-    const currentMinutes = this.currentTime.getHours() * 60 + this.currentTime.getMinutes();
+    const currentMinutes =
+      this.currentTime.getHours() * 60 + this.currentTime.getMinutes();
 
-    const futureDoses = this.resDatapostPrescription.filter((med: { frequencytime: string; }) => {
-      if (!med.frequencytime) return false;
+    const futureDoses = this.resDatapostPrescription.filter(
+      (med: { frequencytime: string }) => {
+        if (!med.frequencytime) return false;
 
-      const [hours, minutes] = med.frequencytime.split(':').map(Number);
-      const medMinutes = hours * 60 + minutes;
+        const [hours, minutes] = med.frequencytime.split(':').map(Number);
+        const medMinutes = hours * 60 + minutes;
 
-      return medMinutes >= currentMinutes;
-    });
+        return medMinutes >= currentMinutes;
+      }
+    );
 
     if (futureDoses.length === 0) return [];
 
-    const earliestTime = Math.min(...futureDoses.map((med: { frequencytime: string; }) => {
-      const [h, m] = med.frequencytime.split(':').map(Number);
-      return h * 60 + m;
-    }));
+    const earliestTime = Math.min(
+      ...futureDoses.map((med: { frequencytime: string }) => {
+        const [h, m] = med.frequencytime.split(':').map(Number);
+        return h * 60 + m;
+      })
+    );
 
-    return futureDoses.filter((med: { frequencytime: string; }) => {
+    return futureDoses.filter((med: { frequencytime: string }) => {
       const [h, m] = med.frequencytime.split(':').map(Number);
-      return (h * 60 + m) === earliestTime;
+      return h * 60 + m === earliestTime;
     });
   }
 
@@ -1025,8 +1123,56 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   isGroupReceived(barcode: string): boolean {
-  if (!this.groupedData || !this.groupedData[barcode]) return false;
-  return this.groupedData[barcode].every((med: any) => !!med.recivedatetime);
-}
+    if (!this.groupedData || !this.groupedData[barcode]) return false;
+    return this.groupedData[barcode].every((med: any) => !!med.recivedatetime);
+  }
 
+  // KEY: any = '';
+
+  // @HostListener('window:keydown', ['$event'])
+  // onKeyDown(event: KeyboardEvent) {
+  //   console.log(event.key);
+
+  //   // Example: Press 'Enter' to focus on the medication input
+  //   // Example: Press 'Enter' to confirm all medications if possible
+  //   if (event.key === 'Enter' && !this.hasScanned) {
+  //     // this.onScanDrung()
+  //     console.log(this.KEY);
+  //     this.currentBarcode = this.KEY;
+  //     this.onClickPatient(this.KEY);
+  //     this.KEY = '';
+  //   } else {
+  //     this.KEY += event.key;
+  //   }
+  //   // Example: Press 'Escape' to clear all scanned medications
+  //   if (event.key === 'Escape') {
+  //     this.clearAll();
+  //   }
+  //   // Example: Press 'h' to show medication history
+  //   if (event.key.toLowerCase() === 'h') {
+  //     this.showMedicationHistory();
+  //   }
+  // }
+
+  viewDrugs(drug: any) {
+    const url = `/apiipd/master/drugs/image/${drug}/8`;
+    return url;
+  }
+  formatTimeHM(time: string): string {
+    if (!time) return '';
+    if (time.length === 4) {
+      return `${time.substring(0, 2)}:${time.substring(2, 4)}`;
+    }
+    if (time.length === 3) {
+      return `0${time.substring(0, 1)}:${time.substring(1, 3)}`;
+    }
+    return time;
+  }
+
+  sumOrderQty(barcode: string): number {
+    if (!this.groupedData || !this.groupedData[barcode]) return 0;
+    return this.groupedData[barcode].reduce((sum: number, item: any) => {
+      return sum + (Number(item.orderqty) || 0);
+    }, 0);
+  }
 }

@@ -1,14 +1,14 @@
 import {
+  ScrollingModule,
+  ViewportRuler
+} from "./chunk-JXYY5DIS.js";
+import {
   MatCommonModule
 } from "./chunk-UAJP7FY2.js";
 import "./chunk-MWI63M6W.js";
 import "./chunk-3YLFXDIK.js";
 import "./chunk-3PTJVQHL.js";
 import "./chunk-YPWWSUN4.js";
-import {
-  ScrollingModule,
-  ViewportRuler
-} from "./chunk-JXYY5DIS.js";
 import {
   DataSource,
   _DisposeViewRepeaterStrategy,

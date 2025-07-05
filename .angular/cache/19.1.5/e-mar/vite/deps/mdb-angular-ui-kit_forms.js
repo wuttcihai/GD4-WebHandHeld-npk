@@ -1,9 +1,9 @@
 import {
-  ContentObserver
-} from "./chunk-3PTJVQHL.js";
-import {
   AutofillMonitor
 } from "./chunk-EERZT7AS.js";
+import {
+  ContentObserver
+} from "./chunk-3PTJVQHL.js";
 import "./chunk-TAMUENPF.js";
 import {
   coerceBooleanProperty
