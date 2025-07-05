@@ -653,7 +653,11 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   onScanAN2() {
-    const q = { wardcode: this.WARD.wardcode, recivedatetime: null };
+    const q = {
+      wardcode: this.WARD.wardcode,
+      recivedatetime: null,
+      checkoutdatetime: { $ne: null },
+    };
     this.handheldService.postpatientadmit(q).subscribe({
       next: (response) => {
         // console.log(response);
@@ -1130,7 +1134,7 @@ export class ReciveComponent implements AfterViewInit {
   // KEY: any = '';
 
   // @HostListener('window:keydown', ['$event'])
-  // onKeyDown(event: KeyboardEvent) {
+  // handleKeyboardEventkeydown(event: KeyboardEvent) {
   //   console.log(event.key);
 
   //   // Example: Press 'Enter' to focus on the medication input
@@ -1139,7 +1143,7 @@ export class ReciveComponent implements AfterViewInit {
   //     // this.onScanDrung()
   //     console.log(this.KEY);
   //     this.currentBarcode = this.KEY;
-  //     this.onClickPatient(this.KEY);
+  //     // this.onClickPatient(this.KEY);
   //     this.KEY = '';
   //   } else {
   //     this.KEY += event.key;
