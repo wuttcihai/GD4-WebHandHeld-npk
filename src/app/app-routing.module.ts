@@ -18,14 +18,15 @@ import { DispenseComponent } from './pages/handheld/dispense/dispense.component'
 import { HistoryComponent } from './pages/handheld/history/history.component';
 import { ReciveComponent } from './pages/handheld/recive/recive.component';
 import { PrepareComponent } from './pages/handheld/prepare/prepare.component';
+import { WardComponent } from './pages/ward/ward.component';
 // import { LocationmanageComponent } from './pages/setting/locationmanage/locationmanage.component';
 
 const routes: Routes = [
   { path: 'dispense', component: DispenseComponent },
   { path: 'recive', component: ReciveComponent },
-    { path: 'history', component: HistoryComponent },
-      { path: 'prepare', component: PrepareComponent },
-  // { path: 'home', component: HomeComponent,canActivate: [AuthGuard]},
+  { path: 'history', component: HistoryComponent },
+  { path: 'prepare', component: PrepareComponent },
+  { path: 'home', component: HomeComponent },
   // { path: 'locationmanage', component: LocationmanageComponent,canActivate: [AuthGuard]},
   // { path: 'usermanage', component: UsermangeComponent,canActivate: [AuthGuard]},
   // { path: 'searchmedicinebasket', component: SearchmedicinebasketComponent,canActivate: [AuthGuard]},
@@ -37,24 +38,23 @@ const routes: Routes = [
   // { path: 'stockrobot', component: StockrobotComponent,canActivate: [AuthGuard]},
   // { path: 'main', component: MainComponent },
   { path: 'login', component: LoginComponent },
-  // { path: 'test', component: TestComponent },
+  { path: 'ward', component: WardComponent },
 
-
-  // { path: '**', redirectTo: 'login' },
-  { path: '', redirectTo: '/home', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/locationmanage', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/usermanage', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/searchmedicinebasket', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/test', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/workload', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/paymentformat', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/managemeal', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/settingconveyor', pathMatch: 'full' }, 
-  { path: '', redirectTo: '/settingdashboardqueue', pathMatch: 'full' }, 
+  { path: '**', redirectTo: 'home' },
+  // { path: '', redirectTo: '/home', pathMatch: 'full' },
+  // { path: '', redirectTo: '/locationmanage', pathMatch: 'full' },
+  // { path: '', redirectTo: '/usermanage', pathMatch: 'full' },
+  // { path: '', redirectTo: '/searchmedicinebasket', pathMatch: 'full' },
+  // { path: '', redirectTo: '/test', pathMatch: 'full' },
+  // { path: '', redirectTo: '/workload', pathMatch: 'full' },
+  // { path: '', redirectTo: '/paymentformat', pathMatch: 'full' },
+  // { path: '', redirectTo: '/managemeal', pathMatch: 'full' },
+  // { path: '', redirectTo: '/settingconveyor', pathMatch: 'full' },
+  // { path: '', redirectTo: '/settingdashboardqueue', pathMatch: 'full' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

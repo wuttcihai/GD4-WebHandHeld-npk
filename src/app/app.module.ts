@@ -1,4 +1,4 @@
-import { NgModule ,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -42,20 +42,20 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
 import { LocationmanageComponent } from './pages/setting/locationmanage/locationmanage.component';
 import { DevicemanageComponent } from './pages/setting/locationmanage/content/devicemanage/devicemanage.component';
-import { MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { PopupComponent } from './components/popup/popup.component';
-import {MatCardModule} from '@angular/material/card';
-import {MatRadioModule} from '@angular/material/radio';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DrugsboundtodeviceComponent } from './pages/setting/locationmanage/content/drugsboundtodevice/drugsboundtodevice.component';
 import { MatSelectModule } from '@angular/material/select';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { NotificationComponent } from './components/notification/notification.component';
 import { MatDividerModule } from '@angular/material/divider';
@@ -64,14 +64,14 @@ import { UsermangeComponent } from './pages/setting/usermange/usermange.componen
 import { ManageusersComponent } from './pages/setting/usermange/content/manageusers/manageusers.component';
 import { ManagegroupuserComponent } from './pages/setting/usermange/content/managegroupuser/managegroupuser.component';
 import { PopupstepperComponent } from './components/popupstepper/popupstepper.component';
-import {MatStepperModule} from '@angular/material/stepper';
+import { MatStepperModule } from '@angular/material/stepper';
 import { SearchmedicinebasketComponent } from './pages/process/searchmedicinebasket/searchmedicinebasket.component';
 import { TestComponent } from './components/test/test.component';
 import { WorkloadComponent } from './pages/report/workload/workload.component';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { PaymentformatComponent } from './pages/setting/paymentformat/paymentformat/paymentformat.component';
 import { ManagemealComponent } from './pages/setting/managemeal/managemeal.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -84,9 +84,9 @@ import { HistoryComponent } from './pages/handheld/history/history.component';
 import { PrepareComponent } from './pages/handheld/prepare/prepare.component';
 import { PopupselecttimerangeComponent } from './components/popup/popupselecttimerange/popupselecttimerange.component';
 import { PopupuserotherComponent } from './components/popup/popupuserother/popupuserother.component';
+import { WardComponent } from './pages/ward/ward.component';
 
 // import { MatDatepickerModule } from '@angular/material/datepicker';
-
 
 @NgModule({
   declarations: [
@@ -123,6 +123,7 @@ import { PopupuserotherComponent } from './components/popup/popupuserother/popup
     PrepareComponent,
     PopupselecttimerangeComponent,
     PopupuserotherComponent,
+    WardComponent,
     // ReactiveFormsModule
   ],
   imports: [
@@ -153,7 +154,8 @@ import { PopupuserotherComponent } from './components/popup/popupuserother/popup
     MatTableModule,
     MatButtonModule,
     MatPaginatorModule,
-    MatSort,MatSortModule,
+    MatSort,
+    MatSortModule,
     MatInputModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
@@ -170,23 +172,18 @@ import { PopupuserotherComponent } from './components/popup/popupuserother/popup
     MatAutocompleteModule,
     AsyncPipe,
     MatInputModule,
-    CommonModule ,
-    MatDividerModule ,
+    CommonModule,
+    MatDividerModule,
     MatStepperModule,
     MatDatepickerModule,
-    MatNativeDateModule ,
-    ReactiveFormsModule ,
-    NgxChartsModule ,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    NgxChartsModule,
     MatMenuModule,
-    ScrollingModule
-    
-    
+    ScrollingModule,
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], 
-  providers: [
-    provideAnimations(),
-    provideAnimationsAsync()
-  ],
-  bootstrap: [AppComponent]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [provideAnimations(), provideAnimationsAsync()],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
