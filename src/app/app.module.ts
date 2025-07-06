@@ -85,6 +85,7 @@ import { PrepareComponent } from './pages/handheld/prepare/prepare.component';
 import { PopupselecttimerangeComponent } from './components/popup/popupselecttimerange/popupselecttimerange.component';
 import { PopupuserotherComponent } from './components/popup/popupuserother/popupuserother.component';
 import { WardComponent } from './pages/ward/ward.component';
+import { ReciveMsgComponent } from './pages/handheld/recive-msg/recive-msg.component';
 
 // import { MatDatepickerModule } from '@angular/material/datepicker';
 
@@ -124,6 +125,7 @@ import { WardComponent } from './pages/ward/ward.component';
     PopupselecttimerangeComponent,
     PopupuserotherComponent,
     WardComponent,
+    ReciveMsgComponent,
     // ReactiveFormsModule
   ],
   imports: [

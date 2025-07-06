@@ -621,7 +621,7 @@ export class ReciveComponent implements AfterViewInit {
           // console.log(response);
 
           if (response.status === 200) {
-            this.toastr.success('Successful!', 'แจ้งเตือน');
+            this.toastr.success('บันทึกเรียบร้อย!', 'แจ้งเตือน');
             this.resDataPatientadmit = [];
             this.resDatapostPrescription = [];
             this.hasScanned = false;
@@ -665,9 +665,15 @@ export class ReciveComponent implements AfterViewInit {
         if (response.status === 200) {
           // this.toastr.success('Successful!', 'แจ้งเตือน');
           this.resDataPatientadmit2 = response.data;
+          // Sort by activebed (assuming it's a string or number)
+          this.resDataPatientadmit2 = response.data.sort((a: any, b: any) => {
+            if (a.activebed < b.activebed) return -1;
+            if (a.activebed > b.activebed) return 1;
+            return 0;
+          });
           this.hasScanned = false;
 
-          // console.log(response.data);
+          console.log(response.data);
           // this.onpostprescription(an)
           // this.getDevice()
         } else {
@@ -715,10 +721,13 @@ export class ReciveComponent implements AfterViewInit {
     console.log(an);
     this.currentBarcodeDrug = '';
     this.resDataPatientadmitSel = this.resDataPatientadmit2.find(
-      (item: { an: string }) => item.an === an
+      (item: { prescriptionno: string }) => item.prescriptionno === an
     );
     this.handheldService
-      .postpatientadmitpackage({ an: an, recivedatetime: null })
+      .postpatientadmitpackage({
+        prescriptionno: an,
+        recivedatetime: null,
+      })
       .subscribe({
         next: (response) => {
           // console.log(response);
@@ -897,6 +906,8 @@ export class ReciveComponent implements AfterViewInit {
   onScanDrung(currentBarcodeDrug: string) {
     console.log(this.groupedData);
     const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
+    console.log(this.resDatapostPrescription);
+
     this.resDatapostPrescription
       .filter(
         (item: { orderitembarcode: string }) =>
@@ -914,39 +925,22 @@ export class ReciveComponent implements AfterViewInit {
           items.reciveusername = 'Robot';
         }
       );
-
+    console.log(this.resDatapostPrescription);
     // const timeOver = this.resDatapostPrescription.filter((item: { frequencytime: string; }) => this.isTimeOver(item.frequencytime) == true).length;
     // const HAD = this.resDatapostPrescription.filter((item: { highalert: string; }) => item.highalert == '1').length;
     // const userCheck = this.resDatapostPrescription.filter((item: { usercheckDatetime: string; }) => !item.usercheckDatetime).length;
     this.currentBarcodeDrug = '';
-    // console.log(timeOver);
-    // if (userCheck > 0) {
-    //   // this.toastr.warning('กรุณาแสกนซองยาให้ครบ', 'แจ้งเตือน', {
-    //   //   toastClass: 'custom-toast-warning',
-    //   // });
 
-    // }
-    // else
+    const countReceived = this.resDatapostPrescription.filter(
+      (item: { reciveuserid: any }) =>
+        item.reciveuserid != null && item.reciveuserid !== ''
+    ).length;
 
-    //   if (HAD > 0) {
-    //     this.confirmDispenseHAD();
-
-    //   } else
-
-    //     if (timeOver > 0) {
-    //       this.confirmDispenseError();
-    //     } else {
-    //       this.toastr.success('Successful!', 'แจ้งเตือน');
-    //       this.resDataPatientadmit = [];
-    //       this.resDatapostPrescription = [];
-    //       this.hasScanned = false;
-    //       this.focusInput();
-    //       this.currentBarcode = '';
-    //     }
-
-    // this.currentBarcodeDrug = '';
-    //   this.onFocus();
-    //  console.log( this.resDatapostPrescription);
+    // Auto update when recieve all
+    if (countReceived === this.resDatapostPrescription.length) {
+      this.confirmAllMedications();
+    }
+    console.log('Count of reciveuserid not null:', countReceived);
   }
 
   onFocus() {

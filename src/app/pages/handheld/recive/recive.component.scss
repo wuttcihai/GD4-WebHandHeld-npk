@@ -38,7 +38,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .scanner-header {
   background: $primary-gradient;
   color: $light-text;
-  padding: 10px;
+  padding: 0 10px 5px 10px;
   position: relative;
   z-index: 10;
   box-shadow: $shadow;
@@ -48,11 +48,11 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   .header-gradient {
     @include flex-center;
     justify-content: space-between;
-    padding: 10px 0;
+    padding: 0;
 
     p {
       margin: 0;
-      font-size: 1.2rem;
+      font-size: medium;
       font-weight: 500;
     }
 
@@ -114,7 +114,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   }
 
   .status-indicator {
-    margin-top: 10px;
+    // margin-top: 10px;
     padding: 8px;
     border-radius: 5px;
     text-align: center;
@@ -149,13 +149,13 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 // Patient List Styles
 .patient-list {
   display: grid;
-  gap: 12px;
+  gap: 5px;
 }
 
 .patient-card {
   background: $card-bg;
   border-radius: $border-radius;
-  padding: 15px;
+  padding: 2px 0 5px 0;
   display: flex;
   align-items: center;
   transition: all 0.2s ease;
@@ -182,7 +182,6 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
   .patient-info {
     flex: 1;
-
     h3 {
       margin: 0 0 5px 0;
       font-size: 1.1rem;
@@ -202,6 +201,10 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         &.hn {
           background: #e3f2fd;
           color: #1976d2;
+        }
+        &.rx {
+          background: hsl(180, 62%, 95%);
+          color: #387a8e;
         }
         &.an {
           background: #e8f5e9;
@@ -225,10 +228,12 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .patient-header {
   background: $card-bg;
   border-radius: $border-radius;
-  padding: 20px;
+  padding: 5px;
   display: flex;
+
   align-items: center;
-  margin-bottom: 15px;
+  margin-top: -10px;
+  margin-bottom: 5px;
   box-shadow: $shadow;
 
   .patient-avatar.large {
@@ -250,7 +255,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     flex: 1;
 
     h2 {
-      margin: 0 0 8px 0;
+      margin: 0;
       font-size: 1.3rem;
     }
 
@@ -267,6 +272,10 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         &.hn {
           background: #e3f2fd;
           color: #1976d2;
+        }
+        &.rx {
+          background: hsl(180, 62%, 95%);
+          color: #387a8e;
         }
         &.an {
           background: #e8f5e9;
@@ -285,17 +294,19 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .medication-summary {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 5px;
+  margin-bottom: 10px;
+  padding: 0;
 
   .summary-card {
     background: $card-bg;
     border-radius: $border-radius;
-    padding: 15px;
+    padding: 5px;
     text-align: center;
     box-shadow: $shadow;
     transition: all 0.2s ease;
-
+    font-size: 1.5rem;
+    font-weight: 600;
     &:active {
       transform: scale(0.95);
     }
@@ -349,7 +360,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
     h3 {
       margin: 0;
-      font-size: 1.2rem;
+      font-size: medium;
       color: $dark-text;
     }
 
@@ -605,7 +616,9 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
 // Legend
 .legend {
-  display: flex;
+  // display: flex;
+  position: absolute !important;
+
   justify-content: center;
   gap: 15px;
   margin-top: 20px;
@@ -698,7 +711,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
 .main-med-card {
   background: $card-bg;
-  border-radius: 20px 0 0 20px;
+  border-radius: 0 0 0 20px;
   box-shadow: $shadow;
   padding: 18px 18px 14px 18px;
   margin-bottom: 14px;
@@ -782,9 +795,9 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
   .main-expand-icon {
     position: absolute;
-    right: 30px;
-    top: 55px;
-    color: #b0b0b0;
+    right: 10px;
+    // top: 55px;
+    color: #c4dce7 !important;
     font-size: 1.1rem;
     transition: transform 0.2s;
     i {
@@ -809,7 +822,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
   .checkmark {
     width: 30px;
-    height: 30px;
+    // height: 30px;
     border-radius: 50%;
     background: $success-color;
     color: white;
@@ -826,4 +839,9 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .pending {
   position: absolute !important;
   right: 0 !important;
+}
+
+.receive {
+  background-color: rgb(233, 247, 209);
+  border: 3px solid #00c853 !important;
 }

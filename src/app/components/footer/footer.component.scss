@@ -7,35 +7,37 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 56px;
-  background-color: #ffffff;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  // height: 40px;
+  background-color: white !important;
+
+  // box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   // margin-top: 3rem;
-  
+
   .tab-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 8px 12px;
-    color: #757575;
+    color: #2ba8de;
     cursor: pointer;
     transition: all 0.3s ease;
-    
+
     .material-icons {
       font-size: 24px;
-      margin-bottom: 2px;
+      // margin-bottom: 2px;
+      // margin-top: -20px;
     }
-    
+
     .tab-label {
       font-size: 10px;
       font-weight: 500;
     }
-    
+
     &.active {
       color: #6200ee; // Primary color
-      
+
       .tab-label {
         font-weight: 600;
       }

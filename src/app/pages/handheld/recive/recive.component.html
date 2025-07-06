@@ -1,7 +1,8 @@
 <div class="content-wrapper app-container" [class.scan-mode]="scanFocus">
   <!-- Scanner Header -->
+
   <div class="scanner-header">
-    <div class="scanner-header" [@fadeIn] *ngIf="!hasScanned">
+    <div [@fadeIn] *ngIf="!hasScanned">
       <div class="header-gradient">
         <p>Receive Medicine</p>
         <!-- <div class="time-display">{{currentTime | date:'HH:mm'}}</div> -->
@@ -23,6 +24,15 @@
     <div class="scanner-header" [@fadeIn] *ngIf="hasScanned">
       <div class="header-gradient">
         <p>Receive Medicine</p>
+        <button
+          type="button"
+          class="btn btn-info mt-3"
+          mdbRipple
+          (click)="showMedicationHistory()"
+        >
+          <i class="fas fa-history"></i>
+        </button>
+
         <!-- <div class="time-display">{{currentTime | date:'HH:mm'}}</div> -->
       </div>
       <div class="scan-input-container">
@@ -45,17 +55,17 @@
   </div>
 
   <!-- Patient List View -->
-  <div class="content-view" *ngIf="!hasScanned">
+  <div class="content-view p-1" *ngIf="!hasScanned">
     <div class="patient-count">
       <i class="fas fa-users"></i>
-      {{ resDataPatientadmit2.length }} patients in ward
+      {{ resDataPatientadmit2.length }} prescription in ward
     </div>
 
     <div class="patient-list">
       <div
         class="patient-card"
         *ngFor="let patient of resDataPatientadmit2"
-        (click)="onClickPatient(patient.an)"
+        (click)="onClickPatient(patient.prescriptionno)"
       >
         <div class="patient-avatar">
           <img
@@ -68,6 +78,7 @@
           <div class="patient-meta">
             <!-- <span class="hn">HN: {{patient.hn}}</span> -->
             <span class="an">AN: {{ patient.an }}</span>
+            <span class="rx">RX: {{ patient.prescriptionno }}</span>
             <span class="bed">Bed: {{ patient.activebed }}</span>
           </div>
         </div>
@@ -92,6 +103,9 @@
         <div class="id-badges">
           <!-- <span class="badge hn">HN: {{resDataPatientadmitSel.hn}}</span> -->
           <span class="badge an">AN: {{ resDataPatientadmitSel.an }}</span>
+          <span class="badge rx"
+            >RX: {{ resDataPatientadmitSel.prescriptionno }}</span
+          >
           <span class="badge bed"
             >Bed: {{ resDataPatientadmitSel.activebed }}</span
           >
@@ -100,16 +114,38 @@
     </div>
 
     <div class="medication-summary">
-      <div class="summary-card packages" (click)="filterByType('package')">
-        <i class="fas fa-pills"></i>
-        <div class="count">{{ lenPack || 0 }}</div>
-        <div class="label">Packages</div>
+      <div class="summary-card packages m-1" (click)="filterByType('package')">
+        <i class="fas fa-pills m-2"></i>
+        <span class="count">{{ lenPack || 0 }}</span>
+        <!-- <div class="count">{{ lenPack || 0 }}</div> -->
+        <!-- <div class="label">Packages</div> -->
       </div>
-      <div class="summary-card stickers" (click)="filterByType('sticker')">
-        <i class="fas fa-tags"></i>
-        <div class="count">{{ lenSticker || 0 }}</div>
-        <div class="label">Stickers</div>
+      <div class="summary-card stickers m-1" (click)="filterByType('sticker')">
+        <i class="fas fa-tags m-2"></i>
+        <span class="count">{{ lenSticker || 0 }}</span>
+        <!-- <div class="count">{{ lenSticker || 0 }}</div> -->
+        <!-- <div class="label">Stickers</div> -->
       </div>
+      <div class="summary-card stickers bg-warning p-0">
+        <button type="button" class="btn btn-warning btn-rounded" mdbRipple>
+          <i class="fas fa-ban"></i>
+          ปฏิเสธการรับ
+        </button>
+      </div>
+      <div
+        *ngIf="hasScanned"
+        class="summary-card stickers bg-success p-0 text-light"
+      >
+        <button
+          type="button"
+          class="btn btn-success confirm-btn text-light"
+          (click)="confirmAllMedications()"
+        >
+          <i class="fas fa-check-circle text-light"></i>
+          บันทึกการรับ
+        </button>
+      </div>
+
       <!-- <div class="summary-card overdue" (click)="filterByType('overdue')">
                 <i class="fas fa-clock"></i>
                 <div class="count">{{getOverdueCount()}}</div>
@@ -118,24 +154,16 @@
     </div>
 
     <div class="medication-list">
-      <div class="section-title">
-        <h3>Received Medications</h3>
-        <div class="time-filter">
-          <span
-            (click)="filterByTime('all')"
-            [class.active]="timeFilter === 'all'"
-            >All</span
-          >
-          <!-- <span (click)="filterByTime('current')" [class.active]="timeFilter === 'current'">Current</span>
-          <span (click)="filterByTime('next')" [class.active]="timeFilter === 'next'">Next</span> -->
-        </div>
-      </div>
+      <!-- <div class="section-title">
+        <h3 class="text-success">Received Medications</h3>
+
+      </div> -->
 
       <div class="medication-list p-0">
         <div *ngFor="let barcode of getBarcodes(); let i = index">
           <!-- Card หลัก -->
           <div
-            class="main-med-card"
+            class="main-med-card p-2"
             [class.package]="groupedData[barcode][0].sendmachine === 'Y'"
             [class.sticker]="groupedData[barcode][0].sendmachine === 'N'"
             (click)="
@@ -143,9 +171,10 @@
                 !groupedData[barcode][0].expanded
             "
             [@fadeInLeft]
+            [ngClass]="{ receive: isGroupReceived(barcode) }"
           >
             <div class="main-med-header">
-              <span
+              <!-- <span
                 class="main-type"
                 *ngIf="groupedData[barcode][0].sendmachine === 'Y'"
               >
@@ -156,10 +185,18 @@
                 *ngIf="groupedData[barcode][0].sendmachine === 'N'"
               >
                 <i class="fas fa-tag"></i> Sticker
-              </span>
+              </span> -->
               <span class="main-count">
                 {{ i + 1 }}/{{ getBarcodes().length }}
               </span>
+              <div class="status-indicator main-expand-icon">
+                <div class="checkmark" *ngIf="isGroupReceived(barcode)">
+                  <i class="fas fa-check"></i>
+                </div>
+                <div class="pending" *ngIf="!isGroupReceived(barcode)">
+                  <i class="fas fa-exchange-alt fa-2x text-mute"></i>
+                </div>
+              </div>
             </div>
             <div class="main-med-info">
               <span class="main-date">
@@ -169,7 +206,10 @@
                 {{ formatTimeHM(groupedData[barcode][0].frequencytime) }}
                 {{ groupedData[barcode][0].frequencytimedesc }}
               </span>
-              <span class="main-instructions">
+              <span
+                class="main-instructions"
+                *ngIf="groupedData[barcode][0].sendmachine === 'N'"
+              >
                 <!-- {{ groupedData[barcode][0].timedesc }} -->
                 {{ groupedData[barcode][0].freetext2 }}
                 {{ groupedData[barcode][0].freetext3 }}
@@ -178,15 +218,6 @@
                 {{ groupedData[barcode][0].orderqty }}
                 {{ groupedData[barcode][0].orderunitcode }}
               </span>
-            </div>
-
-            <div class="status-indicator main-expand-icon">
-              <div class="checkmark" *ngIf="isGroupReceived(barcode)">
-                <i class="fas fa-check"></i>
-              </div>
-              <div class="pending" *ngIf="!isGroupReceived(barcode)">
-                <i class="fas fa-exchange-alt fa-2x text-mute"></i>
-              </div>
             </div>
 
             <div class="status-indicator">
@@ -211,12 +242,9 @@
                         </div> -->
 
             <!-- Card ย่อยอยู่ใน Card หลัก -->
-            <ul
-              class="list-group list-group-light"
-              *ngIf="groupedData[barcode][0].expanded"
-            >
+            <ul class="list-group list-group-light">
               <li
-                class="list-group-item d-flex justify-content-between align-items-center p-2"
+                class="list-group-item d-flex justify-content-between align-items-center p-0"
                 *ngFor="let med of groupedData[barcode]"
                 [class.scanned]="med.recivedatetime"
                 [class.overdue]="isTimeOver(med.frequencytime)"
@@ -414,7 +442,7 @@
   </div>
 
   <!-- Action Buttons -->
-  <div *ngIf="hasScanned">
+  <!-- <div *ngIf="hasScanned" class="actions">
     <div
       class="floating-action confirm-btn"
       [@bounceInUp]
@@ -422,15 +450,7 @@
     >
       <i class="fas fa-check-circle"></i>
     </div>
-
-    <div
-      class="floating-action"
-      [@bounceInUp]
-      (click)="showMedicationHistory()"
-    >
-      <i class="fas fa-history"></i>
-    </div>
-  </div>
+  </div> -->
 
   <!-- <div class="action-buttons" *ngIf="hasScanned">
     <button class="btn history" (click)="showMedicationHistory()">
