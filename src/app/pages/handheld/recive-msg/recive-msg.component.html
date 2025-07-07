@@ -1,3 +1,34 @@
-<p>
-  recive-msg works!
-</p>
+<h1
+  mat-dialog-title
+  class="dialog-title"
+  style="background: var(--bg-gradient); color: rgb(255, 247, 0)"
+>
+  ปฏิเสธการรับ
+</h1>
+<p class="h5 p-3">กรุณาระบุ...</p>
+<ng-container>
+  <input matInput class="input-field m-3" [(ngModel)]="value" [value]="value" />
+  <mat-icon class="field-icon"> </mat-icon>
+</ng-container>
+
+<mat-divider class="divider-animate"></mat-divider>
+
+<div
+  mat-dialog-actions
+  class="dialog-actions"
+  style="background: var(--bg-gradient); color: white"
+>
+  <button mat-raised-button class="save-button" (click)="savedata()">
+    <span class="button-content">
+      <mat-icon class="button-icon">save</mat-icon>
+      Save
+    </span>
+  </button>
+  <button mat-raised-button class="close-button" (click)="closedialog()">
+    <span class="button-content">
+      <mat-icon class="button-icon">close</mat-icon>
+      Close
+    </span>
+  </button>
+  <div mat-dialog-content class="dialog-content"></div>
+</div>

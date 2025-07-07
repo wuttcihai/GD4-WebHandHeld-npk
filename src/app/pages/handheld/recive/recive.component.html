@@ -127,7 +127,12 @@
         <!-- <div class="label">Stickers</div> -->
       </div>
       <div class="summary-card stickers bg-warning p-0">
-        <button type="button" class="btn btn-warning btn-rounded" mdbRipple>
+        <button
+          type="button"
+          class="btn btn-warning btn-rounded"
+          mdbRipple
+          (click)="openReceiveMsgPopup('SSS')"
+        >
           <i class="fas fa-ban"></i>
           ปฏิเสธการรับ
         </button>

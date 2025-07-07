@@ -1,14 +1,4 @@
 import {
-  animate,
-  animateChild,
-  keyframes,
-  query,
-  state,
-  style,
-  transition,
-  trigger
-} from "./chunk-4C72D2SV.js";
-import {
   AnimationCurves,
   AnimationDurations,
   MatCommonModule
@@ -23,6 +13,16 @@ import {
 } from "./chunk-3YLFXDIK.js";
 import "./chunk-3PTJVQHL.js";
 import "./chunk-YPWWSUN4.js";
+import {
+  animate,
+  animateChild,
+  keyframes,
+  query,
+  state,
+  style,
+  transition,
+  trigger
+} from "./chunk-4C72D2SV.js";
 import "./chunk-BDD7CDBT.js";
 import "./chunk-TAMUENPF.js";
 import "./chunk-3EENIVFQ.js";

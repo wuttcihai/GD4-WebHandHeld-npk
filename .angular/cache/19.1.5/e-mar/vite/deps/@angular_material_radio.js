@@ -1,4 +1,7 @@
 import {
+  NG_VALUE_ACCESSOR
+} from "./chunk-RBKNLYNS.js";
+import {
   MatCommonModule,
   MatRipple,
   MatRippleModule,
@@ -16,9 +19,6 @@ import {
 import "./chunk-BDD7CDBT.js";
 import "./chunk-TAMUENPF.js";
 import "./chunk-3EENIVFQ.js";
-import {
-  NG_VALUE_ACCESSOR
-} from "./chunk-RBKNLYNS.js";
 import {
   CommonModule
 } from "./chunk-35LGTL4I.js";

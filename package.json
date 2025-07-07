@@ -32,6 +32,7 @@
     "ag-grid-angular": "^33.0.4",
     "ag-grid-community": "^33.0.4",
     "chart.js": "^3.1.1",
+    "dayjs": "^1.11.13",
     "file-saver": "^2.0.5",
     "flx-ui-datatable": "^1.1.5",
     "html2canvas": "^1.4.1",

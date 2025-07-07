@@ -28,10 +28,14 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 // import { environment } from '../../../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+
+import dayjs from 'dayjs';
+import { ReciveMsgComponent } from '../recive-msg/recive-msg.component';
 export interface SelectPopup {
   label: string;
   value: string;
 }
+
 @Component({
   selector: 'app-recive',
   standalone: false,
@@ -653,16 +657,38 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   onScanAN2() {
+    const startOfYesterday = dayjs().subtract(1, 'day').startOf('day');
+    const endOfToday = dayjs().endOf('day');
+
     const q = {
       wardcode: this.WARD.wardcode,
       recivedatetime: null,
       checkoutdatetime: { $ne: null },
+      // ordercreatedate: {
+      //   $gte: dayjs(startOfYesterday.toISOString()),
+      //   $lte: dayjs(endOfToday.toISOString()),
+      // },
     };
+
+    console.log(q);
+    // const q = {
+    //   wardcode: this.WARD.wardcode,
+    //   recivedatetime: null,
+    //   checkoutdatetime: { $ne: null },
+    // };
     this.handheldService.postpatientadmit(q).subscribe({
       next: (response) => {
-        // console.log(response);
+        console.log(response);
 
         if (response.status === 200) {
+          this.resDataPatientadmit = response.data.filter((item: any) => {
+            if (!item.ordercreatedate) return false;
+            const orderDate = dayjs(item.ordercreatedate);
+            return (
+              orderDate.isAfter(startOfYesterday) ||
+              orderDate.isSame(startOfYesterday)
+            );
+          });
           // this.toastr.success('Successful!', 'แจ้งเตือน');
           this.resDataPatientadmit2 = response.data;
           // Sort by activebed (assuming it's a string or number)
@@ -1172,5 +1198,69 @@ export class ReciveComponent implements AfterViewInit {
     return this.groupedData[barcode].reduce((sum: number, item: any) => {
       return sum + (Number(item.orderqty) || 0);
     }, 0);
+  }
+
+  async openReceiveMsgPopup(message: string): Promise<void> {
+    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
+    const msg = this.dialog.open(ReciveMsgComponent, {
+      maxWidth: 'none',
+      maxHeight: 'none',
+      width: isMobile ? '95%' : '40%',
+      height: isMobile ? 'auto' : 'auto',
+      hasBackdrop: true,
+      backdropClass: 'custom-blur-backdrop',
+      panelClass: 'custom-dialog-container',
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '500ms',
+      data: {
+        title: 'ข้อความ',
+        message: message,
+        fields: ['recieveremark', 'recievedate'],
+      },
+    });
+    msg.afterClosed().subscribe((r) => {
+      if (r) {
+        let resDataz = this.resDatapostPrescription.map(
+          (item: {
+            _id: any;
+            reciveuserid: any;
+            reciveusername: any;
+            recivedatetime: any;
+            recivestatus: any;
+            reciveremark: any;
+          }) => ({
+            _id: item._id,
+            updatestatus: {
+              recivestatus: 'R',
+              reciveremark: r,
+              reciveuserid: item.reciveuserid,
+              reciveusername: item.reciveusername,
+              recivedatetime: new Date(),
+            },
+          })
+        );
+
+        this.handheldService.updatepackage(resDataz).subscribe((response) => {
+          if (response.status === 200) {
+            this.toastr.success('บันทึกเรียบร้อย!', 'แจ้งเตือน');
+            this.resDataPatientadmit = [];
+            this.resDatapostPrescription = [];
+            this.hasScanned = false;
+            this.focusInput();
+            this.currentBarcode = '';
+            this.onScanAN2();
+            // this.toastr.success('Successful!', 'แจ้งเตือน');
+            // this.resDataPatientadmit2 = response.data
+            // this.hasScanned = false;
+
+            // console.log(response.data);
+            // this.onpostprescription(an)
+            // this.getDevice()
+          } else {
+            // this.loading = false;
+          }
+        });
+      }
+    });
   }
 }
