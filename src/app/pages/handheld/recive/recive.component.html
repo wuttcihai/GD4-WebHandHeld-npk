@@ -9,14 +9,8 @@
       </div>
       <div class="scan-input-container">
         <i class="fas fa-barcode scan-icon"></i>
-        <input
-          type="text"
-          class="scan-input"
-          placeholder="แสกน AN ผู้ป่วย"
-          [(ngModel)]="currentBarcode"
-          (keyup.enter)="onClickPatient(currentBarcode)"
-          (focus)="onFocus()"
-        />
+        <input type="text" class="scan-input" placeholder="แสกนใบสั่งยา" [(ngModel)]="currentBarcode"
+          (keyup.enter)="onClickPatient(currentBarcode)" (focus)="onFocus()" />
         <!-- (focus)="onFocus()" #medicationInput2 inputmode="seตarch" -->
       </div>
     </div>
@@ -24,12 +18,7 @@
     <div class="scanner-header" [@fadeIn] *ngIf="hasScanned">
       <div class="header-gradient">
         <p>Receive Medicine</p>
-        <button
-          type="button"
-          class="btn btn-info mt-3"
-          mdbRipple
-          (click)="showMedicationHistory()"
-        >
+        <button type="button" class="btn btn-info mt-3" mdbRipple (click)="showMedicationHistory()">
           <i class="fas fa-history"></i>
         </button>
 
@@ -37,14 +26,8 @@
       </div>
       <div class="scan-input-container">
         <i class="fas fa-barcode scan-icon"></i>
-        <input
-          type="text"
-          class="scan-input"
-          placeholder="แสกนซองยาเพื่อยืนยัน"
-          [(ngModel)]="currentBarcodeDrug"
-          (keyup.enter)="onScanDrung(currentBarcodeDrug)"
-          (focus)="onFocus()"
-        />
+        <input type="text" class="scan-input" placeholder="แสกนซองยาเพื่อยืนยัน" [(ngModel)]="currentBarcodeDrug"
+          (keyup.enter)="onScanDrung(currentBarcodeDrug)" (focus)="onFocus()" />
         <!-- (focus)="onFocus()" #medicationInput2 inputmode="seตarch" -->
       </div>
     </div>
@@ -62,24 +45,21 @@
     </div>
 
     <div class="patient-list">
-      <div
-        class="patient-card"
-        *ngFor="let patient of resDataPatientadmit2"
-        (click)="onClickPatient(patient.prescriptionno)"
-      >
+      <div class="patient-card" *ngFor="let patient of resDataPatientadmit2"
+        (click)="onClickPatient(patient.prescriptionno)">
         <div class="patient-avatar">
-          <img
-            [src]="patient.photoUrl || './Document/dist/img/avatar5.png'"
-            alt="Patient"
-          />
+          <img [src]="patient.photoUrl || './Document/dist/img/avatar5.png'" alt="Patient" />
         </div>
         <div class="patient-info">
           <h3>{{ patient.patientname }}</h3>
+          <span class="pouch"><i class="fas fa-pills m-2"></i>{{ patient.countBarcodeY }}</span>
+          <span class="sticker"><i class="fas fa-tags m-2"></i>{{ patient.countBarcodeN }}</span>
           <div class="patient-meta">
             <!-- <span class="hn">HN: {{patient.hn}}</span> -->
+            <span class="bed">Bed: {{ patient.activebed }}</span>
             <span class="an">AN: {{ patient.an }}</span>
             <span class="rx">RX: {{ patient.prescriptionno }}</span>
-            <span class="bed">Bed: {{ patient.activebed }}</span>
+
           </div>
         </div>
         <i class="fas fa-chevron-right"></i>
@@ -91,24 +71,19 @@
   <div class="content-view" *ngIf="hasScanned">
     <div class="patient-header">
       <div class="patient-avatar large">
-        <img
-          [src]="
+        <img [src]="
             resDataPatientadmitSel.photoUrl || './Document/dist/img/avatar5.png'
-          "
-          alt="Patient"
-        />
+          " alt="Patient" />
       </div>
       <div class="patient-details">
         <h2>{{ resDataPatientadmitSel.patientname }}</h2>
         <div class="id-badges">
+
           <!-- <span class="badge hn">HN: {{resDataPatientadmitSel.hn}}</span> -->
+          <span class="badge bed">Bed: {{ resDataPatientadmitSel.activebed }}</span>
           <span class="badge an">AN: {{ resDataPatientadmitSel.an }}</span>
-          <span class="badge rx"
-            >RX: {{ resDataPatientadmitSel.prescriptionno }}</span
-          >
-          <span class="badge bed"
-            >Bed: {{ resDataPatientadmitSel.activebed }}</span
-          >
+          <span class="badge rx">RX: {{ resDataPatientadmitSel.prescriptionno }}</span>
+
         </div>
       </div>
     </div>
@@ -132,15 +107,8 @@
           ปฏิเสธการรับ
         </button>
       </div>
-      <div
-        *ngIf="hasScanned"
-        class="summary-card stickers bg-success p-0 text-light"
-      >
-        <button
-          type="button"
-          class="btn btn-success confirm-btn text-light"
-          (click)="confirmAllMedications()"
-        >
+      <div *ngIf="hasScanned" class="summary-card stickers bg-success p-0 text-light">
+        <button type="button" class="btn btn-success confirm-btn text-light" (click)="confirmAllMedications()">
           <i class="fas fa-check-circle text-light"></i>
           บันทึกการรับ
         </button>
@@ -162,17 +130,11 @@
       <div class="medication-list p-0">
         <div *ngFor="let barcode of getBarcodes(); let i = index">
           <!-- Card หลัก -->
-          <div
-            class="main-med-card p-2"
-            [class.package]="groupedData[barcode][0].sendmachine === 'Y'"
-            [class.sticker]="groupedData[barcode][0].sendmachine === 'N'"
-            (click)="
+          <div class="main-med-card p-2" [class.package]="groupedData[barcode][0].sendmachine === 'Y'"
+            [class.sticker]="groupedData[barcode][0].sendmachine === 'N'" (click)="
               groupedData[barcode][0].expanded =
                 !groupedData[barcode][0].expanded
-            "
-            [@fadeInLeft]
-            [ngClass]="{ receive: isGroupReceived(barcode) }"
-          >
+            " [@fadeInLeft] [ngClass]="{ receive: isGroupReceived(barcode) }">
             <div class="main-med-header">
               <!-- <span
                 class="main-type"
@@ -206,10 +168,7 @@
                 {{ formatTimeHM(groupedData[barcode][0].frequencytime) }}
                 {{ groupedData[barcode][0].frequencytimedesc }}
               </span>
-              <span
-                class="main-instructions"
-                *ngIf="groupedData[barcode][0].sendmachine === 'N'"
-              >
+              <span class="main-instructions" *ngIf="groupedData[barcode][0].sendmachine === 'N'">
                 <!-- {{ groupedData[barcode][0].timedesc }} -->
                 {{ groupedData[barcode][0].freetext2 }}
                 {{ groupedData[barcode][0].freetext3 }}
@@ -225,15 +184,11 @@
                                 <i class="fas fa-check"></i>
                             </div> -->
               <div class="pending">
-                <i
-                  class="fas"
-                  style="font-size: 1rem"
-                  [ngClass]="
+                <i class="fas" style="font-size: 1rem" [ngClass]="
                     groupedData[barcode][0].expanded
                       ? 'fa-chevron-up'
                       : 'fa-chevron-down'
-                  "
-                ></i>
+                  "></i>
               </div>
             </div>
             <!-- <div class="main-expand-icon">
@@ -243,18 +198,11 @@
 
             <!-- Card ย่อยอยู่ใน Card หลัก -->
             <ul class="list-group list-group-light">
-              <li
-                class="list-group-item d-flex justify-content-between align-items-center p-0"
-                *ngFor="let med of groupedData[barcode]"
-                [class.scanned]="med.recivedatetime"
-                [class.overdue]="isTimeOver(med.frequencytime)"
-                [class.high-alert]="med.highalert === '1'"
-              >
+              <li class="list-group-item d-flex justify-content-between align-items-center p-0"
+                *ngFor="let med of groupedData[barcode]" [class.scanned]="med.recivedatetime"
+                [class.overdue]="isTimeOver(med.frequencytime)" [class.high-alert]="med.highalert === '1'">
                 <div class="d-flex align-items-center">
-                  <img
-                    [src]="viewDrugs(med.orderitemcode)"
-                    style="width: 75px; height: 75px"
-                  />
+                  <img [src]="viewDrugs(med.orderitemcode)" style="width: 75px; height: 75px" />
                   <div class="alert-indicator" *ngIf="med.highalert === '1'">
                     !
                   </div>
@@ -451,14 +399,13 @@
       <i class="fas fa-check-circle"></i>
     </div>
   </div> -->
-
-  <!-- <div class="action-buttons" *ngIf="hasScanned">
+  <!-- 
+  <div class="action-buttons" *ngIf="hasScanned">
     <button class="btn history" (click)="showMedicationHistory()">
       <i class="fas fa-history"></i>
       History
     </button>
-    <button class="btn confirm" (click)="confirmAllMedications()"
-            [disabled]="!canConfirm()">
+    <button class="btn confirm" (click)="confirmAllMedications()" [disabled]="!canConfirm()">
       <i class="fas fa-check-circle"></i>
       Confirm All
     </button>
