@@ -10,9 +10,9 @@
           <!-- small box -->
           <div class="small-box bg-info">
             <div class="inner">
-              <h3>150</h3>
+              <h3>{{ mergedArray.length }}</h3>
 
-              <p>ใบยาทั้งหมด</p>
+              <p>Total Patients</p>
             </div>
             <div class="icon">
               <i class="ion ion-bag"></i>
@@ -25,16 +25,14 @@
           <!-- small box -->
           <div class="small-box bg-success">
             <div class="inner">
-              <h3>53<sup style="font-size: 20px">%</sup></h3>
+              <h3>{{ getUpcomingMedicationCount() }}<sup style="font-size: 20px">%</sup></h3>
 
-              <p>รอจัด</p>
+              <p>Next Meal</p>
             </div>
             <div class="icon">
               <i class="ion ion-stats-bars"></i>
             </div>
-            <a href="#" class="small-box-footer"
-              >More info <i class="fas fa-arrow-circle-right"></i
-            ></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->
@@ -42,16 +40,14 @@
           <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>44</h3>
+              <h3>{{ getPatientsWithUpcomingMedsUntilMidnight() }}</h3>
 
-              <p>รอตรวจ</p>
+              <p>Pending</p>
             </div>
             <div class="icon">
               <i class="ion ion-person-add"></i>
             </div>
-            <a href="#" class="small-box-footer"
-              >More info <i class="fas fa-arrow-circle-right"></i
-            ></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->
@@ -59,16 +55,14 @@
           <!-- small box -->
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3>65</h3>
+              <h3>{{ getTotalCompleted() }}</h3>
 
-              <p>จ่ายเสร็จ</p>
+              <p>Completed</p>
             </div>
             <div class="icon">
               <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="#" class="small-box-footer"
-              >More info <i class="fas fa-arrow-circle-right"></i
-            ></a>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->
@@ -77,7 +71,34 @@
     </div>
     <!-- /.container-fluid -->
   </section>
+  <div class="content-view p-1">
+    <div class="patient-count">
+      <i class="fas fa-users"></i>
+      {{ patientadmits.length }} prescription in ward
+    </div>
+
+    <div class="patient-list">
+      <div class="patient-card" *ngFor="let patient of patientadmits">
+        <div class="patient-avatar">
+          <img [src]="patient.photoUrl || './Document/dist/img/avatar5.png'" alt="Patient" />
+        </div>
+        <div class="patient-info">
+          <h3>{{ patient.patientname }}</h3>
+          <div class="patient-meta">
+            <!-- <span class="hn">HN: {{patient.hn}}</span> -->
+            <span class="an">AN: {{ patient.an }}</span>
+            <span class="rx">RX: {{ patient.prescriptionno }}</span>
+            <span class="bed">Bed: {{ patient.activebed }}</span>
+          </div>
+        </div>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+
 
 <!-- <app-footer></app-footer>
 </div> -->

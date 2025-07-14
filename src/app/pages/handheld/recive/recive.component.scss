@@ -53,7 +53,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     p {
       margin: 0;
       font-size: medium;
-      font-weight: 500;
+      font-weight: 200;
     }
 
     .time-display {
@@ -67,8 +67,8 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   .scan-input-container {
     background: $card-bg;
     border-radius: $border-radius;
-    padding: 12px 15px;
-    margin-top: 15px;
+    padding: 10px 10px;
+    margin-top: 10px;
     display: flex;
     align-items: center;
     transition: all 0.3s ease;
@@ -166,11 +166,11 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   }
 
   .patient-avatar {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     overflow: hidden;
-    margin-right: 15px;
+    margin-right: 10px;
     border: 3px solid #e0e0e0;
 
     img {
@@ -182,34 +182,58 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
   .patient-info {
     flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 1rem;
+
     h3 {
-      margin: 0 0 5px 0;
-      font-size: 1.1rem;
+      margin: 0 0 0px 0;
+      font-size: 1rem;
+    }
+
+    span {
+      padding: 3px 3px;
+      border-radius: 5px;
+      background: #f0f0f0;
+
+      &.pouch {
+        background: #adf1d2;
+        color: #305a47;
+      }
+
+      &.sticker {
+        background: hsl(197, 69%, 81%);
+        color: #2078eb;
+      }
     }
 
     .patient-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      font-size: 0.8rem;
+      gap: 6px;
+      font-size: 0.6rem;
 
       span {
-        padding: 3px 8px;
-        border-radius: 12px;
+        padding: 3px 6px;
+        border-radius: 10px;
         background: #f0f0f0;
 
         &.hn {
           background: #e3f2fd;
           color: #1976d2;
         }
+
         &.rx {
           background: hsl(180, 62%, 95%);
           color: #387a8e;
         }
+
         &.an {
           background: #e8f5e9;
           color: #388e3c;
         }
+
         &.bed {
           background: #fff3e0;
           color: #f57c00;
@@ -265,22 +289,25 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       gap: 8px;
 
       .badge {
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-size: 0.8rem;
+        padding: 3px 9px;
+        border-radius: 10px;
+        font-size: 0.6rem;
 
         &.hn {
           background: #e3f2fd;
           color: #1976d2;
         }
+
         &.rx {
           background: hsl(180, 62%, 95%);
           color: #387a8e;
         }
+
         &.an {
           background: #e8f5e9;
           color: #388e3c;
         }
+
         &.bed {
           background: #fff3e0;
           color: #f57c00;
@@ -307,6 +334,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     transition: all 0.2s ease;
     font-size: 1.5rem;
     font-weight: 600;
+
     &:active {
       transform: scale(0.95);
     }
@@ -328,6 +356,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.packages {
+
       i,
       .count {
         color: $secondary-blue;
@@ -335,6 +364,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.stickers {
+
       i,
       .count {
         color: $success-color;
@@ -342,6 +372,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.overdue {
+
       i,
       .count {
         color: $danger-color;
@@ -434,16 +465,20 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     position: relative;
     width: 50px;
     height: 50px;
-    min-width: 50px; /* Prevent shrinking */
+    min-width: 50px;
+    /* Prevent shrinking */
     margin-right: 15px;
 
     .medication-image {
       width: 50px !important;
       height: 50px !important;
-      border-radius: 50%; /* Makes it circular */
-      object-fit: cover; /* Ensures image fills circle */
+      border-radius: 50%;
+      /* Makes it circular */
+      object-fit: cover;
+      /* Ensures image fills circle */
       border: 2px solid #e0e0e0;
-      background: #f5f5f5; /* Fallback background */
+      background: #f5f5f5;
+      /* Fallback background */
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
       /* Fallback if image fails to load */
@@ -638,9 +673,11 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       &.high-alert {
         background: $warning-color;
       }
+
       &.overdue {
         background: $danger-color;
       }
+
       &.scanned {
         background: $success-color;
       }
@@ -653,6 +690,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -731,12 +769,15 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
   &.package {
     border-left-color: $secondary-blue;
+
     .main-type {
       color: $secondary-blue;
     }
   }
+
   &.sticker {
     border-left-color: $success-color;
+
     .main-type {
       color: $success-color;
     }
@@ -754,10 +795,12 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
       gap: 6px;
+
       i {
         font-size: 1.1rem;
       }
     }
+
     .main-count {
       font-size: 0.95rem;
       color: #888;
@@ -780,11 +823,13 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
       gap: 5px;
+
       i {
         color: $secondary-blue;
         font-size: 1rem;
       }
     }
+
     .main-instructions {
       font-size: 0.85rem;
       color: #666;
@@ -800,6 +845,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     color: #c4dce7 !important;
     font-size: 1.1rem;
     transition: transform 0.2s;
+
     i {
       transition: transform 0.2s;
     }
@@ -811,6 +857,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -836,6 +883,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
   }
 }
+
 .pending {
   position: absolute !important;
   right: 0 !important;

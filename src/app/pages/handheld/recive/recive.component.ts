@@ -31,6 +31,9 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 import dayjs from 'dayjs';
 import { ReciveMsgComponent } from '../recive-msg/recive-msg.component';
+
+import { LoginDialogComponent } from '../../login-dialog/login-dialog.component';
+
 export interface SelectPopup {
   label: string;
   value: string;
@@ -928,7 +931,62 @@ export class ReciveComponent implements AfterViewInit {
     // Compare the times
     return inputTime < thresholdTime;
   }
+  // onScanDrung(currentBarcodeDrug: string) {
+  //   console.log(this.groupedData);
+  //   const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
+  //   console.log(this.resDatapostPrescription);
 
+  //   const scannedItems = this.resDatapostPrescription
+  //     .filter((item: { orderitembarcode: string; orderitembarcodecase?: any }) => {
+  //       if (Array.isArray(item.orderitembarcodecase) && item.orderitembarcodecase.length > 0) {
+  //         return item.orderitembarcodecase.includes(currentBarcodeDrug);
+  //       } else {
+  //         return item.orderitembarcode === currentBarcodeDrug;
+  //       }
+  //     });
+
+  //   if (scannedItems.length === 0) {
+  //     console.warn('ไม่พบยาใน barcode ที่สแกน');
+  //     return;
+  //   }
+
+  //   // ➤ เรียก popup login
+  //   const dialogRef = this.dialog.open(LoginDialogComponent, {
+  //     width: '300px'
+  //   });
+
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     if (result?.success) {
+  //       //  ได้ข้อมูล user จาก popup
+  //       const username = result.username || 'Robot';
+  //       const userid = result.userid || '1';
+
+  //       //  update ข้อมูลผู้รับยา
+  //       scannedItems.forEach((item: any) => {
+  //         item.recivedatetime = utcDate.toISOString();
+  //         item.reciveuserid = userid;
+  //         item.reciveusername = username;
+  //       });
+
+  //       console.log('ยาอัปเดตหลัง login:', this.resDatapostPrescription);
+
+  //       this.currentBarcodeDrug = '';
+
+  //       const countReceived = this.resDatapostPrescription.filter(
+  //         (item: { reciveuserid: any }) =>
+  //           item.reciveuserid != null && item.reciveuserid !== ''
+  //       ).length;
+
+  //       if (countReceived === this.resDatapostPrescription.length) {
+  //         this.confirmAllMedications();
+  //       }
+
+  //       console.log('Count of reciveuserid not null:', countReceived);
+  //     } else {
+  //       console.log('ยกเลิก login');
+  //     }
+  //   });
+  // }
   onScanDrung(currentBarcodeDrug: string) {
     console.log(this.groupedData);
     const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
@@ -936,8 +994,16 @@ export class ReciveComponent implements AfterViewInit {
 
     this.resDatapostPrescription
       .filter(
-        (item: { orderitembarcode: string }) =>
-          item.orderitembarcode === currentBarcodeDrug
+        (item: { orderitembarcode: string; orderitembarcodecase?: any }) => {
+          if (
+            Array.isArray(item.orderitembarcodecase) &&
+            item.orderitembarcodecase.length > 0
+          ) {
+            return item.orderitembarcodecase.includes(currentBarcodeDrug);
+          } else {
+            return item.orderitembarcode === currentBarcodeDrug;
+          }
+        }
       )
       .forEach(
         (items: {
@@ -964,11 +1030,37 @@ export class ReciveComponent implements AfterViewInit {
 
     // Auto update when recieve all
     if (countReceived === this.resDatapostPrescription.length) {
-      this.confirmAllMedications();
+      this.showLoginBeforeConfirm();
+      // เพิ่มครบก่อนแล้ว login
+      //this.confirmAllMedications();
     }
     console.log('Count of reciveuserid not null:', countReceived);
   }
 
+  showLoginBeforeConfirm() {
+    const dialogRef = this.dialog.open(LoginDialogComponent, {
+      width: '300px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success) {
+        const username = result.username || 'Robot';
+        const userid = result.userid || '1';
+
+        // 🔄 อัปเดตข้อมูล user ให้กับทุกรายการที่มี recivedatetime
+        this.resDatapostPrescription.forEach((item: any) => {
+          if (item.recivedatetime) {
+            item.reciveuserid = userid;
+            item.reciveusername = username;
+          }
+        });
+
+        this.confirmAllMedications();
+      } else {
+        console.warn('ยกเลิก Login ก่อนบันทึก');
+      }
+    });
+  }
   onFocus() {
     this.currentBarcode = '';
     this.currentBarcodeDrug = '';
