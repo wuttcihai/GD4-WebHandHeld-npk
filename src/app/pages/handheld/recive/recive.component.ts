@@ -33,6 +33,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { LoginDialogComponent } from '../../login-dialog/login-dialog.component';
 import { ReciveMsgComponent } from '../recive-msg/recive-msg.component';
+import { AuthService } from '../../../service/auth/auth.service';
 export interface SelectPopup {
   label: string;
   value: string;
@@ -264,7 +265,8 @@ export class ReciveComponent implements AfterViewInit {
     private breakpointObserver: BreakpointObserver,
     private dialog: MatDialog,
     private handheldService: HandheldService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private auth: AuthService
   ) {
     // this.checkIfMobile();
   }
@@ -636,7 +638,7 @@ export class ReciveComponent implements AfterViewInit {
     this.showConfirmationToast();
   }
 
-  showConfirmationToast() {
+  async showConfirmationToast() {
     // const timeOver = this.resDatapostPrescription.filter((item: { frequencytime: string; }) => this.isTimeOver(item.frequencytime) == true).length;
     // const HAD = this.resDatapostPrescription.filter((item: { highalert: string; }) => item.highalert == '1').length;
     const userCheck = this.resDatapostPrescription.filter(
@@ -650,53 +652,68 @@ export class ReciveComponent implements AfterViewInit {
       });
       // this.confirmDispenseError();
     } else {
-      let resDataz = this.resDatapostPrescription.map(
-        (item: {
-          _id: any;
-          reciveuserid: any;
-          reciveusername: any;
-          recivedatetime: any;
-        }) => ({
-          _id: item._id,
-          updatestatus: {
-            reciveuserid: item.reciveuserid,
-            reciveusername: item.reciveusername,
-            recivedatetime: item.recivedatetime,
-          },
-        })
-      );
+      const ref = await this.showLoginBeforeConfirm();
+      ref.afterClosed().subscribe(async (result) => {
+        this.toastr.show(result.fullname, 'แจ้งเตือน', {
+          toastClass: 'custom-toast-warning',
+        });
+        if (result !== 'Close' && result !== undefined) {
+          let resDataz = this.resDatapostPrescription.map(
+            (item: {
+              _id: any;
+              reciveuserid: any;
+              reciveusername: any;
+              recivedatetime: any;
+              recivestatus: any;
+              reciveremark: any;
+            }) => ({
+              _id: item._id,
+              updatestatus: {
+                recivestatus: 'A',
+                reciveremark: 'ยาที่ได้รับการตรวจสอบแล้ว',
+                reciveuserid: result,
+                reciveusername: result,
+                recivedatetime: new Date(),
+              },
+            })
+          );
 
-      // console.log(resDataz)
-      this.handheldService.updatepackage(resDataz).subscribe({
-        next: (response) => {
-          // console.log(response);
+          // console.log(resDataz)
+          this.handheldService.updatepackage(resDataz).subscribe({
+            next: (response) => {
+              // console.log(response);
 
-          if (response.status === 200) {
-            this.toastr.success('บันทึกเรียบร้อย!', 'แจ้งเตือน');
-            this.resDataPatientadmit = [];
-            this.resDatapostPrescription = [];
-            this.hasScanned = false;
-            this.focusInput();
-            this.currentBarcode = '';
-            this.onScanAN2();
-            // this.toastr.success('Successful!', 'แจ้งเตือน');
-            // this.resDataPatientadmit2 = response.data
-            // this.hasScanned = false;
+              if (response.status === 200) {
+                this.toastr.success('บันทึกเรียบร้อย!', 'แจ้งเตือน');
+                this.resDataPatientadmit = [];
+                this.resDatapostPrescription = [];
+                this.hasScanned = false;
+                this.focusInput();
+                this.currentBarcode = '';
+                this.onScanAN2();
+                // this.toastr.success('Successful!', 'แจ้งเตือน');
+                // this.resDataPatientadmit2 = response.data
+                // this.hasScanned = false;
 
-            // console.log(response.data);
-            // this.onpostprescription(an)
-            // this.getDevice()
-          } else {
-            // this.loading = false;
-          }
-        },
-        error: (err) => {
-          // console.error('Update Failed:', err);
-          // this.toastr.warning(err, 'แจ้งเตือน', {
-          //   toastClass: 'custom-toast-warning',
-          // });
-        },
+                // console.log(response.data);
+                // this.onpostprescription(an)
+                // this.getDevice()
+              } else {
+                // this.loading = false;
+              }
+            },
+            error: (err) => {
+              // console.error('Update Failed:', err);
+              // this.toastr.warning(err, 'แจ้งเตือน', {
+              //   toastClass: 'custom-toast-warning',
+              // });
+            },
+          });
+        } else {
+          // console.log('Dialog closed without data');
+        }
       });
+
       // console.log(this.resDatapostPrescription)
     }
 
@@ -1066,7 +1083,8 @@ export class ReciveComponent implements AfterViewInit {
 
     // Auto update when recieve all
     if (countReceived === this.resDatapostPrescription.length) {
-      this.showLoginBeforeConfirm();
+      // this.showLoginBeforeConfirm();
+      this.showConfirmationToast();
       // เพิ่มครบก่อนแล้ว login
       //this.confirmAllMedications();
     }
@@ -1074,28 +1092,28 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   showLoginBeforeConfirm() {
-    const dialogRef = this.dialog.open(LoginDialogComponent, {
+    return this.dialog.open(LoginDialogComponent, {
       width: '300px',
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result?.success) {
-        const username = result.username || 'Robot';
-        const userid = result.userid || '1';
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   if (result?.success) {
+    //     const username = result.username || 'Robot';
+    //     const userid = result.userid || '1';
 
-        // อัปเดตข้อมูล user ให้กับทุกรายการที่มี recivedatetime
-        this.resDatapostPrescription.forEach((item: any) => {
-          if (item.recivedatetime) {
-            item.reciveuserid = userid;
-            item.reciveusername = username;
-          }
-        });
+    //     // อัปเดตข้อมูล user ให้กับทุกรายการที่มี recivedatetime
+    //     this.resDatapostPrescription.forEach((item: any) => {
+    //       if (item.recivedatetime) {
+    //         item.reciveuserid = userid;
+    //         item.reciveusername = username;
+    //       }
+    //     });
 
-        this.confirmAllMedications();
-      } else {
-        console.warn('ยกเลิก Login ก่อนบันทึก');
-      }
-    });
+    //     this.confirmAllMedications();
+    //   } else {
+    //     console.warn('ยกเลิก Login ก่อนบันทึก');
+    //   }
+    // });
   }
   removeFocus(event: FocusEvent) {
     (event.target as HTMLInputElement).blur(); // ปิด keyboard

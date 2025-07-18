@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
@@ -14,22 +14,47 @@ interface LoginResponse {
 })
 export class AuthService {
   // private apiUrl = 'http://127.0.0.1:6427/auth/permissions/login';
-  apiUrl = localStorage.getItem("pharmacycode") == "OPD" ? environment.apiURLopd : environment.apiURLipd;
+  apiUrl =
+    localStorage.getItem('pharmacycode') == 'OPD'
+      ? environment.apiURLopd
+      : environment.apiURLipd;
   private sessionTimeout: any;
-  private sessionDuration = 600  * 60 * 1000;
+  private sessionDuration = 600 * 60 * 1000;
 
-  constructor(private http: HttpClient ,private toastr: ToastrService) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  reqHeader = new HttpHeaders({
+    'Content-Type': 'application/json',
+  });
+  decrypt(encryptedData: string) {
+    // Implement your decryption logic here
+    return this.http
+      .get<string>(`${this.apiUrl}/card/decrypt/${encryptedData}`, {
+        headers: this.reqHeader,
+      })
+      .toPromise();
+  }
 
+  masterlogin(user: string) {
+    const body = { username: `'${user.toUpperCase()}'` };
+    return this.http
+      .post<any>(`${this.apiUrl}/master/login/user`, body, {
+        headers: this.reqHeader,
+      })
+      .toPromise();
+  }
   login(username: string, password: string): Observable<any> {
     const body = { username, password };
-    const res = this.http.post<LoginResponse>(`${this.apiUrl}/auth/permissions/login`, body);
+    const res = this.http.post<LoginResponse>(
+      `${this.apiUrl}/auth/permissions/login`,
+      body
+    );
     res.subscribe({
       next: (response) => {
         // console.log(response);
         if (response.status == 200) {
           const expireTime = Date.now() + this.sessionDuration;
           localStorage.setItem('user', JSON.stringify(response.data));
-          localStorage.setItem('pharmacycode', "OPD");
+          localStorage.setItem('pharmacycode', 'OPD');
 
           sessionStorage.setItem(
             'user',
