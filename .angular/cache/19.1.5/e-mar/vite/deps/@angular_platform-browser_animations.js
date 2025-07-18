@@ -11,8 +11,8 @@ import {
   BrowserModule,
   DomRendererFactory2
 } from "./chunk-BZEOK6K6.js";
-import "./chunk-4C72D2SV.js";
 import "./chunk-WBBWBNFV.js";
+import "./chunk-4C72D2SV.js";
 import {
   DOCUMENT
 } from "./chunk-35LGTL4I.js";

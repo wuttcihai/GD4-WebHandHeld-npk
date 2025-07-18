@@ -9,15 +9,15 @@ import {
 } from "./chunk-AWQ4ECAQ.js";
 import "./chunk-3YLFXDIK.js";
 import {
-  BreakpointObserver
-} from "./chunk-YPWWSUN4.js";
-import {
   animate,
   state,
   style,
   transition,
   trigger
 } from "./chunk-4C72D2SV.js";
+import {
+  BreakpointObserver
+} from "./chunk-YPWWSUN4.js";
 import "./chunk-JXYY5DIS.js";
 import "./chunk-KDENNSUX.js";
 import "./chunk-BDD7CDBT.js";
