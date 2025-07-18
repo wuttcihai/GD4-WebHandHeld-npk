@@ -1,8 +1,0 @@
-<div class="barcode-list">
-    <h3>Scanned Barcodes</h3>
-    <input #scannerInput type="text" (input)="onBarcodeInput($event)"
-        style="opacity:0; position: absolute; top: -9999px;" />
-    <ul>
-        <li *ngFor="let code of scannedBarcodes">{{ code }}</li>
-    </ul>
-</div>

@@ -18,9 +18,7 @@ import { DispenseComponent } from './pages/handheld/dispense/dispense.component'
 import { HistoryComponent } from './pages/handheld/history/history.component';
 import { ReciveComponent } from './pages/handheld/recive/recive.component';
 import { PrepareComponent } from './pages/handheld/prepare/prepare.component';
-import { ScanbarcodeComponent } from './pages/handheld/scanbarcode/scanbarcode.component';
 import { WardComponent } from './pages/ward/ward.component';
-
 // import { LocationmanageComponent } from './pages/setting/locationmanage/locationmanage.component';
 
 const routes: Routes = [
@@ -41,7 +39,7 @@ const routes: Routes = [
   // { path: 'main', component: MainComponent },
   { path: 'login', component: LoginComponent },
   { path: 'ward', component: WardComponent },
-  { path: 'barcodescan', component: ScanbarcodeComponent },
+
   // { path: '**', redirectTo: 'home' },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   // { path: '', redirectTo: '/locationmanage', pathMatch: 'full' },
@@ -59,4 +57,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

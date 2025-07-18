@@ -87,8 +87,6 @@ import { PopupuserotherComponent } from './components/popup/popupuserother/popup
 import { WardComponent } from './pages/ward/ward.component';
 import { ReciveMsgComponent } from './pages/handheld/recive-msg/recive-msg.component';
 import { LoginDialogComponent } from './pages/login-dialog/login-dialog.component';
-import { HideKeyboardDirective } from './directives/hide-keyboard.directive';
-import { ScanbarcodeComponent } from './pages/handheld/scanbarcode/scanbarcode.component';
 
 // import { MatDatepickerModule } from '@angular/material/datepicker';
 
@@ -130,8 +128,6 @@ import { ScanbarcodeComponent } from './pages/handheld/scanbarcode/scanbarcode.c
     WardComponent,
     ReciveMsgComponent,
     LoginDialogComponent,
-    ScanbarcodeComponent
-
     // ReactiveFormsModule
   ],
   imports: [
@@ -189,10 +185,9 @@ import { ScanbarcodeComponent } from './pages/handheld/scanbarcode/scanbarcode.c
     NgxChartsModule,
     MatMenuModule,
     ScrollingModule,
-    HideKeyboardDirective,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [provideAnimations(), provideAnimationsAsync()],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

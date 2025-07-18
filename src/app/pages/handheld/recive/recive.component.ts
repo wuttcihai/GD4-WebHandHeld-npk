@@ -5,7 +5,6 @@ import {
   AfterViewInit,
   HostListener,
   Renderer2,
-  Directive,
 } from '@angular/core';
 import {
   trigger,
@@ -25,13 +24,16 @@ import { MatTableDataSource } from '@angular/material/table';
 import { HandheldService } from '../../../service/handheld/handheld.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupComponent } from '../../../components/popup/popup.component';
-import { PopupnodataComponent } from '../../../components/popup/popupnodata/popupnodata.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 // import { environment } from '../../../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+
+import dayjs from 'dayjs';
+import { ReciveMsgComponent } from '../recive-msg/recive-msg.component';
+
 import { LoginDialogComponent } from '../../login-dialog/login-dialog.component';
+
 export interface SelectPopup {
   label: string;
   value: string;
@@ -205,78 +207,48 @@ export class ReciveComponent implements AfterViewInit {
   timeFilter: string = 'all';
   filteredMedications: any[] = [];
   lenSticker: any;
-  inputValue: any;
+
   lenPack: any;
   // loading: boolean;
   dataSource: any;
-
-  // @HostListener('window:keyup.enter', ['$event'])
-  // handleEnter(event: KeyboardEvent) {
-  //   // หรือใช้ร่วมกับ ngModel
-
-  //   console.log(event.key)
-  //   const dialogRef = this.dialog.open(PopupnodataComponent, {
-  //     width: '400px',
-  //     height: '350px',
-  //     disableClose: true,
-  //     panelClass: 'no-radius-dialog',
-  //     data: { message: 'คุณยังไม่เลิอกรายการ' + event.key }
-
-  //   });
-  //   if (event.key == 'Enter') {
-
-  //     console.log('Enter key pressed:', this.inputValue);
-  //     this.onScanDrung(this.inputValue); // เรียกฟังก์ชันสแกน
-  //   }
-  // }
-  scannedValue: string = '';
-  lastBarcode: string = '';
-  scanTimeout: any;
-  @ViewChild('scannerInput') scannerInput!: ElementRef;
-  @ViewChild('BarcodeDrug') BarcodeDrug!: ElementRef;
-  ngAfterViewInit() {
-    this.scannerInput.nativeElement.focus();
-  }
-  onBarcodeInput(event: any) {
-    const barcode = event.target.value;
-    console.log('Scanned barcode:', barcode);
-
-    this.onClickPatient(barcode);
-    event.target.value = ''; // clear input
-  }
-
-  @ViewChild('barcodeInputBox') barcodeInputBox!: ElementRef;
-  barcodeInput: string = '';
-
   ngOnInit() {
     // Simulate loading data
     this.onScanAN2();
-    // this.openFullscreen()
     setTimeout(() => {
       this.patient.status = 'stable';
     }, 1500);
   }
 
   constructor(
-    private el: ElementRef,
     private renderer: Renderer2,
     private breakpointObserver: BreakpointObserver,
     private dialog: MatDialog,
     private handheldService: HandheldService,
     private toastr: ToastrService
   ) {
-    // this.checkIfMobile();
+    this.checkIfMobile();
   }
 
-  // ngAfterViewInit() {
-  //   this.focusInput();
-  // }
+  ngAfterViewInit() {
+    this.focusInput();
+  }
 
   checkIfMobile() {
     this.isMobile =
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
       );
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (
+      event.key === '/' &&
+      event.target !== this.medicationInput.nativeElement
+    ) {
+      event.preventDefault();
+      this.focusInput();
+    }
   }
 
   onInputFocus() {
@@ -294,27 +266,25 @@ export class ReciveComponent implements AfterViewInit {
 
   focusInput() {
     setTimeout(() => {
-      this.scannerInput.nativeElement.focus();
-      //(document.activeElement as HTMLElement)?.blur();
-      // this.medicationInput.nativeElement.focus();
+      this.medicationInput.nativeElement.focus();
 
       // Force keyboard to open on mobile
-      // if (this.isMobile) {
-      //   this.scannerInput.nativeElement.click();
-      //   this.scannerInput.nativeElement.setAttribute('inputmode', 'search');
-      // }
+      if (this.isMobile) {
+        this.medicationInput.nativeElement.click();
+        this.medicationInput.nativeElement.setAttribute('inputmode', 'search');
+      }
     }, 100);
   }
 
   focusInput2() {
     setTimeout(() => {
-      this.BarcodeDrug.nativeElement.focus();
+      this.medicationInput2.nativeElement.focus();
 
-      // // Force keyboard to open on mobile
-      // if (this.isMobile) {
-      //   this.BarcodeDrug.nativeElement.click();
-      //   this.medicationInput2.nativeElement.setAttribute('inputmode', 'search');
-      // }
+      // Force keyboard to open on mobile
+      if (this.isMobile) {
+        this.medicationInput2.nativeElement.click();
+        this.medicationInput2.nativeElement.setAttribute('inputmode', 'search');
+      }
     }, 100);
   }
 
@@ -433,19 +403,6 @@ export class ReciveComponent implements AfterViewInit {
         break;
       default:
       // console.log(`Sorry, we are out of `, conveyor_ip);
-    }
-  }
-  openFullscreen() {
-    const elem = document.documentElement;
-
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if ((elem as any).webkitRequestFullscreen) {
-      /* Safari */
-      (elem as any).webkitRequestFullscreen();
-    } else if ((elem as any).msRequestFullscreen) {
-      /* IE11 */
-      (elem as any).msRequestFullscreen();
     }
   }
   confirmDispense() {
@@ -619,7 +576,7 @@ export class ReciveComponent implements AfterViewInit {
     this.resDatapostPrescription = [];
     this.hasScanned = false;
     this.focusInput();
-    // this.currentBarcode = '';
+    this.currentBarcode = '';
   }
 
   confirmAllMedications() {
@@ -703,16 +660,38 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   onScanAN2() {
+    const startOfYesterday = dayjs().subtract(1, 'day').startOf('day');
+    const endOfToday = dayjs().endOf('day');
+
     const q = {
       wardcode: this.WARD.wardcode,
       recivedatetime: null,
       checkoutdatetime: { $ne: null },
+      // ordercreatedate: {
+      //   $gte: dayjs(startOfYesterday.toISOString()),
+      //   $lte: dayjs(endOfToday.toISOString()),
+      // },
     };
+
+    console.log(q);
+    // const q = {
+    //   wardcode: this.WARD.wardcode,
+    //   recivedatetime: null,
+    //   checkoutdatetime: { $ne: null },
+    // };
     this.handheldService.postpatientadmit(q).subscribe({
       next: (response) => {
-        // console.log(response);
+        console.log(response);
 
         if (response.status === 200) {
+          this.resDataPatientadmit = response.data.filter((item: any) => {
+            if (!item.ordercreatedate) return false;
+            const orderDate = dayjs(item.ordercreatedate);
+            return (
+              orderDate.isAfter(startOfYesterday) ||
+              orderDate.isSame(startOfYesterday)
+            );
+          });
           // this.toastr.success('Successful!', 'แจ้งเตือน');
           this.resDataPatientadmit2 = response.data;
           // Sort by activebed (assuming it's a string or number)
@@ -834,17 +813,13 @@ export class ReciveComponent implements AfterViewInit {
             // this.lenSticker == response.data.filter((item: { sendmachine: string; }) => item.sendmachine == "N").length;
             // this.toastr.success('Successful!', 'แจ้งเตือน');
             // this.resDataPatientadmit = response.data.find((item: { an: string; }) => item.an === an);
-            this.focusInput2;
             this.timeFilter = 'all';
             this.updateFilteredMedications();
             this.hasScanned = true;
-
             // this.onpostprescription(an)
             // this.getDevice()
           } else {
             // this.loading = false;
-
-            this.toastr.success('ไม่พบข้อมูล!', 'แจ้งเตือน');
           }
         },
         error: (err) => {
@@ -854,6 +829,7 @@ export class ReciveComponent implements AfterViewInit {
           // });
         },
       });
+    this.currentBarcode = '';
   }
 
   onpostprescription(an: string) {
@@ -1011,12 +987,7 @@ export class ReciveComponent implements AfterViewInit {
   //     }
   //   });
   // }
-
-  onScanDrung(event: any) {
-    const barcode = event.target.value;
-    this.currentBarcodeDrug = barcode; // Update currentBarcodeDrug with the scanned value
-    console.log('Scanned barcode:', barcode);
-
+  onScanDrung(currentBarcodeDrug: string) {
     console.log(this.groupedData);
     const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
     console.log(this.resDatapostPrescription);
@@ -1028,9 +999,9 @@ export class ReciveComponent implements AfterViewInit {
             Array.isArray(item.orderitembarcodecase) &&
             item.orderitembarcodecase.length > 0
           ) {
-            return item.orderitembarcodecase.includes(barcode);
+            return item.orderitembarcodecase.includes(currentBarcodeDrug);
           } else {
-            return item.orderitembarcode === barcode;
+            return item.orderitembarcode === currentBarcodeDrug;
           }
         }
       )
@@ -1076,7 +1047,7 @@ export class ReciveComponent implements AfterViewInit {
         const username = result.username || 'Robot';
         const userid = result.userid || '1';
 
-        // อัปเดตข้อมูล user ให้กับทุกรายการที่มี recivedatetime
+        // 🔄 อัปเดตข้อมูล user ให้กับทุกรายการที่มี recivedatetime
         this.resDatapostPrescription.forEach((item: any) => {
           if (item.recivedatetime) {
             item.reciveuserid = userid;
@@ -1090,12 +1061,12 @@ export class ReciveComponent implements AfterViewInit {
       }
     });
   }
-  removeFocus(event: FocusEvent) {
-    (event.target as HTMLInputElement).blur(); // ปิด keyboard
-  }
-  onFocus(event: FocusEvent) {
-    // บังคับ blur ทันทีที่ input ถูก focus
-    (event.target as HTMLInputElement).blur();
+  onFocus() {
+    this.currentBarcode = '';
+    this.currentBarcodeDrug = '';
+    // this.focusInput2();
+    // this.currentBarcodeDrug = '';
+    // ทำอะไรบางอย่างเมื่อเคอร์เซอร์เข้ามา
   }
 
   formatfrequencytime() {
@@ -1319,5 +1290,69 @@ export class ReciveComponent implements AfterViewInit {
     return this.groupedData[barcode].reduce((sum: number, item: any) => {
       return sum + (Number(item.orderqty) || 0);
     }, 0);
+  }
+
+  async openReceiveMsgPopup(message: string): Promise<void> {
+    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
+    const msg = this.dialog.open(ReciveMsgComponent, {
+      maxWidth: 'none',
+      maxHeight: 'none',
+      width: isMobile ? '95%' : '40%',
+      height: isMobile ? 'auto' : 'auto',
+      hasBackdrop: true,
+      backdropClass: 'custom-blur-backdrop',
+      panelClass: 'custom-dialog-container',
+      enterAnimationDuration: '300ms',
+      exitAnimationDuration: '500ms',
+      data: {
+        title: 'ข้อความ',
+        message: message,
+        fields: ['recieveremark', 'recievedate'],
+      },
+    });
+    msg.afterClosed().subscribe((r) => {
+      if (r) {
+        let resDataz = this.resDatapostPrescription.map(
+          (item: {
+            _id: any;
+            reciveuserid: any;
+            reciveusername: any;
+            recivedatetime: any;
+            recivestatus: any;
+            reciveremark: any;
+          }) => ({
+            _id: item._id,
+            updatestatus: {
+              recivestatus: 'R',
+              reciveremark: r,
+              reciveuserid: item.reciveuserid,
+              reciveusername: item.reciveusername,
+              recivedatetime: new Date(),
+            },
+          })
+        );
+
+        this.handheldService.updatepackage(resDataz).subscribe((response) => {
+          if (response.status === 200) {
+            this.toastr.success('บันทึกเรียบร้อย!', 'แจ้งเตือน');
+            this.resDataPatientadmit = [];
+            this.resDatapostPrescription = [];
+            this.hasScanned = false;
+            this.focusInput();
+            this.currentBarcode = '';
+            this.onScanAN2();
+            // this.toastr.success('Successful!', 'แจ้งเตือน');
+            // this.resDataPatientadmit2 = response.data
+            // this.hasScanned = false;
+
+            // console.log(response.data);
+            // this.onpostprescription(an)
+            // this.getDevice()
+          } else {
+            // this.loading = false;
+          }
+        });
+      }
+    });
   }
 }

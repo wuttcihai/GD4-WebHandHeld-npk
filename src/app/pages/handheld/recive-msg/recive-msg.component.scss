@@ -1,0 +1,329 @@
+/* Add these styles to your component's style file */
+
+.dialog-title {
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  color: #3f51b5;
+  text-align: center;
+  padding: 16px 24px;
+  margin: 0;
+}
+
+.divider-animate {
+  margin: 0;
+  transition: all 0.3s ease;
+  &:hover {
+    opacity: 0.8;
+    transform: scaleX(1.02);
+  }
+}
+
+.dialog-content {
+  padding: 20px 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+
+  @media (max-width: 600px) {
+    padding: 15px;
+  }
+}
+
+.form-field-animate {
+  width: 100%;
+  margin-bottom: 16px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 600px) {
+    margin-bottom: 12px;
+  }
+}
+
+.form-label {
+  font-weight: 500;
+  color: #555;
+  font-weight: 20px;
+}
+
+.input-field {
+  font-size: 18px;
+  padding: 8px 0;
+}
+
+.autocomplete-panel {
+  max-height: 200px;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 5px 8px 0 rgba(0, 0, 0, 0.14),
+    0 1px 14px 0 rgba(0, 0, 0, 0.12);
+}
+
+.autocomplete-option {
+  padding: 8px 16px;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.search-icon,
+.field-icon {
+  color: #757575;
+  opacity: 0.8;
+}
+
+.toggle-section {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.toggle-switch {
+  margin-right: 8px;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: #555;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  gap: 12px;
+
+  @media (max-width: 600px) {
+    justify-content: center;
+    padding: 12px;
+  }
+}
+
+.save-button {
+  background-color: #3f51b5;
+  color: white;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: #303f9f;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(63, 81, 181, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.close-button {
+  background-color: #f44336;
+  color: white;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button-icon {
+  font-size: 18px;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-field-animate {
+  animation: fadeInUp 0.3s ease forwards;
+  opacity: 0;
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: $i * 0.1s;
+    }
+  }
+}
+
+/* Add these styles to your component's style file */
+
+.dialog-title {
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  color: #3f51b5;
+  text-align: center;
+  padding: 16px 24px;
+  margin: 0;
+}
+
+.divider-animate {
+  margin: 0;
+  transition: all 0.3s ease;
+  &:hover {
+    opacity: 0.8;
+    transform: scaleX(1.02);
+  }
+}
+
+.dialog-content {
+  padding: 20px 24px;
+  max-height: 70vh;
+  overflow-y: auto;
+
+  @media (max-width: 600px) {
+    padding: 15px;
+  }
+}
+
+.form-field-animate {
+  width: 100%;
+  margin-bottom: 16px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 600px) {
+    margin-bottom: 12px;
+  }
+}
+
+.form-label {
+  font-weight: 500;
+  color: #555;
+  font-weight: 20px;
+}
+
+.input-field {
+  font-size: 18px;
+  padding: 8px 0;
+}
+
+.autocomplete-panel {
+  max-height: 200px;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 5px 8px 0 rgba(0, 0, 0, 0.14),
+    0 1px 14px 0 rgba(0, 0, 0, 0.12);
+}
+
+.autocomplete-option {
+  padding: 8px 16px;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.search-icon,
+.field-icon {
+  color: #757575;
+  opacity: 0.8;
+}
+
+.toggle-section {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.toggle-switch {
+  margin-right: 8px;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: #555;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  gap: 12px;
+
+  @media (max-width: 600px) {
+    justify-content: center;
+    padding: 12px;
+  }
+}
+
+.save-button {
+  background-color: #3f51b5;
+  color: white;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: #303f9f;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(63, 81, 181, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.close-button {
+  background-color: #f44336;
+  color: white;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button-icon {
+  font-size: 18px;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-field-animate {
+  animation: fadeInUp 0.3s ease forwards;
+  opacity: 0;
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: $i * 0.1s;
+    }
+  }
+}

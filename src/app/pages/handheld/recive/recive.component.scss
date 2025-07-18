@@ -20,14 +20,9 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
 // Base Styles
 .app-container {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  overflow-x: hidden;
   font-family: "Roboto", sans-serif;
   background: #f5f7fa;
   min-height: 100vh;
-  width: 100%;
   color: $dark-text;
   padding-bottom: 80px;
 
@@ -43,7 +38,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .scanner-header {
   background: $primary-gradient;
   color: $light-text;
-  padding: 0 5px 5px 5px;
+  padding: 0 10px 5px 10px;
   position: relative;
   z-index: 10;
   box-shadow: $shadow;
@@ -361,6 +356,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.packages {
+
       i,
       .count {
         color: $secondary-blue;
@@ -368,6 +364,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.stickers {
+
       i,
       .count {
         color: $success-color;
@@ -375,6 +372,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.overdue {
+
       i,
       .count {
         color: $danger-color;

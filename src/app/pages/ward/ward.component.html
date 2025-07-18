@@ -1,16 +1,22 @@
 <body class="container-fluid">
   <div class="scanner-header">
-
-    <p>เลือก WARD</p>
-    <!-- <div class="time-display">{{currentTime | date:'HH:mm'}}</div> -->
-
-    <div class="scan-input-container">
-      <i class="fas fa-search"></i>
-      <input type="text" class="scan-input" placeholder="ค้นหา" [(ngModel)]="FIND"
-        (ngModelChange)="filterWardByText(FIND)" />
-      <!-- (focus)="onFocus()" #medicationInput2 inputmode="seตarch" -->
+    <div class="scanner-header">
+      <div class="header-gradient">
+        <p>เลือก WARD</p>
+        <!-- <div class="time-display">{{currentTime | date:'HH:mm'}}</div> -->
+      </div>
+      <div class="scan-input-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          class="scan-input"
+          placeholder="ค้นหา"
+          [(ngModel)]="FIND"
+          (ngModelChange)="filterWardByText(FIND)"
+        />
+        <!-- (focus)="onFocus()" #medicationInput2 inputmode="seตarch" -->
+      </div>
     </div>
-
   </div>
 
   <table class="table table-sm">
