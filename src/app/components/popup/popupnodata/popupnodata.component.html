@@ -1,0 +1,15 @@
+<h2 mat-dialog-title class="dialog-title" style="background: var(--bg-gradient); color: white;">
+    <i class="fas fa-exclamation-circle"></i> แจ้งเตือน
+</h2>
+
+<div mat-dialog-content class="dialog-content"
+    style="display: flex; justify-content: center; align-items: center; height: 120px;">
+    <p style="font-size: 18px; color: red; text-align: center;">{{ data.message || 'ไม่พบข้อมูล' }}</p>
+</div>
+
+<div mat-dialog-actions class="dialog-actions"
+    style="background: var(--bg-gradient); color: white; justify-content: center;">
+    <button mat-raised-button class="close-button" mdbRipple rippleColor="dark" (click)="onCancel()">
+        <i class="fas fa-window-close"></i> close
+    </button>
+</div>

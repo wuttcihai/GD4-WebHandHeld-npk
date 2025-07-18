@@ -9,7 +9,7 @@
     }
   },
   "/apiipd": {
-    "target": "http://localhost:6427",
+    "target": "http://localhost:6425",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
