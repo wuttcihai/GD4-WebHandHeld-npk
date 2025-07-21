@@ -721,40 +721,62 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   onScanAN2() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+
+    today.setHours(23, 59, 59, 999);
+
     const q = {
       wardcode: this.WARD.wardcode,
       recivedatetime: null,
       checkoutdatetime: { $ne: null },
+      ordercreatedate: {
+        $gte: yesterday.toISOString(),
+        $lte: today.toISOString(),
+      },
     };
-    this.handheldService.postpatientadmit(q).subscribe({
-      next: (response) => {
-        // console.log(response);
+    // console.log('Query for MongoDB:', JSON.stringify(q, null, 2));
 
-        if (response.status === 200) {
-          // this.toastr.success('Successful!', 'แจ้งเตือน');
-          this.resDataPatientadmit2 = response.data;
-          // Sort by activebed (assuming it's a string or number)
-          this.resDataPatientadmit2 = response.data.sort((a: any, b: any) => {
-            if (a.activebed < b.activebed) return -1;
-            if (a.activebed > b.activebed) return 1;
-            return 0;
-          });
-          this.hasScanned = false;
+    console.log(q);
+    // const q = {
+    //   wardcode: this.WARD.wardcode,
+    //   recivedatetime: null,
+    //   checkoutdatetime: { $ne: null },
+    // };
+    this.handheldService
+      .postpatientadmit(JSON.stringify(q, null, 2))
+      .subscribe({
+        next: (response) => {
+          // console.log(response);
 
-          console.log(response.data);
-          // this.onpostprescription(an)
-          // this.getDevice()
-        } else {
-          // this.loading = false;
-        }
-      },
-      error: (err) => {
-        // console.error('Update Failed:', err);
-        // this.toastr.warning(err, 'แจ้งเตือน', {
-        //   toastClass: 'custom-toast-warning',
-        // });
-      },
-    });
+          if (response.status === 200) {
+            // this.toastr.success('Successful!', 'แจ้งเตือน');
+            this.resDataPatientadmit2 = response.data;
+            // Sort by activebed (assuming it's a string or number)
+            this.resDataPatientadmit2 = response.data.sort((a: any, b: any) => {
+              if (a.activebed < b.activebed) return -1;
+              if (a.activebed > b.activebed) return 1;
+              return 0;
+            });
+            this.hasScanned = false;
+
+            console.log(response.data);
+            // this.onpostprescription(an)
+            // this.getDevice()
+          } else {
+            // this.loading = false;
+          }
+        },
+        error: (err) => {
+          // console.error('Update Failed:', err);
+          // this.toastr.warning(err, 'แจ้งเตือน', {
+          //   toastClass: 'custom-toast-warning',
+          // });
+        },
+      });
     this.currentBarcode = '';
   }
 
