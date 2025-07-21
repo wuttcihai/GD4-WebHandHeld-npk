@@ -1,6 +1,6 @@
 {
   "/apiopd": {
-    "target": "http://127.0.0.1:6427",
+    "target": "http://127.0.0.1:6425",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
@@ -9,7 +9,7 @@
     }
   },
   "/apiipd": {
-    "target": "http://localhost:6427",
+    "target": "http://localhost:6425",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,

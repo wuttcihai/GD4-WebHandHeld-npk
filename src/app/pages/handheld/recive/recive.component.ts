@@ -34,6 +34,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { LoginDialogComponent } from '../../login-dialog/login-dialog.component';
 import { ReciveMsgComponent } from '../recive-msg/recive-msg.component';
 import { AuthService } from '../../../service/auth/auth.service';
+
 export interface SelectPopup {
   label: string;
   value: string;
@@ -733,12 +734,9 @@ export class ReciveComponent implements AfterViewInit {
       wardcode: this.WARD.wardcode,
       recivedatetime: null,
       checkoutdatetime: { $ne: null },
-      ordercreatedate: {
-        $gte: yesterday.toISOString(),
-        $lte: today.toISOString(),
-      },
+      orderitembarcode: { $ne: null },
     };
-    // console.log('Query for MongoDB:', JSON.stringify(q, null, 2));
+    console.log('Query for MongoDB:', JSON.stringify(q, null, 2));
 
     console.log(q);
     // const q = {
@@ -746,37 +744,35 @@ export class ReciveComponent implements AfterViewInit {
     //   recivedatetime: null,
     //   checkoutdatetime: { $ne: null },
     // };
-    this.handheldService
-      .postpatientadmit(JSON.stringify(q, null, 2))
-      .subscribe({
-        next: (response) => {
-          // console.log(response);
+    this.handheldService.postpatientadmit(q).subscribe({
+      next: (response) => {
+        // console.log(response);
 
-          if (response.status === 200) {
-            // this.toastr.success('Successful!', 'แจ้งเตือน');
-            this.resDataPatientadmit2 = response.data;
-            // Sort by activebed (assuming it's a string or number)
-            this.resDataPatientadmit2 = response.data.sort((a: any, b: any) => {
-              if (a.activebed < b.activebed) return -1;
-              if (a.activebed > b.activebed) return 1;
-              return 0;
-            });
-            this.hasScanned = false;
+        if (response.status === 200) {
+          // this.toastr.success('Successful!', 'แจ้งเตือน');
+          this.resDataPatientadmit2 = response.data;
+          // Sort by activebed (assuming it's a string or number)
+          this.resDataPatientadmit2 = response.data.sort((a: any, b: any) => {
+            if (a.activebed < b.activebed) return -1;
+            if (a.activebed > b.activebed) return 1;
+            return 0;
+          });
+          this.hasScanned = false;
 
-            console.log(response.data);
-            // this.onpostprescription(an)
-            // this.getDevice()
-          } else {
-            // this.loading = false;
-          }
-        },
-        error: (err) => {
-          // console.error('Update Failed:', err);
-          // this.toastr.warning(err, 'แจ้งเตือน', {
-          //   toastClass: 'custom-toast-warning',
-          // });
-        },
-      });
+          console.log(response.data);
+          // this.onpostprescription(an)
+          // this.getDevice()
+        } else {
+          // this.loading = false;
+        }
+      },
+      error: (err) => {
+        // console.error('Update Failed:', err);
+        // this.toastr.warning(err, 'แจ้งเตือน', {
+        //   toastClass: 'custom-toast-warning',
+        // });
+      },
+    });
     this.currentBarcode = '';
   }
 
