@@ -358,23 +358,20 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.packages {
-
-      i,
-      .count {
-        color: $secondary-blue;
-      }
-    }
-
-    &.stickers {
-
       i,
       .count {
         color: $success-color;
       }
     }
 
-    &.overdue {
+    &.stickers {
+      i,
+      .count {
+        color: $secondary-blue;
+      }
+    }
 
+    &.overdue {
       i,
       .count {
         color: $danger-color;
@@ -770,18 +767,18 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   }
 
   &.package {
-    border-left-color: $secondary-blue;
-
-    .main-type {
-      color: $secondary-blue;
-    }
-  }
-
-  &.sticker {
     border-left-color: $success-color;
 
     .main-type {
       color: $success-color;
+    }
+  }
+
+  &.sticker {
+    border-left-color: $secondary-blue;
+
+    .main-type {
+      color: $secondary-blue;
     }
   }
 
@@ -899,7 +896,6 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .date-selector {
   width: 100%;
   padding: 5px 0px;
-
 }
 
 .date-picker {
