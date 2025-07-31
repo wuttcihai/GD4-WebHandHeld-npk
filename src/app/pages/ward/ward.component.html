@@ -1,45 +1,68 @@
-<body class="container-fluid">
-  <div class="scanner-header">
-
-    <p>เลือก WARD</p>
-    <!-- <div class="time-display">{{currentTime | date:'HH:mm'}}</div> -->
-
-    <div class="scan-input-container">
-      <i class="fas fa-search"></i>
-      <input type="text" class="scan-input" placeholder="ค้นหา" [(ngModel)]="FIND"
-        (ngModelChange)="filterWardByText(FIND)" />
-      <!-- (focus)="onFocus()" #medicationInput2 inputmode="seตarch" -->
+<body
+  class="container-fluid bg-light py-4"
+  style="font-family: 'Segoe UI', Arial, sans-serif"
+>
+  <div
+    class="scanner-header mb-4 p-3 rounded shadow-sm bg-white d-flex align-items-center justify-content-between"
+  >
+    <div class="d-flex align-items-center">
+      <i class="fas fa-hospital-symbol fa-2x text-primary me-3"></i>
+      <h5 class="mb-0 text-primary" style="font-weight: 600">เลือก WARD</h5>
     </div>
-
+    <!-- <div class="time-display">{{currentTime | date:'HH:mm'}}</div> -->
+    <div class="scan-input-container position-relative" style="width: 250px">
+      <i
+        class="fas fa-search position-absolute"
+        style="
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #6c757d;
+        "
+      ></i>
+      <input
+        type="text"
+        class="form-control pl-4"
+        placeholder="ค้นหา WARD..."
+        [(ngModel)]="FIND"
+        (ngModelChange)="filterWardByText(FIND)"
+        style="padding-left: 35px; border-radius: 20px"
+      />
+    </div>
   </div>
 
-  <table class="table table-sm">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Code</th>
-        <th scope="col">(EN)</th>
-        <th scope="col">(TH)</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let ward of WARD; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td>{{ ward.wardcode }}</td>
-        <td>{{ ward.warddescEN }}</td>
-        <td>{{ ward.warddescTH }}</td>
-        <td>
-          <button class="btn btn-sm btn-primary" (click)="bnSelect(ward)">
-            เลือก
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <!-- <div class="login-container">
-    <ul class="list-group list-group-light" *ngFor="let ward of WARD">
-      <li class="list-group-item px-3 border-0">{{ ward.warddescTH }}</li>
-    </ul>
-  </div> -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col" style="width: 5%">#</th>
+            <th scope="col" style="width: 15%">Code</th>
+            <th scope="col" style="width: 30%">ชื่อ (EN)</th>
+            <th scope="col" style="width: 35%">ชื่อ (TH)</th>
+            <th scope="col" style="width: 15%"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let ward of WARD; let i = index"
+            style="vertical-align: middle"
+          >
+            <td class="text-center text-muted">{{ i + 1 }}</td>
+            <td class="font-weight-bold text-primary">{{ ward.wardcode }}</td>
+            <td>{{ ward.warddescEN }}</td>
+            <td>{{ ward.warddescTH }}</td>
+            <td>
+              <button
+                class="btn btn-success btn-sm px-3"
+                (click)="bnSelect(ward)"
+              >
+                <i class="fas fa-check-circle mr-1"></i> เลือก
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </body>

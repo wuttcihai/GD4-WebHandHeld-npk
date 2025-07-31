@@ -1,48 +1,50 @@
 <aside
-  class="main-sidebar sidebar-dark-primary elevation-4"
-  style="background: var(--bg-gradient)"
+  class="main-sidebar sidebar-light bg-medical"
+  style="background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%)"
 >
   <!-- Brand Logo with Animation -->
-  <!-- <a href="#" class="brand-link" style="background: var(--bg-gradient)">
-        <div class="hospital-logo-wrapper">
-            <img src="./Document/dist/img/logo6.png" alt="Hospital Logo" class="brand-image img-circle elevation-3 hospital-logo-pulse" style="opacity: 0.8" />
-            <div class="hospital-logo-glow"></div>
-        </div>
-        <span class="brand-text font-weight-light hospital-brand-text">โรงพยาบาลนครพิงค์</span>
-    </a> -->
-  <a href="#" class="brand-link" style="background: var(--bg-gradient)">
-    <div class="hospital-logo-wrapper">
-      <div class="logo-container">
+  <a href="#" class="brand-link bg-medical-brand">
+    <div class="hospital-logo-wrapper d-flex align-items-center">
+      <div class="logo-container position-relative">
         <img
           src="./Document/dist/img/logo6.png"
           alt="Hospital Logo"
           class="brand-image img-circle elevation-3 hospital-logo-pulse"
-          style="opacity: 0.8"
+          style="opacity: 0.95; border: 2px solid #2196f3; background: #fff"
         />
         <div class="hospital-logo-glow"></div>
-        <span class="brand-text font-weight-light hospital-brand-text"
-          >โรงพยาบาลนครพิงค์</span
-        >
       </div>
+      <span
+        class="brand-text font-weight-bold text-primary ml-2"
+        style="font-size: 1.2rem"
+      >
+        โรงพยาบาลนครพิงค์
+      </span>
     </div>
   </a>
 
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex hospital-user-panel">
-      <div class="image hospital-user-avatar">
+    <div
+      class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center hospital-user-panel bg-medical-user rounded"
+    >
+      <div class="image hospital-user-avatar mr-2">
         <img
           src="./Document/dist/img/avatar5.png"
-          class="img-circle elevation-2"
+          class="img-circle elevation-2 border border-primary"
           alt="User Image"
+          style="background: #fff"
         />
         <div class="hospital-user-status"></div>
       </div>
       <div class="info">
-        <a href="#" class="d-block hospital-user-name">{{
-          users[0]?.fullname || ""
-        }}</a>
+        <a
+          href="#"
+          class="d-block hospital-user-name text-dark font-weight-bold"
+        >
+          {{ users[0]?.fullname || "" }}
+        </a>
       </div>
     </div>
 
@@ -54,7 +56,12 @@
         role="menu"
         data-accordion="false"
       >
-        <li class="nav-header hospital-nav-header">HandHeld</li>
+        <li
+          class="nav-header hospital-nav-header text-primary font-weight-bold"
+          style="font-size: 1.1rem"
+        >
+          <i class="fas fa-stethoscope mr-2"></i>HandHeld
+        </li>
 
         <li class="nav-item hospital-nav-item">
           <a
@@ -62,7 +69,9 @@
             class="nav-link hospital-nav-link"
             data-widget="pushmenu"
           >
-            <i class="fas fa-circle hospital-nav-icon mr-1"></i>
+            <i
+              class="fas fa-briefcase-medical hospital-nav-icon mr-2 text-info"
+            ></i>
             <p>Receive</p>
           </a>
         </li>
@@ -73,7 +82,7 @@
             class="nav-link hospital-nav-link"
             data-widget="pushmenu"
           >
-            <i class="fas fa-circle hospital-nav-icon mr-1"></i>
+            <i class="fas fa-pills hospital-nav-icon mr-2 text-success"></i>
             <p>Prepare</p>
           </a>
         </li>
@@ -84,7 +93,9 @@
             class="nav-link hospital-nav-link"
             data-widget="pushmenu"
           >
-            <i class="fa fa-circle hospital-nav-icon mr-1"></i>
+            <i
+              class="fas fa-notes-medical hospital-nav-icon mr-2 text-warning"
+            ></i>
             <p>Dispense</p>
           </a>
         </li>
@@ -95,17 +106,10 @@
             class="nav-link hospital-nav-link"
             data-widget="pushmenu"
           >
-            <i class="fa fa-circle hospital-nav-icon mr-1"></i>
-            <p>history</p>
+            <i class="fas fa-history hospital-nav-icon mr-2 text-secondary"></i>
+            <p>History</p>
           </a>
         </li>
-
-        <!-- <li class="nav-item hospital-nav-item">
-                    <a routerLink="/history" class="nav-link hospital-nav-link" >
-                        <i class="fas fa-clock hospital-nav-icon mr-1"></i>
-                        <p>History</p>
-                    </a>
-                </li> -->
 
         <li class="nav-item hospital-nav-item">
           <a
@@ -113,66 +117,51 @@
             class="nav-link hospital-nav-link"
             data-widget="pushmenu"
           >
-            <i class="fa fa-circle hospital-nav-icon mr-1"></i>
+            <i
+              class="fas fa-procedures hospital-nav-icon mr-2 text-primary"
+            ></i>
             <p>เปลี่ยน WARD</p>
           </a>
         </li>
 
         <li class="nav-item hospital-nav-item">
           <a routerLink="/login" class="nav-link hospital-nav-link">
-            <i class="fa fa-sign-out hospital-nav-icon mr-1"></i>
+            <i
+              class="fas fa-sign-out-alt hospital-nav-icon mr-2 text-danger"
+            ></i>
             <p>Logout</p>
           </a>
         </li>
-
-        <!-- <ng-container *ngFor="let group of formattedSidebar; let f = index">
-                    <li class="nav-header hospital-nav-header">
-                        {{ group.groupName }}
-                    </li>
-                     -->
-        <!-- Single Items -->
-        <!-- <ng-container *ngIf="group.isdropdown === 'N'">
-                        <ng-container *ngFor="let item of group.items; let i = index">
-                            <li class="nav-item hospital-nav-item">
-                                <a [routerLink]="item.sidebar_link" class="nav-link hospital-nav-link" 
-                                   [class.hospital-active]="activeIndex === i"
-                                   (click)="handleItemClick(i)">
-                                    <i [class]="item.sidebar_icon + ' hospital-nav-icon'"></i>
-                                    <p>{{ item.sidebar_name }}</p>
-                                    <span class="hospital-nav-badge" *ngIf="item.badge">{{ item.badge }}</span>
-                                </a>
-                            </li>
-                        </ng-container>
-                    </ng-container> -->
-
-        <!-- Dropdown Items -->
-        <!-- <ng-container *ngIf="group.isdropdown === 'Y'">
-                        <li class="nav-item hospital-has-treeview" [class.menu-open]="activeIndex === f">
-                            <a href="#" class="nav-link hospital-nav-link" 
-                               [class.hospital-active]="activeIndex === f" 
-                               (click)="handleItemClick(f)">
-                                <i [class]="group.icondropdown + ' hospital-nav-icon'"></i>
-                                <p>
-                                    {{ group.groupName }}
-                                    <i class="right fas fa-angle-left hospital-caret"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview hospital-nav-treeview" >
-                                <ng-container *ngFor="let subItem of group.items; let x = index">
-                                    <li class="nav-item hospital-nav-item">
-                                        <a [routerLink]="['/', subItem.sidebar_link]" class="nav-link hospital-nav-link"
-                                           [class.hospital-active]="activeIndex === x" 
-                                           (click)="handleItemClick(x)">
-                                            <i [class]="subItem.sidebar_icon + ' hospital-nav-icon'"></i>
-                                            <p>{{ subItem.sidebar_name }}</p>
-                                        </a>
-                                    </li>
-                                </ng-container>
-                            </ul>
-                        </li>
-                    </ng-container>
-                </ng-container> -->
       </ul>
     </nav>
   </div>
 </aside>
+
+<style>
+  .bg-medical {
+    background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%) !important;
+  }
+  .bg-medical-brand {
+    background: #e3f2fd !important;
+    border-bottom: 1px solid #bbdefb;
+  }
+  .bg-medical-user {
+    background: #f1f8e9 !important;
+  }
+  .hospital-user-panel {
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.08);
+  }
+  .hospital-nav-link {
+    border-radius: 6px;
+    margin-bottom: 4px;
+    transition: background 0.2s;
+  }
+  .hospital-nav-link:hover,
+  .hospital-nav-link.active {
+    background: #bbdefb !important;
+    color: #1565c0 !important;
+  }
+  .hospital-nav-icon {
+    font-size: 1.1rem;
+  }
+</style>

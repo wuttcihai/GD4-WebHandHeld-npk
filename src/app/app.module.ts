@@ -90,7 +90,7 @@ import { LoginDialogComponent } from './pages/login-dialog/login-dialog.componen
 import { HideKeyboardDirective } from './directives/hide-keyboard.directive';
 import { ScanbarcodeComponent } from './pages/handheld/scanbarcode/scanbarcode.component';
 import { PopuprejectComponent } from './components/popup/popupreject/popupreject.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
+// import { ServiceWorkerModule } from '@angular/service-worker';
 import { PopupmederrorComponent } from './components/popup/popupmederror/popupmederror.component';
 import { PopuprectiveshelfdescComponent } from './components/popup/popuprectiveshelfdesc/popuprectiveshelfdesc.component';
 
@@ -197,15 +197,15 @@ import { PopuprectiveshelfdescComponent } from './components/popup/popuprectives
     MatMenuModule,
     ScrollingModule,
     HideKeyboardDirective,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    }),
+    // ServiceWorkerModule.register('ngsw-worker.js', {
+    //   enabled: !isDevMode(),
+    //   // Register the ServiceWorker as soon as the application is stable
+    //   // or after 30 seconds (whichever comes first).
+    //   registrationStrategy: 'registerWhenStable:30000'
+    // }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [provideAnimations(), provideAnimationsAsync()],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
