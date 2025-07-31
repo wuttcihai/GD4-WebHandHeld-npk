@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, shareReplay, tap, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
@@ -17,7 +17,7 @@ export class HandheldService {
   apiUrl = environment.apiURLipd;
   // private apiUrluserpatient = '/emarapi/admit/patient';
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   // getSearchMedicineBasket(): Observable<any> {
   //   // console.log(`${this.apiUrl}/setting/devicedrugmanage/msdugs/all`)
@@ -56,6 +56,30 @@ export class HandheldService {
       );
   }
 
+
+
+
+
+
+  postshelf(resultData: any): Observable<DeviceResponse> {
+    return this.http
+      .post<DeviceResponse>(`${this.apiUrl}/emar/ipd_admit`, resultData)
+      .pipe(
+        shareReplay(1),
+        tap((response: { status: number }) => {
+          if (response.status === 200) {
+            // console.log('Success:', response);
+            // this.toastr.success('Successful!', 'แจ้งเตือน');
+          }
+        }),
+        catchError((error) => {
+          // this.toastr.warning(error, 'แจ้งเตือน', {
+          //   toastClass: 'custom-toast-warning',
+          // });
+          return throwError(error);
+        })
+      );
+  }
   postpatientadmit(resultData: any): Observable<DeviceResponse> {
     return this.http
       .post<DeviceResponse>(`${this.apiUrl}/emar/ipd_admit`, resultData)
@@ -95,6 +119,42 @@ export class HandheldService {
         })
       );
   }
+  postupdatemederror(resultData: any): Observable<DeviceResponse> {
+    return this.http
+      .post<DeviceResponse>(`${this.apiUrl}/general/mederror/update`, resultData)
+      .pipe(
+        shareReplay(1),
+        tap((response: { status: number }) => {
+          if (response.status === 200) {
+          }
+        }),
+        catchError((error) => {
+          return throwError(error);
+        })
+      );
+  }
+
+
+  postmeddicationerrorheader(resultData: any): Observable<DeviceResponse> {
+    return this.http
+      .post<DeviceResponse>(`${this.apiUrl}/emar/medicationerrordetail`, resultData)
+      .pipe(
+        shareReplay(1),
+        tap((response: { status: number }) => {
+          if (response.status === 200) {
+            // console.log('Success:', response);
+            // this.toastr.success('Successful!', 'แจ้งเตือน');
+          }
+        }),
+        catchError((error) => {
+          // this.toastr.warning(error, 'แจ้งเตือน', {
+          //   toastClass: 'custom-toast-warning',
+          // });
+          return throwError(error);
+        })
+      );
+  }
+
 
   updatepackage(resultData: any): Observable<DeviceResponse> {
     return this.http
@@ -103,7 +163,7 @@ export class HandheldService {
         shareReplay(1),
         tap((response: { status: number }) => {
           if (response.status === 200) {
-            // console.log('Success:', response);
+            console.log('Success:', response);
             // this.toastr.success('Successful!', 'แจ้งเตือน');
           }
         }),

@@ -1,0 +1,54 @@
+<!-- <p>popupcenter works!</p> -->
+
+<h1 mat-dialog-title class="dialog-title" style="background: var(--bg-gradient);color:white;">{{ data.title }}</h1>
+<mat-divider class="divider-animate"></mat-divider>
+<div class="dialog-content">
+    <ng-container *ngFor="let field of data.fields; let i = index">
+        <div *ngIf="field.hidden !== false" class="form-group">
+            <label class="form-label">{{ field.label }}</label>
+
+            <!-- autocomplete -->
+            <ng-container *ngIf="field.type === 'autocomplete'">
+                <input type="text" class="form-control" placeholder="{{ field.placeholder }}"
+                    [formControl]="field.formControl" (input)="onAutocompleteInput(field.key)"
+                    [attr.list]="field.key + 'List'" />
+
+                <datalist [id]="field.key + 'List'">
+                    <option *ngFor="let option of (filteredOptions[field.key] | async)" [value]="option.label">
+                    </option>
+                </datalist>
+            </ng-container>
+
+            <!-- toggle -->
+            <ng-container *ngIf="field.key === 'isEnabled' || field.type == 'isEnabled'">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="field.value" />
+                    <span class="slider round"></span>
+                </label>
+                <span class="toggle-label">{{ field.value ? 'Enabled' : 'Disabled' }}</span>
+            </ng-container>
+
+            <!-- input text -->
+            <ng-container
+                *ngIf="field.type !== 'autocomplete' && field.key !== 'isEnabled' && field.type !== 'isEnabled'">
+                <input type="text" [(ngModel)]="field.value" [placeholder]="field.placeholder"
+                    [disabled]="field.disabled" class="form-control" />
+            </ng-container>
+        </div>
+    </ng-container>
+</div>
+<mat-divider class="divider-animate"></mat-divider>
+<div mat-dialog-actions class="dialog-actions" style="background: var(--bg-gradient);color:white;">
+    <button mat-raised-button class="save-button" (click)="saveData()">
+        <span class="button-content">
+            <mat-icon class="button-icon">save</mat-icon>
+            Save
+        </span>
+    </button>
+    <button mat-raised-button class="close-button" (click)="closepopup()">
+        <span class="button-content">
+            <mat-icon class="button-icon">close</mat-icon>
+            Close
+        </span>
+    </button>
+</div>

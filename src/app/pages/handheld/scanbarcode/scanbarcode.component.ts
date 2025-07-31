@@ -8,27 +8,18 @@ import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
   styleUrl: './scanbarcode.component.scss'
 })
 export class ScanbarcodeComponent {
-  barcodeBuffer: string = '';
-  scanTimeout: any;
-  @ViewChild('scannerInput') scannerInput!: ElementRef;
+  barcodeBuffer = '';
+  lastScannedBarcode = '';
 
-  scannedBarcodes: string[] = [];
-
-  onBarcodeScanned(barcode: string) {
-    if (barcode.trim()) {
-      console.log('Scanned:', barcode);
-      this.scannedBarcodes.push(barcode);
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key == 'Enter') {
+      // console.log('Scanned Barcode:', this.barcodeBuffer);
+      this.lastScannedBarcode = this.barcodeBuffer;
+      this.barcodeBuffer = ''; // reset
+    } else {
+      this.barcodeBuffer += event.key;
     }
   }
 
-  ngAfterViewInit() {
-    this.scannerInput.nativeElement.focus();
-  }
-
-  onBarcodeInput(event: any) {
-    const barcode = event.target.value;
-    console.log('Scanned barcode:', barcode);
-    this.onBarcodeScanned(barcode);
-    event.target.value = ''; // clear input
-  }
 }

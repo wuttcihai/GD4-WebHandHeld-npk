@@ -1,0 +1,26 @@
+<h3 mat-dialog-title class="dialog-title" style="background: var(--bg-gradient); color: rgb(255, 247, 0)">
+    ปฏิเสธการรับยา
+</h3>
+
+<mat-dialog-content>
+    <mat-form-field appearance="outline" style="width: 100%; height: 100%; padding-top: 10px;">
+        เหตุผลการปฏิเสธ
+        <textarea matInput [(ngModel)]="remark" rows="4" placeholder="" class="w-100"></textarea>
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-divider class="divider-animate"></mat-divider>
+
+<div mat-dialog-actions class="dialog-actions">
+    <button mat-raised-button class="save-button" (click)="onSave()" style="width: 120px;">
+        <span class="button-content">
+            บันทึก
+        </span>
+    </button>
+    <button mat-raised-button class="close-button" (click)="onCancel()" style="width: 120px;">
+        <span class="button-content">
+            ปิด
+        </span>
+    </button>
+    <div mat-dialog-content class="dialog-content"></div>
+</div>

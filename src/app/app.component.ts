@@ -26,19 +26,19 @@ export class AppComponent {
     });
 
     this.elem = document.documentElement;
-    this.toggleFullScreen();
+    // this.toggleFullScreen();
   }
-  toggleFullScreen() {
-    if (!document.fullscreenElement) {
-      this.elem.requestFullscreen().catch((err: any) => {
-        console.error(
-          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
-        );
-      });
-    } else {
-      document.exitFullscreen();
-    }
-  }
+  // toggleFullScreen() {
+  //   if (!document.fullscreenElement) {
+  //     this.elem.requestFullscreen().catch((err: any) => {
+  //       console.error(
+  //         `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+  //       );
+  //     });
+  //   } else {
+  //     document.exitFullscreen();
+  //   }
+  // }
 
   displayedColumns = [
     'name',

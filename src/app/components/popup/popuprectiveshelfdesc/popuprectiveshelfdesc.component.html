@@ -1,0 +1,74 @@
+<h1 mat-dialog-title class="dialog-title">{{ data.title }}</h1>
+<mat-divider class="divider-animate"></mat-divider>
+<div mat-dialog-content class="dialog-content">
+
+    <div class="storage-container" [@fadeIn]>
+        <!-- <div class="header">
+    <h1><i class="fas fa-pills"></i> เลือกสถานที่เก็บยา</h1>
+    <div class="divider"></div>
+  </div> -->
+
+        <div class="storage-options">
+            <h3><i class="fas fa-map-marker-alt"></i> เลือกสถานที่เก็บยา</h3>
+            <div class="shelf-grid">
+                <button *ngFor="let shelf of shelfsData" class="shelf-button" [@buttonAnimation]
+                    (click)="selectShelf(shelf)" [ngClass]="{'selected': selectedShelf?._id === shelf._id}">
+                    <div class="shelf-icon">
+                        <i [class]="getShelfIcon(shelf.shelfdesc)"></i>
+                    </div>
+                    <span class="shelf-code">{{shelf.shelfcode}}</span>
+                    <span class="shelf-desc">{{shelf.shelfdesc}}</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="medication-card" [@cardAnimation]>
+            <div class="medication-header">
+                <i class="fas fa-capsules"></i>
+                <h2>รายการยา</h2>
+            </div>
+
+            <div class="medication-details" *ngFor="let item of filterData">
+                <div class="detail-row">
+                    <span class="detail-label">รหัสยา:</span>
+                    <span class="detail-value">{{item.orderitemcode}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">ชื่อยา:</span>
+                    <span class="detail-value highlight">{{item.orderitemname}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">ขนาด:</span>
+                    <span class="detail-value">{{item.dosage}} {{item.dosageunitdesc || 'หน่วย'}}</span>
+                </div>
+                <div class="detail-row instructions">
+                    <i class="fas fa-info-circle"></i>
+                    <span>{{item.freetext1}} {{item.freetext2}}</span>
+                </div>
+            </div>
+        </div>
+        <!-- 
+  <div class="action-buttons" *ngIf="selectedShelf" [@fadeIn]>
+    <button class="confirm-button" (click)="confirmSelection()">
+      <i class="fas fa-check-circle"></i> ยืนยันการเลือก
+    </button>
+  </div> -->
+    </div>
+
+
+</div>
+<mat-divider class="divider-animate"></mat-divider>
+<div mat-dialog-actions class="dialog-actions" style="background: var(--bg-gradient);color:white;">
+    <button mat-raised-button class="save-button">
+        <span class="button-content">
+            <mat-icon class="button-icon">save</mat-icon>
+            Save
+        </span>
+    </button>
+    <button mat-raised-button class="close-button" (click)="closepopup()">
+        <span class="button-content">
+            <mat-icon class="button-icon">close</mat-icon>
+            Close
+        </span>
+    </button>
+</div>

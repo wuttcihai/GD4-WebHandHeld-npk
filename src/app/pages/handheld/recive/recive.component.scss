@@ -38,8 +38,8 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .scanner-header {
   background: $primary-gradient;
   color: $light-text;
-  padding: 0 5px 5px 5px;
-  position: relative;
+  //padding: 0 0px 0px 0px;
+  //position: relative;
   z-index: 10;
   box-shadow: $shadow;
   position: sticky;
@@ -58,7 +58,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
     .time-display {
       background: rgba(255, 255, 255, 0.2);
-      padding: 5px 10px;
+      padding: 5px 5px;
       border-radius: 20px;
       font-size: 1rem;
     }
@@ -67,8 +67,8 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   .scan-input-container {
     background: $card-bg;
     border-radius: $border-radius;
-    padding: 10px 10px;
-    margin-top: 10px;
+    padding: 5px 5px;
+    margin-top: 5px;
     display: flex;
     align-items: center;
     transition: all 0.3s ease;
@@ -126,7 +126,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
 // Content Views
 .content-view {
-  padding: 5px;
+  padding: 0px;
 }
 
 .patient-count {
@@ -190,6 +190,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     h3 {
       margin: 0 0 0px 0;
       font-size: 1rem;
+      color: #000000;
     }
 
     span {
@@ -281,6 +282,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     h2 {
       margin: 0;
       font-size: 1.3rem;
+      color: #000000;
     }
 
     .id-badges {
@@ -289,7 +291,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       gap: 8px;
 
       .badge {
-        padding: 3px 9px;
+        padding: 2px 8px;
         border-radius: 10px;
         font-size: 0.6rem;
 
@@ -356,6 +358,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.packages {
+
       i,
       .count {
         color: $secondary-blue;
@@ -363,6 +366,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.stickers {
+
       i,
       .count {
         color: $success-color;
@@ -370,6 +374,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     &.overdue {
+
       i,
       .count {
         color: $danger-color;
@@ -889,4 +894,45 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 .receive {
   background-color: rgb(233, 247, 209);
   border: 3px solid #00c853 !important;
+}
+
+.date-selector {
+  width: 100%;
+  padding: 5px 0px;
+
+}
+
+.date-picker {
+  padding: 10px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.date-picker:focus {
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+}
+
+.date-picker:hover {
+  border-color: #888;
+}
+
+@media (prefers-color-scheme: dark) {
+  .date-picker {
+    background-color: #1e1e1e;
+    color: #eee;
+    border-color: #555;
+  }
+
+  .date-picker:focus {
+    border-color: #90caf9;
+    box-shadow: 0 0 0 3px rgba(144, 202, 249, 0.2);
+  }
 }

@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -89,6 +89,10 @@ import { ReciveMsgComponent } from './pages/handheld/recive-msg/recive-msg.compo
 import { LoginDialogComponent } from './pages/login-dialog/login-dialog.component';
 import { HideKeyboardDirective } from './directives/hide-keyboard.directive';
 import { ScanbarcodeComponent } from './pages/handheld/scanbarcode/scanbarcode.component';
+import { PopuprejectComponent } from './components/popup/popupreject/popupreject.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { PopupmederrorComponent } from './components/popup/popupmederror/popupmederror.component';
+import { PopuprectiveshelfdescComponent } from './components/popup/popuprectiveshelfdesc/popuprectiveshelfdesc.component';
 
 // import { MatDatepickerModule } from '@angular/material/datepicker';
 
@@ -130,11 +134,14 @@ import { ScanbarcodeComponent } from './pages/handheld/scanbarcode/scanbarcode.c
     WardComponent,
     ReciveMsgComponent,
     LoginDialogComponent,
-    ScanbarcodeComponent
-
+    ScanbarcodeComponent,
+    PopuprejectComponent,
+    PopupmederrorComponent,
+    PopuprectiveshelfdescComponent,
     // ReactiveFormsModule
   ],
   imports: [
+    FormsModule,
     InlineSVGModule,
     BrowserModule,
     AppRoutingModule,
@@ -190,6 +197,12 @@ import { ScanbarcodeComponent } from './pages/handheld/scanbarcode/scanbarcode.c
     MatMenuModule,
     ScrollingModule,
     HideKeyboardDirective,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [provideAnimations(), provideAnimationsAsync()],

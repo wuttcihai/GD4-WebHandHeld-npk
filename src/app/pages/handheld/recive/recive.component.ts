@@ -26,6 +26,9 @@ import { HandheldService } from '../../../service/handheld/handheld.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupComponent } from '../../../components/popup/popup.component';
 import { PopupnodataComponent } from '../../../components/popup/popupnodata/popupnodata.component';
+import { PopuprejectComponent } from '../../../components/popup/popupreject/popupreject.component';
+import { PopuprectiveshelfdescComponent } from '../../../components/popup/popuprectiveshelfdesc/popuprectiveshelfdesc.component';
+
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 // import { environment } from '../../../../../../environments/environment';
@@ -34,12 +37,17 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { LoginDialogComponent } from '../../login-dialog/login-dialog.component';
 import { ReciveMsgComponent } from '../recive-msg/recive-msg.component';
 import { AuthService } from '../../../service/auth/auth.service';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import { PopupmederrorComponent } from '../../../components/popup/popupmederror/popupmederror.component';
 
 export interface SelectPopup {
   label: string;
   value: string;
 }
-
+dayjs.extend(utc);
+dayjs.extend(timezone);
 @Component({
   selector: 'app-recive',
   standalone: false,
@@ -147,6 +155,7 @@ export class ReciveComponent implements AfterViewInit {
   isMobile = false;
   patientadmits: any;
   hiddenSearch: boolean = false;
+  hiddenRecive: boolean = false;
   currentTime = new Date();
   scanFocus: boolean = true;
   statusColor: string = '#4CAF50'; // Default status color (green)
@@ -156,6 +165,20 @@ export class ReciveComponent implements AfterViewInit {
   // currentTime: Date = new Date(); // Current time for display
   groupedData: { [key: string]: any[] } = {};
   medications: any[] = [];
+  mederror: any = [];
+  mederrors: any = [];
+
+  popupImageUrl = '';
+  popupImageUrls: string[] = [];
+  showPopup: boolean = false;
+  shelfs: any;
+  selectedDate: string = new Date().toISOString().substring(0, 10);
+  resDataPatientadmitSel: any; // สมมุติว่าเป็น array ของผู้ป่วย
+  filteredPatient: any = null;
+
+  inputData: any = "";
+  prescription: any = {}
+
   patient = {
     photoUrl: './Document/dist/img/avatar5.png',
     name: 'พี่หนึ่ง ตีหรี่',
@@ -202,8 +225,8 @@ export class ReciveComponent implements AfterViewInit {
   ];
   // handheldService: any;
   resDataPatientadmit: any;
-  resDataPatientadmit2: any;
-  resDataPatientadmitSel: any;
+  resDataPatientadmit2: any[] = [];
+  // resDataPatientadmitSel: any;
   resDatapostPrescription: any;
   timeFilter: string = 'all';
   filteredMedications: any[] = [];
@@ -213,33 +236,287 @@ export class ReciveComponent implements AfterViewInit {
   // loading: boolean;
   dataSource: any;
 
-  // @HostListener('window:keyup.enter', ['$event'])
-  // handleEnter(event: KeyboardEvent) {
-  //   // หรือใช้ร่วมกับ ngModel
+  selection: any[] = [];
+  selectedIds: any[] = [];
 
-  //   console.log(event.key)
-  //   const dialogRef = this.dialog.open(PopupnodataComponent, {
-  //     width: '400px',
-  //     height: '350px',
-  //     disableClose: true,
-  //     panelClass: 'no-radius-dialog',
-  //     data: { message: 'คุณยังไม่เลิอกรายการ' + event.key }
+  KEY: string = '';
 
-  //   });
-  //   if (event.key == 'Enter') {
+  @ViewChild('barcodeRow', { static: false }) barcodeRowRef!: ElementRef;
+  scannedBarcode: string = '';
 
-  //     console.log('Enter key pressed:', this.inputValue);
-  //     this.onScanDrung(this.inputValue); // เรียกฟังก์ชันสแกน
-  //   }
-  // }
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.currentBarcode = this.KEY.trim();
+      this.KEY = '';
+      if (this.hasScanned) {
+        // this.dialog.open(PopupnodataComponent, {
+        //   width: '400px',
+        //   height: '250px',
+        //   disableClose: true,
+        //   panelClass: 'no-radius-dialog',
+        //   data: { message: 'onScanDrung' + this.currentBarcode }
+        // });
+
+        this.onScanDrung(this.currentBarcode);
+      } else {
+        // this.dialog.open(PopupnodataComponent, {
+        //   width: '400px',
+        //   height: '250px',
+        //   disableClose: true,
+        //   panelClass: 'no-radius-dialog',
+        //   data: { message: 'onClickPatient' }
+        // });
+
+        this.onClickPatient(this.currentBarcode);
+      }
+
+      this.KEY = '';
+      this.currentBarcode = '';
+      this.hasScanned = true;
+
+    } else if (
+      event.key !== 'Shift' &&
+      event.key !== 'Unidentified' &&
+      event.key.length === 1
+    ) {
+      this.KEY += event.key;
+    }
+  }
+  onReceive() {
+    console.log('รับยา:');
+    // หรือส่ง API / อัปเดตสถานะได้ที่นี่
+    this.dialog.open(PopupnodataComponent, {
+      width: '400px',
+      height: '250px',
+      disableClose: true,
+      panelClass: 'no-radius-dialog',
+      data: { message: 'onClickPatient' }
+    });
+  }
+  onDateChange() {
+    if (this.selectedDate) {
+      const selected = new Date(this.selectedDate);
+      const pickupDate = new Date();
+
+      const isSameDate =
+        pickupDate.getFullYear() === selected.getFullYear() &&
+        pickupDate.getMonth() === selected.getMonth() &&
+        pickupDate.getDate() === selected.getDate();
+
+      console.log('เลือกวันที่:', this.selectedDate);
+      console.log('isSameDate:', isSameDate);
+
+      // ทำงานอื่นต่อ เช่นเรียกฟังก์ชัน
+      this.onScanAN2();
+
+    } else {
+      this.filteredPatient = null;
+    }
+  }
+  onWaitingClick() {
+    this.hiddenRecive = false;
+    this.onScanAN2()
+    console.log('รอรับยา clicked');
+    // ใส่ logic ที่ต้องการที่นี่ เช่น กรองรายการ หรือเปลี่ยนสถานะ
+  }
+
+  onReceivedClick() {
+    this.hiddenRecive = true;
+    this.onScanAN2()
+    console.log('รับยาแล้ว clicked');
+    // ใส่ logic ที่ต้องการที่นี่ เช่น แสดงเฉพาะรายการที่รับยาแล้ว
+  }
+  openRejectPopupItem(row: any) {
+
+    // console.log(row.prescriptionno);
+
+    const thaiTime = dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+
+    const dialogRef = this.dialog.open(PopuprejectComponent, {
+      width: '600px',
+      height: '400px',
+      disableClose: true,
+      panelClass: 'no-radius-dialog',
+      data: this.selectedIds  // ถ้าต้องการส่งค่ามาก็ใส่ตรงนี้
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.confirmed) {
+
+        this.selectedIds.push({
+          _id: row._id,
+          updatestatus: {
+            reciveuserid: localStorage.getItem('usercode'),
+            reciveusername: localStorage.getItem('username'),
+            recivedatetime: thaiTime,
+            recivestatus: 'R',
+            reciveremark: 'ปฏิเสธรับยา ' + result?.remark
+          }
+        });
+        console.log(this.selectedIds)
+        this.handheldService.updatepackage(this.selectedIds).subscribe(response => {
+          let d = response
+          this.onClickPatient(row.prescriptionno);
+          console.log(d)
+        });
+        // this.onClick(row.prescriptionno);
+      } else {
+        this.selectedIds = [];
+        // console.log('ยกเลิก');
+      }
+    });
+  }
+  onPreDispensingError(row: any) {
+    this.handheldService.postmeddicationerrorheader({ errortypecode: "ERT003" }).subscribe(response => {
+      //console.log(response);
+      this.mederror = response;
+      console.log(this.mederror.data);
+      this.mederrors = this.mederror.data
+        .map((r: any) => ({
+          value: r.errordetailcode,
+          label: r.errordetail || 'Unknown' // ตั้งค่าเริ่มต้นถ้าไม่มีชื่อ
+        }));
+
+      // สร้าง array ใหม่จาก response ที่ได้
+      //console.log(this.mederrors);
+      const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
+      const dialogRef = this.dialog.open(PopupmederrorComponent, {
+        maxWidth: 'none',
+        maxHeight: 'none',
+        width: isMobile ? '97%' : '60%',
+        height: isMobile ? '80%' : 'auto',
+        panelClass: 'custom-dialog-container',
+        data: {
+          title: 'Med Error',
+          apiUrl: ``,
+          fields: [
+            // { key: 'ordercreatedate', label: 'วันที่', placeholder: 'วันที่', disabled: true, value: row.ordercreatedate, type: 'string', hidden: false },
+            { key: '_id_prescription', label: 'idเลขที่ใบสั่งยา', placeholder: 'idเลขที่ใบสั่ง', disabled: true, value: row._id, type: 'string', hidden: false },
+            { key: 'prescriptionno', label: 'เลขที่ใบสั่งยา', placeholder: 'เลขที่ใบสั่ง', disabled: true, value: row.prescriptionno, type: 'string', hidden: true, id_prescription: row._id },
+            { key: 'hn', label: 'hn', placeholder: 'HN', disabled: true, value: row.hn, type: 'string', hidden: true },
+            { key: 'an', label: 'an', placeholder: 'AN', disabled: true, value: row.an, type: 'string', hidden: true },
+            { key: 'orderitemcode', label: 'รหัยา', placeholder: 'orderitemcode', disabled: true, value: row.orderitemcode, type: 'string', hidden: true },
+            { key: 'orderitemname', label: 'ชื่อยา', placeholder: 'orderitemname', disabled: true, value: row.orderitemname, type: 'string', hidden: true },
+            { key: 'orderunitdesc', label: 'หน่วย', placeholder: 'orderunitdesc', disabled: true, value: row.orderunitdesc, type: 'string', hidden: true },
+            { key: 'orderqty', label: 'จำนวนที่หมอสั่ง', placeholder: 'orderqty', disabled: true, value: row.orderqty, type: 'string', hidden: true },
+            // { key: 'shelfzone', label: 'ตำแหน่ง', placeholder: 'shelfzone', disabled: true, value: row.shelfzone, type: 'string', hidden: true },
+            // { key: 'jobuserid', label: 'jobuserid', placeholder: 'jobuserid', disabled: true, value: row.jobusername, type: 'string', hidden: false },
+            // { key: 'jobusername', label: 'ผู้จัดยา', placeholder: 'jobusername', disabled: true, value: row.jobusername, type: 'string', hidden: true },
+            { key: 'mederror_desc', label: 'หัวข้อ', placeholder: 'หัวข้อ', disabled: false, value: row.mederror_desc, type: 'autocomplete', hidden: true },
+            { key: 'mederror_freetext', label: 'รายละเอียด', placeholder: 'รายละเอียด', disabled: false, value: row.mederror_freetext, type: 'string', hidden: true },
+            // { key: 'mederror_robot', label: 'เกิดจาก Robot', placeholder: 'เกิดจาก Robot', disabled: false, value: row.mederror_robot, type: 'autocomplete', hidden: true },
+            // { key: 'mederror_userid', label: 'mederror_userid', placeholder: 'mederror_userid', disabled: false, value: row.mederror_userid ? row.mederror_userid : localStorage.getItem('username'), type: 'string', hidden: false },
+            { key: 'mederror_username', label: 'ผู้บันทึก', placeholder: 'ผู้บันทึก', disabled: false, value: row.mederror_username ? row.mederror_username : localStorage.getItem('username'), type: 'string', hidden: false },
+            { key: 'mederror_type', label: 'mederror_type', placeholder: 'mederror_type', disabled: true, value: 'RECIVE', type: 'string', hidden: false },
+          ],
+          options: {
+            mederror_desc: this.mederrors
+          },
+          useLabel: {
+            mederror_desc: true,
+
+          },
+        }
+      });
+
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result == 'confirm' && result !== undefined) {
+
+          console.log(row.prescriptionno)
+          this.onClickPatient(row.prescriptionno);
+          //  this.onClick(row.prescriptionno);
+        } else {
+
+        }
+      });
+
+    });
+  }
+  onclickoffdrug(row: any) {
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      const thaiTime = dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+      console.log(row)
+      const rows = Array.isArray(row) ? row : [row];
+      this.selectedIds = [];
+
+      if (this.selectedIds.length == 0) {
+        rows.forEach(r => {
+          this.selectedIds.push({
+            _id: r._id,
+            updatestatus: {
+              voiduserid: localStorage.getItem('usercode'),
+              voidusername: localStorage.getItem('username'),
+              voiddatetime: thaiTime,
+            }
+          });
+        });
+        console.log(this.selectedIds)
+
+        this.handheldService.updatepackage(this.selectedIds).subscribe(response => {
+          let d = response
+          this.onClickPatient(row.prescriptionno);
+          console.log(d)
+        });
+        // this.hiddenSearch = false;
+        // console.log(row.prescriptionno)
+
+      }
+
+
+
+
+    }
+  }
+  onclickholddrug(row: any) {
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+      const thaiTime = dayjs().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+      console.log(row)
+      const rows = Array.isArray(row) ? row : [row];
+      this.selectedIds = [];
+
+      if (this.selectedIds.length == 0) {
+        rows.forEach(r => {
+          this.selectedIds.push({
+            _id: r._id,
+            updatestatus: {
+              holduserid: localStorage.getItem('usercode'),
+              holdusername: localStorage.getItem('username'),
+              holddatetime: thaiTime,
+            }
+          });
+        });
+        // console.log(this.selectedIds)
+        // const dialogRef = this.dialog.open(PopupnodataComponent, {
+        //   width: '400px',
+        //   height: '350px',
+        //   disableClose: true,
+        //   panelClass: 'no-radius-dialog',
+        //   data: { message: 'คุณต้องการ off ยา' }
+
+        // });
+        // } else {
+        this.handheldService.updatepackage(this.selectedIds).subscribe(response => {
+          let d = response
+          this.onClickPatient(row.prescriptionno);
+          console.log(d)
+        });
+
+        //  console.log(row.prescriptionno)
+
+      }
+    }
+  }
   scannedValue: string = '';
   lastBarcode: string = '';
   scanTimeout: any;
   @ViewChild('scannerInput') scannerInput!: ElementRef;
   @ViewChild('BarcodeDrug') BarcodeDrug!: ElementRef;
   ngAfterViewInit() {
-    this.scannerInput.nativeElement.focus();
+    // this.scannerInput.nativeElement.focus();
   }
+
   onBarcodeInput(event: any) {
     const barcode = event.target.value;
     console.log('Scanned barcode:', barcode);
@@ -254,6 +531,8 @@ export class ReciveComponent implements AfterViewInit {
   ngOnInit() {
     // Simulate loading data
     this.onScanAN2();
+    this.showshelf();
+
     // this.openFullscreen()
     setTimeout(() => {
       this.patient.status = 'stable';
@@ -298,7 +577,7 @@ export class ReciveComponent implements AfterViewInit {
 
   focusInput() {
     setTimeout(() => {
-      this.scannerInput.nativeElement.focus();
+      //this.scannerInput.nativeElement.focus();
       //(document.activeElement as HTMLElement)?.blur();
       // this.medicationInput.nativeElement.focus();
 
@@ -312,7 +591,7 @@ export class ReciveComponent implements AfterViewInit {
 
   focusInput2() {
     setTimeout(() => {
-      this.BarcodeDrug.nativeElement.focus();
+      //this.BarcodeDrug.nativeElement.focus();
 
       // // Force keyboard to open on mobile
       // if (this.isMobile) {
@@ -324,7 +603,7 @@ export class ReciveComponent implements AfterViewInit {
 
   blurInput() {
     if (this.isMobile) {
-      this.medicationInput.nativeElement.blur();
+      //this.medicationInput.nativeElement.blur();
     }
   }
 
@@ -439,19 +718,19 @@ export class ReciveComponent implements AfterViewInit {
       // console.log(`Sorry, we are out of `, conveyor_ip);
     }
   }
-  openFullscreen() {
-    const elem = document.documentElement;
+  // openFullscreen() {
+  //   const elem = document.documentElement;
 
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if ((elem as any).webkitRequestFullscreen) {
-      /* Safari */
-      (elem as any).webkitRequestFullscreen();
-    } else if ((elem as any).msRequestFullscreen) {
-      /* IE11 */
-      (elem as any).msRequestFullscreen();
-    }
-  }
+  //   if (elem.requestFullscreen) {
+  //     elem.requestFullscreen();
+  //   } else if ((elem as any).webkitRequestFullscreen) {
+  //     /* Safari */
+  //     (elem as any).webkitRequestFullscreen();
+  //   } else if ((elem as any).msRequestFullscreen) {
+  //     /* IE11 */
+  //     (elem as any).msRequestFullscreen();
+  //   }
+  // }
   confirmDispense() {
     if (this.medications.length === 0) return;
 
@@ -722,23 +1001,37 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   onScanAN2() {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(0, 0, 0, 0);
+    const selected = this.selectedDate ? new Date(this.selectedDate) : new Date();
 
-    const today = new Date();
+    const startDate = new Date(selected);
+    startDate.setHours(0, 0, 0, 0); // เริ่มต้นวัน 00:00
 
-    today.setHours(23, 59, 59, 999);
+    const endDate = new Date(selected);
+    endDate.setHours(23, 59, 59, 999); // สิ้นสุดวัน 23:59
+    console.log(startDate.toISOString())
+    console.log(endDate.toISOString())
+
+    let recivedatetime: any;
+
+    if (this.hiddenRecive) {
+      recivedatetime = { $ne: null }; // ถ้าต้องการรายการที่ "รับยาแล้ว"
+    } else {
+      recivedatetime = null;          // ถ้าต้องการรายการที่ "ยังไม่ได้รับยา"
+    }
 
     const q = {
       wardcode: this.WARD.wardcode,
-      recivedatetime: null,
-      checkoutdatetime: { $ne: null },
+      recivedatetime: recivedatetime,
+      voiddatetime: null,
+      holddatetime: null,
       orderitembarcode: { $ne: null },
+      checkoutdatetime: {
+        $ne: null,
+        $gte: startDate.toISOString(),
+        $lte: endDate.toISOString(),
+      },
     };
-    console.log('Query for MongoDB:', JSON.stringify(q, null, 2));
-
-    console.log(q);
+    //console.log(q);
     // const q = {
     //   wardcode: this.WARD.wardcode,
     //   recivedatetime: null,
@@ -747,7 +1040,6 @@ export class ReciveComponent implements AfterViewInit {
     this.handheldService.postpatientadmit(q).subscribe({
       next: (response) => {
         // console.log(response);
-
         if (response.status === 200) {
           // this.toastr.success('Successful!', 'แจ้งเตือน');
           this.resDataPatientadmit2 = response.data;
@@ -759,7 +1051,7 @@ export class ReciveComponent implements AfterViewInit {
           });
           this.hasScanned = false;
 
-          console.log(response.data);
+          //console.log(response.data);
           // this.onpostprescription(an)
           // this.getDevice()
         } else {
@@ -803,22 +1095,30 @@ export class ReciveComponent implements AfterViewInit {
   //   this.currentBarcode = '';
   // }
 
-  onClickPatient(an: string) {
-    console.log(an);
+  onClickPatient(prescriptionno: string) {
+    //console.log(prescriptionno);
     this.currentBarcodeDrug = '';
     this.resDataPatientadmitSel = this.resDataPatientadmit2.find(
-      (item: { prescriptionno: string }) => item.prescriptionno === an
+      (item: { prescriptionno: string }) => item.prescriptionno === prescriptionno
     );
     this.handheldService
       .postpatientadmitpackage({
-        prescriptionno: an,
+        prescriptionno: prescriptionno,
         recivedatetime: null,
+        voiddatetime: null,
+        holddatetime: null,
       })
       .subscribe({
         next: (response) => {
           // console.log(response);
 
           if (response.status === 200) {
+            if (!response.data || response.data.length === 0) {
+              this.toastr.warning('ไม่พบข้อมูลใบสั่งยาสำหรับผู้ป่วยนี้', 'แจ้งเตือน');
+              this.hasScanned = false
+              return; // ออกจากฟังก์ชัน ไม่ต้องทำอะไรต่อ
+            }
+
             // console.log(response);
             this.resDatapostPrescription = response.data.sort(
               (
@@ -864,7 +1164,7 @@ export class ReciveComponent implements AfterViewInit {
               }
             );
 
-            console.log(this.groupedData);
+            // console.log(this.groupedData);
             // }
             // console.log(this.lenPack);
             // this.lenSticker == response.data.filter((item: { sendmachine: string; }) => item.sendmachine == "N").length;
@@ -893,6 +1193,7 @@ export class ReciveComponent implements AfterViewInit {
   }
 
   onpostprescription(an: string) {
+
     this.handheldService.postprescription({ wardcode: '1641' }).subscribe({
       next: (response) => {
         // console.log(response);
@@ -1053,15 +1354,63 @@ export class ReciveComponent implements AfterViewInit {
       this.BarcodeDrug.nativeElement.blur();
     }
   }
+  showshelf() {
+    this.handheldService.postshelf({}).subscribe(response => {
+      this.shelfs = response;
+      //console.log(this.shelfs);
+    });
+  }
+  onPopupShelf(dataSend: any) {
 
-  onScanDrung(event: any) {
-    const barcode = event.target.value;
-    console.log('Scanned barcode:', barcode);
 
-    console.log(this.groupedData);
+    console.log(dataSend)
+    const filterData = dataSend.dataSource.filteredData;
+    const shelfsData = this.shelfs.data;
+
+    //console.log(filterData.length)
+    //console.log(shelfsData)
+    const dt = {
+      filterData,
+      shelfsData
+    };
+
+    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
+    const dialogRef = this.dialog.open(PopuprectiveshelfdescComponent, {
+      maxWidth: 'none',
+      maxHeight: 'none',
+      width: isMobile ? '97%' : '50%',
+      height: isMobile ? '90%' : '95%',
+      hasBackdrop: true,
+      backdropClass: 'custom-blur-backdrop',
+      panelClass: 'custom-dialog-container',
+      data: {
+        title: 'เลือกสถานที่เก็บยา',
+        fields: dt
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result !== 'Close') {
+        // ทำอะไรต่อเมื่อ Dialog ปิด
+      }
+    });
+  }
+  onScanDrung(barcode: string) {
+
+    //  const barcode = event.target.value;
+    this.scannedBarcode = barcode; // จำ barcode ที่สแกนไว้
+    //console.log('Scanned barcode:', barcode);   
+
+    //console.log(this.groupedData);
     const utcDate = new Date(Date.UTC(2025, 5, 19, 10, 30, 0));
-    console.log(this.resDatapostPrescription);
-
+    //console.log(this.resDatapostPrescription);
+    // this.dialog.open(PopupnodataComponent, {
+    //   width: '400px',
+    //   height: '250px',
+    //   disableClose: true,
+    //   panelClass: 'no-radius-dialog',
+    //   data: { message: 'onScanDrung' + this.resDatapostPrescription }
+    // });
     this.resDatapostPrescription
       .filter(
         (item: { orderitembarcode: string; orderitembarcodecase?: any }) => {
@@ -1087,10 +1436,19 @@ export class ReciveComponent implements AfterViewInit {
           items.reciveusername = 'Robot';
         }
       );
-    console.log(this.resDatapostPrescription);
+
+
+    //console.log(this.resDatapostPrescription);
     // const timeOver = this.resDatapostPrescription.filter((item: { frequencytime: string; }) => this.isTimeOver(item.frequencytime) == true).length;
     // const HAD = this.resDatapostPrescription.filter((item: { highalert: string; }) => item.highalert == '1').length;
     // const userCheck = this.resDatapostPrescription.filter((item: { usercheckDatetime: string; }) => !item.usercheckDatetime).length;
+
+    setTimeout(() => {
+      const el = document.querySelector(`[data-barcode="${barcode}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100); // wait view updated
     this.currentBarcodeDrug = '';
     this.currentBarcode = '';
 
@@ -1362,6 +1720,18 @@ export class ReciveComponent implements AfterViewInit {
     return this.groupedData[barcode].reduce((sum: number, item: any) => {
       return sum + (Number(item.orderqty) || 0);
     }, 0);
+  }
+  openImagePopupArr(urls: string[]) {
+    this.popupImageUrls = urls;
+    this.showPopup = true;
+  }
+
+  getAllImageUrls(orderitemcode: string): string[] {
+    if (!orderitemcode) return ['assets/no-image.png'];
+    return [
+      `http://172.16.10.3/apiipd/master/drugs/image/${orderitemcode}/8`,
+      `http://172.16.10.3/apiipd/master/drugs/image/${orderitemcode}/7`,
+    ];
   }
 
   async openReceiveMsgPopup(message: string): Promise<void> {
