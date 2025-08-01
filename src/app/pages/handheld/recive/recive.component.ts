@@ -1457,11 +1457,11 @@ export class ReciveComponent implements AfterViewInit {
   }
   onPopupShelf(dataSend: any) {
     console.log(dataSend);
-    const filterData = dataSend.dataSource.filteredData;
+    const filterData = dataSend?.dataSource?.filteredData ?? [];
     const shelfsData = this.shelfs.data;
 
-    //console.log(filterData.length)
-    //console.log(shelfsData)
+    console.log(filterData.length);
+    console.log(shelfsData);
     const dt = {
       filterData,
       shelfsData,
